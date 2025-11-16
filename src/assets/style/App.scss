@@ -1,0 +1,224 @@
+/* ---- Root */
+:root {
+    /* General */
+    --bulma-shadow: 0 0 0 1px hsl(
+        var(--bulma-scheme-h)
+        var(--bulma-scheme-s)
+        var(--bulma-border-weak-l)
+    ) inset;
+
+    /* Body */
+    --bulma-body-overflow-x: hidden;
+    --bulma-body-overflow-y: hidden;
+    --bulma-body-background-color: hsl(
+        var(--bulma-scheme-h)
+        var(--bulma-scheme-s)
+        var(--bulma-scheme-main-ter-l)
+    );
+
+    /* HR */
+    --bulma-hr-background-color: hsl(
+        var(--bulma-scheme-h)
+        var(--bulma-scheme-s)
+        var(--bulma-border-l)
+    );
+}
+
+html,
+body {
+    position: relative;
+}
+
+    /* Notification */
+.bulma-notification {
+    --bulma-notification-background-l: var(--bulma-border-weak-l);
+    --bulma-notification-color-l: var(--bulma-text-weak-l);
+}
+    /* Content */
+.bulma-content {
+    --bulma-content-blockquote-background-color: var(--bulma-border-weak);
+}
+
+    /* Tag */
+.bulma-tag {
+    border: 1px solid rgba(0, 0, 0, 0.10);
+}
+
+/* ---- FOX Application */
+
+/* -- Helper */
+.fox-is-text-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* -- Component */
+.fox-separator {
+
+    position: relative;
+    /*font-size: var(--bulma-size-medium);*/
+    color: var(--bulma-text-weak);
+
+    & > * {
+        padding: 0 calc( var(--bulma-block-spacing) / 2 );
+        margin: 0 calc( var(--bulma-block-spacing) / -2 );
+        background-color: var(--bulma-body-background-color);
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        display: block;
+        left: 0;
+        right: 0;
+        top: calc(100% / 2 - var(--bulma-hr-height) / 2);
+        height: var(--bulma-hr-height);
+        background-color: var(--bulma-hr-background-color);
+        z-index: -1;
+    }
+}
+
+.fox-customer-list {
+
+    & & {
+        padding-left: 3rem;
+    }
+
+    &-item {
+        position: relative;
+        margin: 0.5rem auto;
+
+        & > button {
+            display: block;
+            width: 100%;
+            text-align: inherit;
+        }
+
+        & .bulma-tag {
+            position: absolute;
+            top: calc( var(--bulma-block-spacing) / 2 );
+            right: calc( var(--bulma-block-spacing) / 2 );
+        }
+    }
+}
+
+
+/* ---- Menu */
+$menu-transition-duration: 0.5s;
+$menu-transition-timing-function: ease;
+
+/* -- Menu closed --*/
+.fox-app-view {
+
+    display: flex;
+    align-items: flex-end;
+
+    width: 200vw;
+    margin-left: -100vw;
+
+    transition: margin $menu-transition-duration $menu-transition-timing-function;
+
+    & > * {
+        flex: 1 1 100vw;
+    }
+}
+
+.fox-app-menu {
+    padding-left: calc( var(--bulma-block-spacing) * 2);
+
+    &-background {
+        z-index: -100;
+    }
+
+    &-content {
+        margin: 0 auto;
+        z-index: 0;
+        transition: z-index $menu-transition-duration $menu-transition-timing-function;
+        max-width: 400px;
+    }
+}
+
+/* -- Menu opened --*/
+.fox-app--is-menu-open {
+
+    &.fox-app-view {
+        margin-left: calc(var(--bulma-block-spacing) * -2);
+    }
+
+    .fox-app-menu {
+        &-background,
+        &-content {
+            z-index: 100;
+        }
+    }
+
+    .fox-app-content {
+        background-color: var(--bulma-background-l);
+    }
+}
+
+/* ---- Page */
+$page-transition-duration: 0.5s;
+$page-transition-timing-function: ease;
+
+.fox-app-pages {
+    margin-left: 0;
+    transition: margin $page-transition-duration $page-transition-timing-function;
+
+    & > * {
+        display: flex;
+    }
+}
+
+@for $i from 1 through 5 {
+    .fox-app-pages{
+
+        &.fox-app--has-#{$i}-pages {
+            width: calc( 100vw * $i );
+        }
+
+        &.fox-app--is-page-#{$i} {
+            margin-left: calc( -1 * 100vw * ($i - 1) );
+        }
+
+    }
+}
+
+.fox-app-page {
+    flex: 1 1 auto;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden auto;
+
+    display: flex;
+    flex-direction: column;
+
+    &-content {
+        flex: 1 1 auto;
+        overflow: auto;
+    }
+
+    &-navbar {
+        flex: none;
+        padding-top: var(--bulma-block-spacing);
+        padding-bottom: var(--bulma-block-spacing);
+
+        & > * {
+            display: flex;
+            align-items: flex-end;
+        }
+
+        &-item {
+            padding-right: var(--bulma-block-spacing);
+
+            &:first-child {
+                flex: 1 1 auto;
+            }
+
+            &:last-child {
+                padding-right: 0;
+            }
+        }
+    }
+}
