@@ -45,6 +45,11 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.10);
 }
 
+    /* Button */
+.bulma-button {
+    --bulma-button-disabled-background-color: transparent;
+}
+
 /* ---- FOX Application */
 
 /* -- Helper */

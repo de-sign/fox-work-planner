@@ -32,7 +32,7 @@
             oViewTarget = oTarget;
 
             bViewUsed = true;
-            App_goToPage(CUSTOMER_PAGE.VIEW);
+            App_goToPage(CUSTOMER_PAGE.VIEW, true);
         }
     }
 
@@ -64,7 +64,7 @@
 
             oFormComponent.setForOpen(sType, oTarget?.oContact);
             bFormUsed = true;
-            App_goToPage(CUSTOMER_PAGE.FORM);
+            App_goToPage(CUSTOMER_PAGE.FORM, true);
         }
     }
 
@@ -106,9 +106,12 @@
 
     function closeForm(): void {
         if( bFormUsed ){
-            let nGoToPage = bViewUsed ? CUSTOMER_PAGE.VIEW : CUSTOMER_PAGE.LIST;
+            if( bViewUsed ){
+                App_goToPage(CUSTOMER_PAGE.VIEW, true);
+            } else {
+                App_goToPage(CUSTOMER_PAGE.LIST);
+            }
             bFormUsed = false;
-            App_goToPage(nGoToPage);
         }
     }
 

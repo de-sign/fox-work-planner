@@ -168,6 +168,11 @@ class Contact {
         }
         return aResult;
     }
+
+    public getMobilePhoneNumbers(): string[] {
+        const rMobilePhone = new RegExp(/^\+33 [6|7]/i);
+        return this.aPhoneNumbers.filter( sValue => rMobilePhone.test(sValue) );
+    }
 };
 
 export default Contact;

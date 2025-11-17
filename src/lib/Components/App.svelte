@@ -22,7 +22,8 @@
     }
 
     /* -- Content Component */
-    let sContentSelected: string = $state(CONFIG.CONTENT_DEFAULT),
+    let hContent: HTMLElement | null = $state(null),
+        sContentSelected: string = $state(CONFIG.CONTENT_DEFAULT),
         oContentSelected: TObject = $derived(CONFIG.CONTENT_ITEMS[sContentSelected]);
 
     function changeContent( sValue: string) {
@@ -37,9 +38,12 @@
     let nPageSelected: number = $state(1),
         nMaxPage: number = $derived(oContentSelected.nPagesCount);
 
-    function goToPage(nValue: number) {
+    function goToPage(nValue: number, bScrollTop: boolean = false) {
         if( nPageSelected != nValue ){
-            nPageSelected = Math.min( Math.max(0, nValue), nMaxPage );
+            nPageSelected = Math.min( Math.max(1, nValue), nMaxPage );
+            if( bScrollTop && hContent ){
+                hContent.querySelectorAll('.fox-app-page-content')[nPageSelected - 1]?.scrollTo(0, 0);
+            }
         }
     }
 
@@ -55,7 +59,7 @@
     />
     <!-- Main content -->
     <main class="fox-app-content">
-        <div class="fox-app-pages fox-app--has-{nMaxPage}-pages fox-app--is-page-{nPageSelected}">
+        <div bind:this="{hContent}" class="fox-app-pages fox-app--has-{nMaxPage}-pages fox-app--is-page-{nPageSelected}">
             <!-- Selected tab content -->
             {#key oContentSelected.oComponent}
                 <oContentSelected.oComponent

@@ -109,12 +109,14 @@
                                 </span>
                                 <span>Appel</span>
                             </a>
-                            <a class="bulma-button bulma-is-hovered" href="sms:{oContactView.aPhoneNumbers[0]}">
-                                <span class="bulma-icon">
-                                    <i class="fa-solid fa-message"></i>
-                                </span>
-                                <span>SMS</span>
-                            </a>
+                            {#if oContactView.getMobilePhoneNumbers().length}
+                                <a class="bulma-button bulma-is-hovered" href="sms:{oContactView.getMobilePhoneNumbers()[0]}">
+                                    <span class="bulma-icon">
+                                        <i class="fa-solid fa-message"></i>
+                                    </span>
+                                    <span>SMS</span>
+                                </a>
+                            {/if}
                             <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={openModal}>
                                 <span class="bulma-icon">
                                     <i class="fa-solid fa-user-xmark"></i>
@@ -133,7 +135,7 @@
                     <div class="fox-separator">
                         <span>Contacts supplémentaires</span>
                     </div>
-                    {#each oTarget.aExtraContacts as oContact}
+                    {#each oCustomerView.aExtraContacts as oContact}
                         <article class="fox-customer-list-item">
                             <button class="bulma-box" onclick={ () => Page_openView(oContact, true) }>
                                 {#if oContact.bHasKey}
@@ -220,11 +222,14 @@
     <aside class="bulma-modal bulma-is-justify-content-flex-end" bind:this={hModal} >
         <div class="bulma-modal-background"></div>
         <div class="bulma-modal-content">
-            <div class="bulma-box">
+            <div class="bulma-box bulma-p-5">
                 <p class="bulma-block">
-                    Es-tu sûre de vouloir supprimer <b>{oContactView.getName()}</b> ?
+                    Es-tu sûr de vouloir supprimer <b>{oContactView.getName()}</b>
+                    {#if bIsCustomerView}
+                        et ses contacts supplémentaires
+                    {/if}&nbsp;?
                 </p>
-                <div class="bulma-block bulma-has-text-right">
+                <div class="bulma-field bulma-is-grouped bulma-is-grouped-right">
                     <button class="bulma-button" onclick={ () => closeModal(false) }>
                         <span class="bulma-icon">
                             <i class="fa-solid fa-xmark"></i>
