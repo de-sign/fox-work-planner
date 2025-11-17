@@ -94,6 +94,7 @@ class Customer {
             this.aExtraContacts.push(oExtraContact);
             oExtraContact.oIsExtraOf = this;
         } );
+        Customer.store();
     }
 
     /** Destructor */

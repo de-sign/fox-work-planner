@@ -27,6 +27,7 @@
 html,
 body {
     position: relative;
+    overflow: hidden;
 }
 
     /* Notification */
@@ -115,12 +116,12 @@ $menu-transition-timing-function: ease;
     align-items: flex-end;
 
     width: 200vw;
-    margin-left: -100vw;
+    margin-left: -100dvw;
 
     transition: margin $menu-transition-duration $menu-transition-timing-function;
 
     & > * {
-        flex: 1 1 100vw;
+        flex: 1 1 100dvw;
     }
 }
 
@@ -175,11 +176,11 @@ $page-transition-timing-function: ease;
     .fox-app-pages{
 
         &.fox-app--has-#{$i}-pages {
-            width: calc( 100vw * $i );
+            width: calc( 100dvw * $i );
         }
 
         &.fox-app--is-page-#{$i} {
-            margin-left: calc( -1 * 100vw * ($i - 1) );
+            margin-left: calc( -1 * 100dvw * ($i - 1) );
         }
 
     }
@@ -187,8 +188,8 @@ $page-transition-timing-function: ease;
 
 .fox-app-page {
     flex: 1 1 auto;
-    height: 100vh;
-    width: 100vw;
+    height: 100dvh;
+    width: 100dvw;
     overflow: hidden auto;
 
     display: flex;

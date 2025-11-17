@@ -9,9 +9,9 @@
 
     /* ---- Component */
     /* -- Theme Switch */
-    let bDarkMode = !!Store.get(PROPERTY_NAME.APP_DARK_MODE);
+    let bDarkMode = $state(!!Store.get(PROPERTY_NAME.APP_DARK_MODE));
 
-    function updateTheme(bValue: boolean = false): void {
+    function updateTheme(bValue?: boolean): void {
         if( bDarkMode != bValue ){
             if( bValue !== undefined ){
                 bDarkMode = bValue;
