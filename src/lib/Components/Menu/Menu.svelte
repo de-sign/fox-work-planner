@@ -8,22 +8,21 @@
     /* ---- Component */
     let {
         sContentSelected,
-        
-        App_closeMenu,
-        App_changeContent
+
+        App
     } = $props();
 </script>
 
 <aside class="fox-app-menu">
     <!-- Background -->
-    <button class="fox-app-menu-background bulma-is-clickable" onclick={App_closeMenu} title="Fermer"></button>
+    <button class="fox-app-menu-background bulma-is-clickable" onclick={App.oMenu.close} title="Fermer"></button>
     <!-- Content -->
     <div class="fox-app-menu-content bulma-container bulma-is-max-tablet bulma-card">
 
         <header class="bulma-hero bulma-is-small">
             <div class="bulma-hero-head bulma-has-text-right">
                 <button class="bulma-button bulma-is-ghost bulma-has-text-current"
-                    onclick={App_closeMenu}
+                    onclick={App.oMenu.close}
                 >
                     <span class="bulma-icon-text">
                         <!--<span>Fermer</span>--> 
@@ -50,7 +49,7 @@
                             {:else}
                                 <li>
                                     <!-- svelte-ignore a11y_invalid_attribute -->
-                                    <a href="#" class={ oMenuItem.sContent == sContentSelected ? 'bulma-is-active' : ''} onclick="{ () => App_changeContent(oMenuItem.sContent) }" >
+                                    <a href="#" class={ oMenuItem.sContent == sContentSelected ? 'bulma-is-active' : ''} onclick="{ () => App.oContent.change(oMenuItem.sContent) }" >
                                         {oMenuItem.sLabel}
                                     </a>
                                 </li>

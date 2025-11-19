@@ -10,9 +10,9 @@
     let {
         oCustomers,
 
-        Page_openView,
         App_openMenu,
-        Page_openForm
+        Pages_openView,
+        Pages_openForm
     } = $props();
 
     let aCustomersGrouped = $derived.by( () => {
@@ -68,7 +68,7 @@
                         {#each oGroup.aCustomers as oCustomer}
                             <section class="fox-customer-list bulma-block">
                                 <article class="fox-customer-list-item">
-                                    <button class="bulma-box" onclick={ () => Page_openView(oCustomer) }>
+                                    <button class="bulma-box" onclick={ () => Pages_openView(oCustomer) }>
                                         {#if oCustomer.hasMainKey()}
                                             <span class="bulma-tag bulma-is-info bulma-is-light bulma-icon">
                                                 <i class="fa-solid fa-key"></i>
@@ -86,7 +86,7 @@
                                     <div class="fox-customer-list">
                                         {#each oCustomer.aExtraContacts as oContact}
                                             <article class="fox-customer-list-item">
-                                                <button class="bulma-box"  onclick={ () => Page_openView(oContact) }>
+                                                <button class="bulma-box"  onclick={ () => Pages_openView(oContact) }>
                                                     {#if oContact.bHasKey}
                                                         <span class="bulma-tag bulma-is-info bulma-is-light bulma-icon">
                                                             <i class="fa-solid fa-key"></i>
@@ -130,7 +130,7 @@
                 </button>
             </div>
             <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-link" onclick="{ () => Page_openForm(CUSTOMER_FORM_TYPE.NEW_CUSTOMER) }">
+                <button class="bulma-button bulma-is-link" onclick="{ () => Pages_openForm(CUSTOMER_FORM_TYPE.NEW_CUSTOMER) }">
                     <span class="bulma-icon">
                         <i class="fa-solid fa-user-plus"></i>
                     </span>

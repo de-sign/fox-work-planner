@@ -17,8 +17,7 @@
 
     /* ---- Component */
     let {
-        App_openMenu,
-        App_goToPage
+        App
     } = $props();
 
     let oCustomers = Customer.getCustomers();
@@ -32,14 +31,14 @@
             oViewTarget = oTarget;
 
             bViewUsed = true;
-            App_goToPage(CUSTOMER_PAGE.VIEW, true);
+            App.oPage.open(CUSTOMER_PAGE.VIEW, true);
         }
     }
 
     function closeView() {
         if( bViewUsed ){
             bViewUsed = false;
-            App_goToPage(CUSTOMER_PAGE.LIST);
+            App.oPage.back(CUSTOMER_PAGE.LIST);
         }
     }
 
@@ -64,7 +63,7 @@
 
             oFormComponent.setForOpen(sType, oTarget?.oContact);
             bFormUsed = true;
-            App_goToPage(CUSTOMER_PAGE.FORM, true);
+            App.oPage.open(CUSTOMER_PAGE.FORM, true);
         }
     }
 
@@ -100,17 +99,14 @@
             }
 
             bFormUsed = false;
+            App.oPage.back();
             openView(oWillView, true);
         }
     }
 
     function closeForm(): void {
         if( bFormUsed ){
-            if( bViewUsed ){
-                App_goToPage(CUSTOMER_PAGE.VIEW, true);
-            } else {
-                App_goToPage(CUSTOMER_PAGE.LIST);
-            }
+            App.oPage.back();
             bFormUsed = false;
         }
     }
@@ -126,25 +122,25 @@
     <List
         oCustomers={oCustomers}
 
-        Page_openView={openView}
-        App_openMenu={App_openMenu}
-        Page_openForm={openForm}
+        App_openMenu={App.oMenu.open}
+        Pages_openView={openView}
+        Pages_openForm={openForm}
     />
     <!-- Page #2 - View -->
     <View
         oTarget={oViewTarget}
 
-        Page_openView={openView}
-        Page_deleteView={deleteView}
-        Page_closeView={closeView}
-        Page_openForm={openForm}
+        Pages_openView={openView}
+        Pages_deleteView={deleteView}
+        Pages_closeView={closeView}
+        Pages_openForm={openForm}
     />
     <!-- Page #3 - Form -->
     <Form
         bind:this={oFormComponent}
 
-        Page_closeForm={closeForm}
-        Page_validateForm={validateForm}
+        Pages_closeForm={closeForm}
+        Pages_validateForm={validateForm}
     />
 </div>
 

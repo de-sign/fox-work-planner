@@ -9,10 +9,10 @@
     let {
         oTarget,
 
-        Page_openView,
-        Page_deleteView,
-        Page_closeView,
-        Page_openForm
+        Pages_openView,
+        Pages_deleteView,
+        Pages_closeView,
+        Pages_openForm
     } = $props();
 
     const bIsCustomerView = $derived( oTarget instanceof Customer ),
@@ -28,7 +28,7 @@
 
     function closeModal(bConfirm = false) {
         if( bConfirm ){
-            Page_deleteView();
+            Pages_deleteView();
         }
         hModal?.classList.remove('bulma-is-active');
     }
@@ -137,7 +137,7 @@
                     </div>
                     {#each oCustomerView.aExtraContacts as oContact}
                         <article class="fox-customer-list-item">
-                            <button class="bulma-box" onclick={ () => Page_openView(oContact, true) }>
+                            <button class="bulma-box" onclick={ () => Pages_openView(oContact, true) }>
                                 {#if oContact.bHasKey}
                                     <span class="bulma-tag bulma-is-info bulma-is-light bulma-icon">
                                         <i class="fa-solid fa-key"></i>
@@ -164,7 +164,7 @@
                         </div>
                     {/each}
                     <div class="bulma-has-text-right bulma-mt-5">
-                        <button class="bulma-button bulma-is-hovered" onclick="{ () => Page_openForm(CUSTOMER_FORM_TYPE.NEW_CONTACT, { oCustomer: oCustomerView }) }">
+                        <button class="bulma-button bulma-is-hovered" onclick="{ () => Pages_openForm(CUSTOMER_FORM_TYPE.NEW_CONTACT, { oCustomer: oCustomerView }) }">
                             <span class="bulma-icon">
                                 <i class="fa-solid fa-user-plus"></i>
                             </span>
@@ -176,7 +176,7 @@
                         <span>Client principal</span>
                     </div>
                     <article class="fox-customer-list-item">
-                        <button class="bulma-box" onclick={ () => Page_openView(oCustomerView, true) }>
+                        <button class="bulma-box" onclick={ () => Pages_openView(oCustomerView, true) }>
                             {#if oCustomerView.hasMainKey()}
                                 <span class="bulma-tag bulma-is-info bulma-is-light bulma-icon">
                                     <i class="fa-solid fa-key"></i>
@@ -200,7 +200,7 @@
     <nav class="fox-app-page-navbar bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
             <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-hovered" onclick={Page_closeView} >
+                <button class="bulma-button bulma-is-hovered" onclick={Pages_closeView} >
                     <span class="bulma-icon">
                         <i class="fa-solid fa-chevron-left"></i>
                     </span>
@@ -208,7 +208,7 @@
                 </button>
             </div>
             <div class="fox-app-page-navbar-item">
-                <button class="bulma-button" onclick="{ () => Page_openForm(CUSTOMER_FORM_TYPE.MODIFY_CONTACT, oFormEdit) }">
+                <button class="bulma-button" onclick="{ () => Pages_openForm(CUSTOMER_FORM_TYPE.MODIFY_CONTACT, oFormEdit) }">
                     <span class="bulma-icon">
                         <i class="fa-solid fa-user-pen"></i>
                     </span>

@@ -8,8 +8,8 @@
 
     /* ---- Component */
     let {
-        Page_validateForm,
-        Page_closeForm
+        Pages_validateForm,
+        Pages_closeForm
     } = $props();
 
     /* -- Data */
@@ -181,7 +181,7 @@
     function validate() {
         if( check() ){
             const oResult = transform();
-            Page_validateForm(oResult);
+            Pages_validateForm(oResult);
         }
     }
 
@@ -345,7 +345,7 @@
     <nav class="fox-app-page-navbar bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
             <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-hovered" onclick={Page_closeForm} >
+                <button class="bulma-button bulma-is-hovered" onclick={Pages_closeForm} >
                     <span class="bulma-icon">
                         <i class="fa-solid fa-xmark"></i>
                     </span>

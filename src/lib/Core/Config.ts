@@ -6,7 +6,7 @@ import type { TObject } from '../Core/Type';
 // ---- Application
 import Theme from '../Components/Menu/Theme.svelte';
 import Todo from '../Components/Todo.svelte';
-import Customer from '../Components/Customer/Page.svelte';
+import Customer from '../Components/Customer/Pages.svelte';
 
 // ---- Interface TS
 interface MenuItem {

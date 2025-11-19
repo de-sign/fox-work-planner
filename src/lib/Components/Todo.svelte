@@ -5,8 +5,7 @@
 
     /* ---- Component */
     let {
-        App_openMenu,
-        App_goToPage
+        App
     } = $props();
 </script>
 
@@ -20,7 +19,7 @@
                     <img class="bulma-icon" src={iFoxLogo} alt="Fox Logo" />
                     Work Planner
                 </h1>
-                <h2 class="bulma-subtitle">Plan your working hours</h2>
+                <h2 class="bulma-subtitle">Plan your working hours #1</h2>
                 <div class="bulma-content">
                     <p>
                         Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -39,7 +38,7 @@
         <nav class="fox-app-page-navbar bulma-section">
             <div class="bulma-container bulma-is-max-tablet">
                 <div class="fox-app-page-navbar-item">
-                    <button class="bulma-button bulma-is-hovered" onclick={App_openMenu} >
+                    <button class="bulma-button bulma-is-hovered" onclick={App.oMenu.open} >
                         <span class="bulma-icon-text">
                             <span class="bulma-icon">
                                 <i class="fa-solid fa-bars"></i>
@@ -49,7 +48,7 @@
                     </button>
                 </div>
                 <div class="fox-app-page-navbar-item">
-                    <button class="bulma-button" onclick="{ () => App_goToPage(2) }">
+                    <button class="bulma-button" onclick="{ () => App.oPage.next() }">
                         <span class="bulma-icon-text">
                             <span>Next</span>
                             <span class="bulma-icon">
@@ -71,7 +70,7 @@
                     <img class="bulma-icon" src={iFoxLogo} alt="Fox Logo" />
                     Work Planner
                 </h1>
-                <h2 class="bulma-subtitle">Plan your working hours</h2>
+                <h2 class="bulma-subtitle">Plan your working hours #2</h2>
                 <div class="bulma-content">
                     <p>
                         Lorem ipsum, dolor sit amet consectetur adipisicing elit.
@@ -90,7 +89,7 @@
         <nav class="fox-app-page-navbar bulma-section">
             <div class="bulma-container bulma-is-max-tablet">
                 <div class="fox-app-page-navbar-item">
-                    <button class="bulma-button bulma-is-hovered" onclick="{ () => App_goToPage(1) }">
+                    <button class="bulma-button bulma-is-hovered" onclick="{ () => App.oPage.previous() }">
                         <span class="bulma-icon-text">
                             <span class="bulma-icon">
                                 <i class="fa-solid fa-chevron-left"></i>
@@ -100,7 +99,7 @@
                     </button>
                 </div>
                 <div class="fox-app-page-navbar-item">
-                    <button class="bulma-button" onclick="{ () => App_goToPage(3) }">
+                    <button class="bulma-button" onclick="{ () => App.oPage.next() }">
                         <span class="bulma-icon-text">
                             <span>Next</span>
                             <span class="bulma-icon">
@@ -122,7 +121,7 @@
                     <img class="bulma-icon" src={iFoxLogo} alt="Fox Logo" />
                     Work Planner
                 </h1>
-                <h2 class="bulma-subtitle">Plan your working hours</h2>
+                <h2 class="bulma-subtitle">Plan your working hours #3</h2>
                 <div class="bulma-content">
                     <p>
                         Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -142,7 +141,7 @@
         <nav class="fox-app-page-navbar bulma-section">
             <div class="bulma-container bulma-is-max-tablet">
                 <div class="fox-app-page-navbar-item">
-                    <button class="bulma-button bulma-is-hovered" onclick="{ () => App_goToPage(2) }">
+                    <button class="bulma-button bulma-is-hovered" onclick="{ () => App.oPage.previous() }">
                         <span class="bulma-icon-text">
                             <span class="bulma-icon">
                                 <i class="fa-solid fa-chevron-left"></i>
