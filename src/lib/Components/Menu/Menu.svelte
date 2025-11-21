@@ -7,9 +7,8 @@
 
     /* ---- Component */
     let {
-        sContentSelected,
-
-        App
+        App,
+        sContentSelected
     } = $props();
 </script>
 
@@ -64,7 +63,6 @@
 </aside>
 
 <style>
-
     .fox-app-menu-background {
         position: absolute;
         top: 0;

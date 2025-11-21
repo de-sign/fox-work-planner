@@ -51,9 +51,6 @@ export const CONFIG = {
     // },
 
     // ---- Application
-    // CONTENT_DEFAULT: 'Planning',
-    CONTENT_DEFAULT: 'Customer',
-
     // -- Menu Item
     MENU_LIST_ITEMS: [
         {
@@ -90,6 +87,8 @@ export const CONFIG = {
     ],
 
     // -- Component Content
+    // CONTENT_DEFAULT: 'Planning',
+    CONTENT_DEFAULT: 'Customer',
     CONTENT_ITEMS: <TObject<TObject>> {
         Planning: {
             oComponent: Todo,
@@ -107,5 +106,6 @@ export const CONFIG = {
             oComponent: Todo,
             nPagesCount: 3
         }
-    }
+    },
+    CONTENT_PAGE_SCROLLTOP_SELECTOR: '.fox-app-page-content'
 }

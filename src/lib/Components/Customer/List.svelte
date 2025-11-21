@@ -4,44 +4,42 @@
     import type { TObject } from '../../Core/Type';
     import { CUSTOMER_FORM_TYPE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
-    import type Customer from '../../Class/Customer.svelte';
+    import Customer from '../../Class/Customer.svelte';
 
     /* ---- Component */
     let {
-        oCustomers,
-
-        App_openMenu,
-        Pages_openView,
-        Pages_openForm
+        App,
+        Pages
     } = $props();
 
-    let aCustomersGrouped = $derived.by( () => {
-        const aCopyCustomer: Customer[] = Object.values(oCustomers),
-            aReturn: TObject[] = [],
-            oLetters: TObject<Customer[]> = {};
-        
-        // Group and Sort
-        aCopyCustomer
-            .sort( (oA, oB) => oA.getMainName().localeCompare(oB.getMainName(), 'fr', { numeric: true }) )
-            .forEach( oCustomer => {
-                let sLetter = oCustomer.oMainContact.sLastName.charAt(0);
-                if( !oLetters[sLetter] ){
-                    oLetters[sLetter] = [];
-                }
-                oLetters[sLetter].push(oCustomer);
-            } );
+    const oCustomers = Customer.getCustomers(),
+        aCustomersGrouped = $derived.by( () => {
+            const aCopyCustomer: Customer[] = Object.values(oCustomers),
+                aReturn: TObject[] = [],
+                oLetters: TObject<Customer[]> = {};
+            
+            // Group and Sort
+            aCopyCustomer
+                .sort( (oA, oB) => oA.getMainName().localeCompare(oB.getMainName(), 'fr', { numeric: true }) )
+                .forEach( oCustomer => {
+                    let sLetter = oCustomer.oMainContact.sLastName.charAt(0);
+                    if( !oLetters[sLetter] ){
+                        oLetters[sLetter] = [];
+                    }
+                    oLetters[sLetter].push(oCustomer);
+                } );
 
-        Object.keys(oLetters)
-            .sort( (sA, sB) => sA.localeCompare(sB, 'fr', { numeric: true }) )
-            .forEach( sLetter => {
-                aReturn.push( {
-                    sLetter,
-                    aCustomers: oLetters[sLetter]
-                } )
-            } );
+            Object.keys(oLetters)
+                .sort( (sA, sB) => sA.localeCompare(sB, 'fr', { numeric: true }) )
+                .forEach( sLetter => {
+                    aReturn.push( {
+                        sLetter,
+                        aCustomers: oLetters[sLetter]
+                    } )
+                } );
 
-        return aReturn;
-    } );
+            return aReturn;
+        } );
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
@@ -68,7 +66,7 @@
                         {#each oGroup.aCustomers as oCustomer}
                             <section class="fox-customer-list bulma-block">
                                 <article class="fox-customer-list-item">
-                                    <button class="bulma-box" onclick={ () => Pages_openView(oCustomer) }>
+                                    <button class="bulma-box" onclick={ () => Pages.oView.open(oCustomer) }>
                                         {#if oCustomer.hasMainKey()}
                                             <span class="bulma-tag bulma-is-info bulma-is-light bulma-icon">
                                                 <i class="fa-solid fa-key"></i>
@@ -86,7 +84,7 @@
                                     <div class="fox-customer-list">
                                         {#each oCustomer.aExtraContacts as oContact}
                                             <article class="fox-customer-list-item">
-                                                <button class="bulma-box"  onclick={ () => Pages_openView(oContact) }>
+                                                <button class="bulma-box"  onclick={ () => Pages.oView.open(oContact) }>
                                                     {#if oContact.bHasKey}
                                                         <span class="bulma-tag bulma-is-info bulma-is-light bulma-icon">
                                                             <i class="fa-solid fa-key"></i>
@@ -122,7 +120,7 @@
     <nav class="fox-app-page-navbar bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
             <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-hovered" onclick={App_openMenu} >
+                <button class="bulma-button bulma-is-hovered" onclick={App.oMenu.open} >
                     <span class="bulma-icon">
                         <i class="fa-solid fa-bars"></i>
                     </span>
@@ -130,7 +128,7 @@
                 </button>
             </div>
             <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-link" onclick="{ () => Pages_openForm(CUSTOMER_FORM_TYPE.NEW_CUSTOMER) }">
+                <button class="bulma-button bulma-is-link" onclick="{ () => Pages.oForm.open(CUSTOMER_FORM_TYPE.NEW_CUSTOMER) }">
                     <span class="bulma-icon">
                         <i class="fa-solid fa-user-plus"></i>
                     </span>

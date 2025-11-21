@@ -2,26 +2,33 @@
     /* ---- Import */
     /* -- Core */
     import type { TObject } from '../../Core/Type';
-    import { CUSTOMER_FORM_TYPE } from '../../Core/Constants';
+    import type { IContactOptions } from '../../Class/Contact.svelte';
+    import { CUSTOMER_FORM_TYPE, CUSTOMER_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
     import Contact from '../../Class/Contact.svelte';
+    import Customer from '../../Class/Customer.svelte';
 
     /* ---- Component */
     let {
-        Pages_validateForm,
-        Pages_closeForm
+        App,
+        Pages
     } = $props();
 
     /* -- Data */
     let oPlaceholder: Contact = Contact.oPlaceholder,
+        oTarget: TObject | undefined = $state({}),
+        sType: string = $state(CUSTOMER_FORM_TYPE.NEW_CUSTOMER),
         sTitle: string = $state('Default Title'),
         oData: TObject = $state({}),
         oError: TObject = $state({});
 
-    export function setForOpen(sType: string, oTarget ?: TObject){
+    export function open(sFormType: string, oFormTarget ?: TObject): void {
 
+        sType = sFormType;
+        oTarget = oFormTarget;
+        
         // Title
-        switch(sType){
+        switch(sFormType){
             case CUSTOMER_FORM_TYPE.NEW_CUSTOMER:
                 sTitle = 'Ajoute un nouveau client';
                 break;
@@ -33,34 +40,22 @@
                 break;
         }
 
-        // Data
-        oData = oTarget ? oTarget.clone() : { aPhoneNumbers: [null] };
-
-        // Error
+        // Data & Error
+        oData = oTarget && oTarget.oContact ? oTarget.oContact.clone() : { aPhoneNumbers: [null] };
         oError = { aPhoneNumbers: [] };
+
+        App.oPage.open(CUSTOMER_PAGE.FORM, true);
     }
 
-    function addPhoneNumber() {
+    function addPhoneNumber(): void {
         oData.aPhoneNumbers.push(null);
     }
 
-    function removePhoneNumber(nIndex: number) {
+    function removePhoneNumber(nIndex: number): void {
         oData.aPhoneNumbers.splice(nIndex, 1);
     }
 
     /* -- Form */
-    /* Contact - Instance Properties
-        private _nId: number = 0;
-        public sFirstName: string = '';
-        public sLastName: string = '';
-        public sAddress: string = '';
-        public sAddressSupplement: string | undefined;
-        public sPostalCode: string = '';
-        public sCity: string = '';
-        public aPhoneNumbers: string[] = [];
-        public sInformations: string | undefined;
-        public bHasKey: boolean = false;
-    */
     const
         // Check
         fCheckText = (sValue: string) => {
@@ -129,7 +124,7 @@
             }
         };
 
-    function check() {
+    function check(): boolean {
 
         let bError: boolean = false;
         oError = {};
@@ -156,7 +151,7 @@
         return !bError;
     }
 
-    function transform() {
+    function transform(): TObject {
         
         const oReturn: TObject = {};
         for( let sField in oFields ){
@@ -178,10 +173,40 @@
         return oReturn;
     }
 
-    function validate() {
+    function validate(): void {
         if( check() ){
-            const oResult = transform();
-            Pages_validateForm(oResult);
+            const oValideData = <IContactOptions>transform();
+            
+            let oWillView: Customer | Contact | null = null,
+                oNewContact: Contact;
+            
+            switch( sType ){
+                case CUSTOMER_FORM_TYPE.NEW_CUSTOMER:
+                    oNewContact = new Contact(oValideData);
+                    oWillView = new Customer( { nMainContact: oNewContact.nId } );
+                    break;
+
+                case CUSTOMER_FORM_TYPE.NEW_CONTACT:
+                    oNewContact = new Contact(oValideData);
+                    oTarget?.oCustomer.addExtraContact(oNewContact);
+                    oWillView = oNewContact;
+                    break;
+
+                case CUSTOMER_FORM_TYPE.MODIFY_CONTACT:
+                    oTarget?.oContact.update(oValideData);
+                    // If Contact modified is main contact of customer
+                    if( oTarget?.oCustomer.oMainContact == oTarget?.oContact ){
+                        // Then open Customer
+                        oWillView = oTarget?.oCustomer;
+                    } else {
+                        // Else open extra Contact
+                        oWillView = oTarget?.oContact;
+                    }
+                    break;
+            }
+
+            App.oPage.back();
+            Pages.oView?.open(oWillView);
         }
     }
 
@@ -345,7 +370,7 @@
     <nav class="fox-app-page-navbar bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
             <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-hovered" onclick={Pages_closeForm} >
+                <button class="bulma-button bulma-is-hovered" onclick={App.oPage.back} >
                     <span class="bulma-icon">
                         <i class="fa-solid fa-xmark"></i>
                     </span>

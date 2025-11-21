@@ -1,36 +1,43 @@
 <script lang="ts">
     /* ---- Import */
     /* -- Core */
-    import { CUSTOMER_FORM_TYPE } from '../../Core/Constants';
+    import { CUSTOMER_FORM_TYPE, CUSTOMER_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
     import Customer from '../../Class/Customer.svelte';
+    import Contact from '../../Class/Contact.svelte';
 
     /* ---- Component */
     let {
-        oTarget,
-
-        Pages_openView,
-        Pages_deleteView,
-        Pages_closeView,
-        Pages_openForm
+        App,
+        Pages
     } = $props();
 
-    const bIsCustomerView = $derived( oTarget instanceof Customer ),
-        oCustomerView = $derived( bIsCustomerView ? oTarget : oTarget.oIsExtraOf ),
-        oContactView = $derived( bIsCustomerView ? oTarget.oMainContact : oTarget ),
+    let oTarget: any = $state(Customer.oPlaceholder),
+        bIsCustomerView: boolean = $derived( oTarget instanceof Customer ),
+        oCustomerView: Customer = $derived( bIsCustomerView ? oTarget : oTarget.oIsExtraOf ),
+        oContactView: Contact = $derived( bIsCustomerView ? oTarget.oMainContact : oTarget ),
         oFormEdit = $derived( { oCustomer: oCustomerView, oContact: oContactView } );
 
-    /* ---- Modal */
-    let hModal: HTMLElement | null = $state(null);
-    function openModal() {
-        hModal?.classList.add('bulma-is-active');
+    export function open(oNewTarget: Customer | Contact) {
+        oTarget = oNewTarget;
+        App.oPage.open(CUSTOMER_PAGE.VIEW, true);
     }
 
-    function closeModal(bConfirm = false) {
-        if( bConfirm ){
-            Pages_deleteView();
-        }
-        hModal?.classList.remove('bulma-is-active');
+    /* ---- Modal */
+    let bOpenModal: boolean = $state(false);
+    function openModal(): void {
+        bOpenModal = true;
+    }
+
+    function closeModal(): void {
+        bOpenModal = false;
+    }
+
+    function remove(): void {
+        closeModal();
+        oTarget.destroy();
+        oTarget = Customer.oPlaceholder;
+        App.oPage.back();
     }
 
     /* ---- Debug */
@@ -39,19 +46,6 @@
         // $inspect(oFormEdit).with(console.trace);
         // $inspect(oContactView).with(console.trace);
     }
-
-    /* Contact - Instance Properties
-        private _nId: number = 0;
-        public sFirstName: string = '';
-        public sLastName: string = '';
-        public sAddress: string = '';
-        public sAddressSupplement: string | undefined;
-        public sPostalCode: string = '';
-        public sCity: string = '';
-        public aPhoneNumbers: string[] = [];
-        public sInformations: string | undefined;
-        public bHasKey: boolean = false;
-    */
 </script>
 
 <section class="fox-app-page">
@@ -137,7 +131,7 @@
                     </div>
                     {#each oCustomerView.aExtraContacts as oContact}
                         <article class="fox-customer-list-item">
-                            <button class="bulma-box" onclick={ () => Pages_openView(oContact, true) }>
+                            <button class="bulma-box" onclick={ () => open(oContact) }>
                                 {#if oContact.bHasKey}
                                     <span class="bulma-tag bulma-is-info bulma-is-light bulma-icon">
                                         <i class="fa-solid fa-key"></i>
@@ -164,7 +158,7 @@
                         </div>
                     {/each}
                     <div class="bulma-has-text-right bulma-mt-5">
-                        <button class="bulma-button bulma-is-hovered" onclick="{ () => Pages_openForm(CUSTOMER_FORM_TYPE.NEW_CONTACT, { oCustomer: oCustomerView }) }">
+                        <button class="bulma-button bulma-is-hovered" onclick="{ () => Pages.oForm.open(CUSTOMER_FORM_TYPE.NEW_CONTACT, { oCustomer: oCustomerView }) }">
                             <span class="bulma-icon">
                                 <i class="fa-solid fa-user-plus"></i>
                             </span>
@@ -176,7 +170,7 @@
                         <span>Client principal</span>
                     </div>
                     <article class="fox-customer-list-item">
-                        <button class="bulma-box" onclick={ () => Pages_openView(oCustomerView, true) }>
+                        <button class="bulma-box" onclick={ () => open(oCustomerView) }>
                             {#if oCustomerView.hasMainKey()}
                                 <span class="bulma-tag bulma-is-info bulma-is-light bulma-icon">
                                     <i class="fa-solid fa-key"></i>
@@ -200,7 +194,7 @@
     <nav class="fox-app-page-navbar bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
             <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-hovered" onclick={Pages_closeView} >
+                <button class="bulma-button bulma-is-hovered" onclick={App.oPage.back} >
                     <span class="bulma-icon">
                         <i class="fa-solid fa-chevron-left"></i>
                     </span>
@@ -208,7 +202,7 @@
                 </button>
             </div>
             <div class="fox-app-page-navbar-item">
-                <button class="bulma-button" onclick="{ () => Pages_openForm(CUSTOMER_FORM_TYPE.MODIFY_CONTACT, oFormEdit) }">
+                <button class="bulma-button" onclick="{ () => Pages.oForm.open(CUSTOMER_FORM_TYPE.MODIFY_CONTACT, oFormEdit) }">
                     <span class="bulma-icon">
                         <i class="fa-solid fa-user-pen"></i>
                     </span>
@@ -219,7 +213,7 @@
     </nav>
 
     <!-- Modal -->
-    <aside class="bulma-modal bulma-is-justify-content-flex-end" bind:this={hModal} >
+    <aside class="bulma-modal bulma-is-justify-content-flex-end { bOpenModal ? 'bulma-is-active' : '' }" >
         <div class="bulma-modal-background"></div>
         <div class="bulma-modal-content">
             <div class="bulma-box bulma-p-5">
@@ -230,13 +224,13 @@
                     {/if}&nbsp;?
                 </p>
                 <div class="bulma-field bulma-is-grouped bulma-is-grouped-right">
-                    <button class="bulma-button" onclick={ () => closeModal(false) }>
+                    <button class="bulma-button" onclick={closeModal}>
                         <span class="bulma-icon">
                             <i class="fa-solid fa-xmark"></i>
                         </span>
                         <span>Annuler</span>
                     </button>
-                    <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={ () => closeModal(true) }>
+                    <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={remove}>
                         <span class="bulma-icon">
                             <i class="fa-solid fa-user-xmark"></i>
                         </span>

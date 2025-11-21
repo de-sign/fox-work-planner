@@ -15,7 +15,7 @@
         sContentSelected: string = $state(CONFIG.CONTENT_DEFAULT),
         oContentSelected: TObject = $derived(CONFIG.CONTENT_ITEMS[sContentSelected]);
 
-    function changeContent(sValue: string) {
+    function changeContent(sValue: string): void {
         if( sContentSelected != sValue ){
             sContentSelected = sValue;
             closeMenu();
@@ -39,13 +39,13 @@
         nPageSelected: number = $state(1),
         nMaxPage: number = $derived(oContentSelected.nPagesCount);
 
-    function openPage(nValue: number, bScrollTop: boolean = false) {
+    function openPage(nValue: number, bScrollTop: boolean = false): void {
         nValue = Math.min( Math.max(1, nValue), nMaxPage );
         if( nPageSelected != nValue ){
             aPagesHistory.push(nPageSelected);
             nPageSelected = nValue;
             if( bScrollTop && hContent ){
-                hContent.querySelectorAll('.fox-app-page-content')[nPageSelected - 1]?.scrollTo(0, 0);
+                hContent.querySelectorAll( CONFIG.CONTENT_PAGE_SCROLLTOP_SELECTOR )[nPageSelected - 1]?.scrollTo(0, 0);
             }
         }
     }
@@ -71,7 +71,7 @@
         aPagesHistory = [];
     }
 
-    /* ---- App Wrapper */
+    /* ---- App Encapsulation */
     const oApp = {
         oContent: {
             change: changeContent
@@ -101,9 +101,7 @@
     <main class="fox-app-content">
         <div bind:this="{hContent}" class="fox-app-pages fox-app--has-{nMaxPage}-pages fox-app--is-page-{nPageSelected}">
             <!-- Selected tab content -->
-            {#key oContentSelected.oComponent}
-                <oContentSelected.oComponent App={oApp} />
-            {/key}
+            <oContentSelected.oComponent App={oApp} />
         </div>
     </main>
 </div>
