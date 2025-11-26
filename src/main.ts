@@ -5,17 +5,24 @@ import * as Svelte from 'svelte';
 
 import Contact from './lib/Class/Contact.svelte';
 import Customer from './lib/Class/Customer.svelte';
+import Schedule from './lib/Class/Schedule.svelte';
 import App from './lib/Components/App.svelte';
 
 // -- Style
 import 'bulma/css/versions/bulma-prefixed.css';
 import './assets/style/App.scss';
 
+/* ---- App */
+// -- Patch System
+import Patch from './lib/Core/Patch';
+Patch.apply();
+
 // -- Restore Data 
 Contact.restore();
 Customer.restore();
+Schedule.restore();
 
-/* ---- Build App */
+/* -- Build App */
 const oApp = Svelte.mount(App, {
     target: document.body!,
 } );
@@ -29,7 +36,8 @@ if( CONFIG.DEBUG_WINDOW_PROPERTY ) {
             CONFIG,
             Store,
             Contact,
-            Customer
+            Customer,
+            Schedule
         },
         Svelte: {
             Svelte,

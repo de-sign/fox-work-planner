@@ -102,3 +102,13 @@ Menu qui permet voir les **heures de travail** par **client** avec le revenu que
 
 ##### Actions
 - Modifier le mois affiché
+
+---
+
+### TODO
+
+##### Besoins
+- WIP
+
+##### Idées
+- Utiliser l'API History pour la navigation entre Component et Page

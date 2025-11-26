@@ -15,12 +15,16 @@
         sContentSelected: string = $state(CONFIG.CONTENT_DEFAULT),
         oContentSelected: TObject = $derived(CONFIG.CONTENT_ITEMS[sContentSelected]);
 
-    function changeContent(sValue: string): void {
+    function changeContent(sValue: string, nPage?: number): void {
         if( sContentSelected != sValue ){
             sContentSelected = sValue;
-            closeMenu();
-            resetPages();
+            if( nPage == undefined ){
+                resetPages();
+            } else {
+                openPage(nPage);
+            }
         }
+        closeMenu();
     }
 
     /* -- Menu Opening */

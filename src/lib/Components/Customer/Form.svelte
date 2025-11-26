@@ -3,8 +3,11 @@
     /* -- Core */
     import type { TObject } from '../../Core/Type';
     import type { IContactOptions } from '../../Class/Contact.svelte';
+
     import { CUSTOMER_FORM_TYPE, CUSTOMER_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
+    import * as FORM from '../../Core/Form';
+
     import Contact from '../../Class/Contact.svelte';
     import Customer from '../../Class/Customer.svelte';
 
@@ -18,9 +21,9 @@
     let oPlaceholder: Contact = Contact.oPlaceholder,
         oTarget: TObject | undefined = $state({}),
         sType: string = $state(CUSTOMER_FORM_TYPE.NEW_CUSTOMER),
-        sTitle: string = $state('Default Title'),
-        oData: TObject = $state({}),
-        oError: TObject = $state({});
+        sTitle: string = $state('Ajoute un nouveau client'),
+        oData: TObject = $state({ aPhoneNumbers: [null] }),
+        oError: TObject = $state({ aPhoneNumbers: [] });
 
     export function open(sFormType: string, oFormTarget ?: TObject): void {
 
@@ -56,126 +59,49 @@
     }
 
     /* -- Form */
-    const
-        // Check
-        fCheckText = (sValue: string) => {
-            return sValue && sValue.trim();
+    const oFields: TObject<TObject> = {
+        sFirstName: {
+            fCheck: FORM.isText,
+            fTransform: FORM.toCapitalize
         },
-        // Transform
-        fUppercase = (sValue: string) => {
-            return sValue?.trim().toUpperCase();
+        sLastName: {
+            fCheck: FORM.isText,
+            fTransform: FORM.toUpperCase
         },
-        fCapitalize = (sValue: string) => {
-            return sValue ? (sValue?.trim().charAt(0).toUpperCase() + sValue?.trim().slice(1) ) : null;
+        sAddress: {
+            fCheck: FORM.isText,
+            fTransform: FORM.toCapitalize
         },
-        fTrim = (sValue: string) => {
-            return sValue?.trim();
+        sAddressSupplement: {
+            fCheck: null,
+            fTransform: FORM.toCapitalize
         },
-        // Fields
-        oFields: TObject<TObject> = {
-            sFirstName: {
-                fCheck: fCheckText,
-                fTransform: fCapitalize
-            },
-            sLastName: {
-                fCheck: fCheckText,
-                fTransform: fUppercase
-            },
-            sAddress: {
-                fCheck: fCheckText,
-                fTransform: fCapitalize
-            },
-            sAddressSupplement: {
-                fCheck: null,
-                fTransform: fCapitalize
-            },
-            sPostalCode: {
-                fCheck: (sValue: string) => {
-                    const rPostaCode = new RegExp(/^(?:0[1-9]|[1-8]\d|9[0-8])\d{3}$/i);
-                    return fCheckText(sValue) && rPostaCode.test( sValue.trim() );
-                },
-                fTransform: fTrim
-            },
-            sCity: {
-                fCheck: fCheckText,
-                fTransform: fUppercase
-            },
-            aPhoneNumbers: {
-                bIsArrayData: true,
-                fCheck: (sValue: string) => {
-                    const rPhoneNumber = new RegExp(/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/i);
-                    return fCheckText(sValue) && rPhoneNumber.test( sValue.trim() );
-                },
-                fTransform: (sValue: string) => {
-                    return sValue
-                        .replaceAll(/[\s.-]/g, '') // Delete white space, dot or minus
-                        .replace(/^(?:(?:\+|00)33|0)([1-9])/i, '+33$1 ') // Add prefix
-                        .replace(/(\d{2})/g, '$1 ')
-                        .trim();
-                }
-            },
-            sInformations: {
-                fCheck: null,
-                fTransform: fCapitalize
-            },
-            bHasKey: {
-                fCheck: null,
-                fTransform: null
-            }
-        };
-
-    function check(): boolean {
-
-        let bError: boolean = false;
-        oError = {};
-
-        for( let sField in oFields ){
-            const oField = oFields[sField];
-            if( oField.fCheck ){
-                if( oField.bIsArrayData ){
-                    oError[sField] = [];
-                    oData[sField].forEach( (sValue: string, nIndex: number) => {
-                        if( !oField.fCheck(sValue) ){
-                            oError[sField][nIndex] = true;
-                            bError = true;
-                        }
-                    } );
-                }
-                else if( !oField.fCheck(oData[sField]) ){
-                    oError[sField] = true;
-                    bError = true;
-                }
-            }
+        sPostalCode: {
+            fCheck: FORM.isPostalCode,
+            fTransform: FORM.toPostalCode
+        },
+        sCity: {
+            fCheck: FORM.isText,
+            fTransform: FORM.toUpperCase
+        },
+        aPhoneNumbers: {
+            bIsArrayData: true,
+            fCheck: FORM.isPhoneNumber,
+            fTransform: FORM.toPhoneNumber
+        },
+        sInformations: {
+            fCheck: null,
+            fTransform: FORM.toCapitalize
+        },
+        bHasKey: {
+            fCheck: FORM.isDefined,
+            fTransform: null
         }
-
-        return !bError;
-    }
-
-    function transform(): TObject {
-        
-        const oReturn: TObject = {};
-        for( let sField in oFields ){
-            const oField = oFields[sField];
-            if( oField.fTransform ){
-                if( oField.bIsArrayData ){
-                    oReturn[sField] = [];
-                    oData[sField].forEach( (sValue: string) => {
-                        oReturn[sField].push( oField.fTransform(sValue) );
-                    } );
-                } else {
-                    oReturn[sField] = oField.fTransform( oData[sField] );
-                }
-            } else {
-                oReturn[sField] = oData[sField];
-            }
-        }
-
-        return oReturn;
-    }
+    };
 
     function validate(): void {
-        if( check() ){
-            const oValideData = <IContactOptions>transform();
+        if( FORM.checkData(oData, oFields, oError) ){
+            const oValideData = <IContactOptions>FORM.transformData(oData, oFields);
             
             let oWillView: Customer | Contact | null = null,
                 oNewContact: Contact;
@@ -183,7 +109,7 @@
             switch( sType ){
                 case CUSTOMER_FORM_TYPE.NEW_CUSTOMER:
                     oNewContact = new Contact(oValideData);
-                    oWillView = new Customer( { nMainContact: oNewContact.nId } );
+                    oWillView = new Customer( { sMainContact: oNewContact.sUUID } );
                     break;
 
                 case CUSTOMER_FORM_TYPE.NEW_CONTACT:
@@ -212,7 +138,7 @@
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
-        // $inspect(sType).with(console.trace);
+        // $inspect(oError).with(console.trace);
         // $inspect(sTitle).with(console.trace);
     }
 </script>

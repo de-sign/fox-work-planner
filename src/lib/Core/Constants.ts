@@ -7,6 +7,9 @@ export enum EVENT_NAME {
     STORE_UPDATE = 'StoreUpdate',
     STORE_REMOVE = 'StoreRemove',
 
+    // -- Patch
+    PATCH_APPLY = 'PatchApply',
+
     // --- Components
     // -- Menu
     MENU_OPEN = 'MenuOpen',
@@ -15,9 +18,11 @@ export enum EVENT_NAME {
 
 /* ----- PROPERTY_NAME */
 export enum PROPERTY_NAME {
+    APP_LAST_PATCH = 'patch',
     APP_DARK_MODE = 'dark-mode',
     APP_DATA_CUSTOMER = 'customers',
-    APP_DATA_CONTACT = 'contacts'
+    APP_DATA_CONTACT = 'contacts',
+    APP_DATA_SCHEDULE = 'schedules'
 }
 
 /* ----- CUSTOMER_FORM */
@@ -31,4 +36,22 @@ export enum CUSTOMER_FORM_TYPE {
     NEW_CUSTOMER = 'NewCustomer',
     NEW_CONTACT = 'NewContact',
     MODIFY_CONTACT = 'ModifyContact'
+}
+
+/* ----- SCHEDULE_FORM */
+export enum SCHEDULE_PAGE {
+    CALENDAR = 1,
+    VIEW,
+    FORM
+}
+
+export enum SCHEDULE_FORM_TYPE {
+    NEW_SCHEDULE = 'NewSchedule',
+    MODIFY_SCHEDULE = 'ModifySchedule'
+}
+
+export enum SCHEDULE_WEEK_TYPE {
+    EVERY_WEEK = 0,
+    EVEN_WEEK,
+    ODD_WEEK
 }

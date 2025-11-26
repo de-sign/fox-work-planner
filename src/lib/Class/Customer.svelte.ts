@@ -10,8 +10,8 @@ import Contact from './Contact.svelte';
 // import { CONFIG } from '../Core/Config';
 const CONFIG = {
     CUSTOMER_PLACHOLDER: {
-        _nId: 0,
-        nMainContact: 0
+        _sUUID: '',
+        sMainContact: ''
     }
 };
 
@@ -20,9 +20,9 @@ const CONFIG = {
  * Customer options supplied to constructor.
  */
 export interface ICustomerOptions {
-    _nId?: number;
-    nMainContact: number;
-    aExtraContacts?: number[];
+    _sUUID?: string;
+    sMainContact: string;
+    aExtraContacts?: string[];
 }
 
 
@@ -36,61 +36,62 @@ const _oInstances: TObject<Customer> = $state({});
 class Customer {
 
     /** Manager properties.  **/
-    private static _nUid: number = 0;
     private static _bRestored: boolean = false;
     public static oPlaceholder: Customer;
 
     /** Manager Methods */
     public static store(): void {
         if( Customer._bRestored ){
-            Store.set(PROPERTY_NAME.APP_DATA_CUSTOMER, {
-                _aInstances: Object.values(_oInstances).map( oCustomer => oCustomer.serialize() ),
-                _nUid: Customer._nUid
-            } );
+            Store.set(
+                PROPERTY_NAME.APP_DATA_CUSTOMER,
+                Object.values(_oInstances).map( oCustomer => oCustomer.serialize() )
+            );
         }
     }
 
     public static restore(): void {
         if( !Customer._bRestored ){
 
-            const oManagerData = Store.get(PROPERTY_NAME.APP_DATA_CUSTOMER);
-            if( oManagerData ){
-                Customer._nUid = oManagerData._nUid;
-                oManagerData._aInstances.forEach( (oCustomerData: ICustomerOptions) => {
-                    new Customer(oCustomerData);
-                } );
-            }
+            const aCustomersData = Store.get(PROPERTY_NAME.APP_DATA_CUSTOMER);
+            aCustomersData?.forEach( (oCustomerData: ICustomerOptions) => {
+                new Customer(oCustomerData);
+            } );
 
             Customer.oPlaceholder = new Customer( CONFIG.CUSTOMER_PLACHOLDER );
             Customer._bRestored = true;
         }
     }
     
-    public static getCustomers(): TObject<Customer> {
+    public static getAll(): TObject<Customer> {
         return _oInstances;
     }
     
+    public static hasCustomers(): boolean {
+        return !!Object.getOwnPropertyNames(_oInstances).length;
+    }
+
+    public static get(sUUID: string): Customer {
+        return _oInstances[sUUID] || Customer.oPlaceholder;
+    }
+    
     /* Instance Properties */
-    private _nId: number = 0;
+    private _sUUID: string = '';
     public oMainContact: Contact;
     public aExtraContacts: Contact[] = $state([]);
 
     /** Constructor */
     public constructor(oData: ICustomerOptions) {
 
-        this._nId = oData._nId != null ? oData._nId : ++Customer._nUid;
-        if( this._nId ){
-            _oInstances[this._nId] = this;
+        this._sUUID = oData._sUUID != null ? oData._sUUID : crypto.randomUUID();
+        if( this._sUUID ){
+            _oInstances[this._sUUID] = this;
         }
         
-        const oContacts = Contact.getContacts(),
-            oMainContact = oContacts[oData.nMainContact] || Contact.oPlaceholder;
+        this.oMainContact = $state( Contact.get(oData.sMainContact) );
+        this.oMainContact.oIsCustomer = this;
 
-        this.oMainContact = $state(oMainContact);
-        oMainContact.oIsCustomer = this;
-
-        oData.aExtraContacts?.forEach( nId => {
-            const oExtraContact = oContacts[nId];
+        oData.aExtraContacts?.forEach( sUUID => {
+            const oExtraContact = Contact.get(sUUID);
             this.aExtraContacts.push(oExtraContact);
             oExtraContact.oIsExtraOf = this;
         } );
@@ -104,16 +105,16 @@ class Customer {
         this.aExtraContacts.map( oContact => oContact.destroy() );
 
         /* Destroy Instance */
-        delete _oInstances[this._nId];
+        delete _oInstances[this._sUUID];
         Customer.store();
     }
 
     /** Instance Methods */
     public serialize(): ICustomerOptions {
         return {
-            _nId: this._nId,
-            nMainContact: this.oMainContact.nId,
-            aExtraContacts: this.aExtraContacts.map( oContact => oContact.nId )
+            _sUUID: this._sUUID,
+            sMainContact: this.oMainContact.sUUID,
+            aExtraContacts: this.aExtraContacts.map( oContact => oContact.sUUID )
         };
     }
 
@@ -129,8 +130,16 @@ class Customer {
         Customer.store();
     }
 
-    public getMainName(): string {
-        return this.oMainContact.getName();
+    public get sUUID(): string {
+        return this._sUUID;
+    }
+
+    public get sName(): string {
+        return this.oMainContact.sName;
+    }
+
+    public get sShortName(): string {
+        return this.oMainContact.sShortName;
     }
 
     public hasMainKey(): boolean {

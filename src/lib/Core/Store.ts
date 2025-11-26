@@ -8,7 +8,7 @@ import EventEmitter from 'eventemitter3';
 // import { CONFIG } from './Config';
 const CONFIG = {
     STORE_STORABLE_KEYS: Object.values(PROPERTY_NAME),
-    STORE_PREFIX_KEY: 'fox-app-',
+    STORE_PREFIX_KEY: 'fox-app-'
 };
 
 

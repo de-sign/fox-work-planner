@@ -1,0 +1,104 @@
+// Imports
+import type { TObject, TListeners } from './Type';
+import { EVENT_NAME, PROPERTY_NAME } from './Constants';
+import EventEmitter from 'eventemitter3';
+
+// ### ERROR - Loop independancies issue
+// import { CONFIG } from './Config';
+import Store from './Store';
+
+// Key Format -> YYYYMMDDHHMM
+const CONFIG = {
+    PATCH_LIST: {
+        // Replace nId by sUUID for Contact and Customer in Store
+        202511261830: () => {
+            const oMapContact: TObject = {};
+
+            // Contact
+            const aContactsData = Store.get(PROPERTY_NAME.APP_DATA_CONTACT);
+            if( aContactsData && aContactsData._aInstances ){
+                aContactsData._aInstances.forEach( (oContactData: TObject) => {
+                    oContactData._sUUID = crypto.randomUUID();
+                    oMapContact[ oContactData._nId ] = oContactData._sUUID;
+                    delete oContactData._nId;
+                } );
+
+                // console.log('202511261830 -> Contact', aContactsData._aInstances);
+                Store.set(PROPERTY_NAME.APP_DATA_CONTACT, aContactsData._aInstances);
+            }
+
+            // Customer
+            const aCustomersData = Store.get(PROPERTY_NAME.APP_DATA_CUSTOMER);
+            if( aCustomersData && aCustomersData._aInstances ){
+                aCustomersData._aInstances.forEach( (oCustomerData: TObject) => {
+                    oCustomerData._sUUID = crypto.randomUUID();
+                    oCustomerData.nMainContact = oMapContact[oCustomerData.nMainContact];
+                    oCustomerData.aExtraContacts = oCustomerData.aExtraContacts.map( (nExtra: any) => oMapContact[nExtra] );
+                    delete oCustomerData._nId;
+                } );
+
+                // console.log('202511261830 -> Customer', aCustomersData._aInstances);
+                Store.set(PROPERTY_NAME.APP_DATA_CUSTOMER, aCustomersData._aInstances);
+            }
+        }
+    }
+};
+
+/**
+ * Patch Manager class.
+ * 
+ * @class
+ */
+
+class Patch extends EventEmitter {
+
+    /** Singleton instance. **/
+    private static _oInstance: Patch;
+    /** Data saved by the manager. **/
+    private _oData: TListeners;
+    
+    
+    /** Constructor */
+    private constructor(oPatchs: TListeners) {
+        super();
+        this._oData = oPatchs;
+    }
+
+    /** Instance getter */
+    public static get oInstance(): Patch {
+        if (!Patch._oInstance) {
+            Patch._oInstance = new Patch(CONFIG.PATCH_LIST);
+        }
+
+        return Patch._oInstance;
+    }
+
+    /** Destructor */
+    public destroy(): void {
+        // Remove listeners
+        this.removeAllListeners();
+    }
+
+    /** Apply all patch who not patched */
+    public apply(): void {
+        const nLastVersion = Store.get(PROPERTY_NAME.APP_LAST_PATCH) || 0,
+            aPatchApply: number[] = [];
+
+        for( let sVersion in this._oData ){
+            const fPatch = this._oData[sVersion],
+                nVersion = parseInt(sVersion) ;
+
+            if( nLastVersion < nVersion ){
+                fPatch();
+                aPatchApply.push(nVersion);
+            }
+        }
+
+        if( aPatchApply.length ){
+            // Store.set(PROPERTY_NAME.APP_LAST_PATCH, aPatchApply[aPatchApply.length - 1] );
+            this.emit(EVENT_NAME.PATCH_APPLY, aPatchApply); // Trigger
+        }
+    }
+}
+
+export default Patch.oInstance;

@@ -12,7 +12,7 @@
         Pages
     } = $props();
 
-    const oCustomers = Customer.getCustomers(),
+    const oCustomers = Customer.getAll(),
         aCustomersGrouped = $derived.by( () => {
             const aCopyCustomer: Customer[] = Object.values(oCustomers),
                 aReturn: TObject[] = [],
@@ -20,7 +20,7 @@
             
             // Group and Sort
             aCopyCustomer
-                .sort( (oA, oB) => oA.getMainName().localeCompare(oB.getMainName(), 'fr', { numeric: true }) )
+                .sort( (oA, oB) => oA.sName.localeCompare(oB.sName, 'fr', { numeric: true }) )
                 .forEach( oCustomer => {
                     let sLetter = oCustomer.oMainContact.sLastName.charAt(0);
                     if( !oLetters[sLetter] ){
@@ -76,7 +76,7 @@
                                             <span class="bulma-icon">
                                                 <i class="fa-solid fa-user-tie fa-xl"></i>
                                             </span>
-                                            <span class="bulma-ml-3">{oCustomer.getMainName()}</span>
+                                            <span class="bulma-ml-3">{oCustomer.sName}</span>
                                         </span>
                                     </button>
                                 </article>
@@ -94,7 +94,7 @@
                                                         <span class="bulma-icon">
                                                             <i class="fa-solid fa-user-group fa-lg"></i>
                                                         </span>
-                                                        <span class="bulma-mx-2">{oContact.getName()}</span>
+                                                        <span class="bulma-mx-2">{oContact.sName}</span>
                                                     </span>
                                                 </button>
                                             </article>
@@ -107,10 +107,12 @@
                 {/each}
             {:else}
                 <div class="bulma-notification bulma-has-text-centered">
-                    <span class="bulma-icon bulma-is-large bulma-mb-3">
-                        <i class="fa-solid fa-user-slash fa-2x"></i>
+                    <span class="bulma-icon-text">
+                        <span class="bulma-icon">
+                            <i class="fa-solid fa-user-slash"></i>
+                        </span>
+                        <span>Aucun client trouvé</span>
                     </span>
-                    <p class=" bulma-block bulma-is-size-5">Aucun client trouvé</p>
                 </div>
             {/if}
         </div>

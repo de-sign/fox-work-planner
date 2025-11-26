@@ -6,7 +6,9 @@ import type { TObject } from '../Core/Type';
 // ---- Application
 import Theme from '../Components/Menu/Theme.svelte';
 import Todo from '../Components/Todo.svelte';
+
 import Customer from '../Components/Customer/Pages.svelte';
+import Schedule from '../Components/Schedule/Pages.svelte';
 
 // ---- Interface TS
 interface MenuItem {
@@ -33,7 +35,7 @@ export const CONFIG = {
 
     // -- Class
     // CONTACT_PLACEHOLDER: {
-    //     _nId: 0,
+    //     _sUUID: 0,
     //     sFirstName: 'Jésabelle',
     //     sLastName: 'FONTAINE',
     //     sAddress: '6 rue Georges Bizet',
@@ -46,8 +48,8 @@ export const CONFIG = {
     // },
 
     // CUSTOMER_PLACHOLDER: {
-    //     _nId: 0,
-    //     nMainContact: 0
+    //     _sUUID: 0,
+    //     sMainContact: 0
     // },
 
     // ---- Application
@@ -88,7 +90,7 @@ export const CONFIG = {
 
     // -- Component Content
     // CONTENT_DEFAULT: 'Planning',
-    CONTENT_DEFAULT: 'Customer',
+    CONTENT_DEFAULT: 'Schedule',
     CONTENT_ITEMS: <TObject<TObject>> {
         Planning: {
             oComponent: Todo,
@@ -103,9 +105,20 @@ export const CONFIG = {
             nPagesCount: 3
         },
         Schedule: {
-            oComponent: Todo,
+            oComponent: Schedule,
             nPagesCount: 3
         }
     },
-    CONTENT_PAGE_SCROLLTOP_SELECTOR: '.fox-app-page-content'
+    CONTENT_PAGE_SCROLLTOP_SELECTOR: '.fox-app-page-content',
+
+    // -- Schedule calendar
+    SCHEDULE_CALENDAR_DAYS: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'],
+    SCHEDULE_CALENDAR_HOUR_START: 8,
+    SCHEDULE_CALENDAR_HOUR_MAX_BY_DAY: 10,
+    SCHEDULE_CALENDAR_HOUR_BREAK: [8, 12, 13, 17],
+    SCHEDULE_CALENDAR_WEEK_TYPE: [
+        { sValue: 'EVERY_WEEK', sText: 'Hebdomadaire', sDescription: 'Toutes les semaines' },
+        { sValue: 'EVEN_WEEK', sText: 'Bimensuel paire', sDescription: 'En semaine paire' },
+        { sValue: 'ODD_WEEK', sText: 'Bimensuel impaire', sDescription: 'En semaine impaire' }
+    ]
 }
