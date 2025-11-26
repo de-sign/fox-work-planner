@@ -32,9 +32,10 @@ const CONFIG = {
             if( aCustomersData && aCustomersData._aInstances ){
                 aCustomersData._aInstances.forEach( (oCustomerData: TObject) => {
                     oCustomerData._sUUID = crypto.randomUUID();
-                    oCustomerData.nMainContact = oMapContact[oCustomerData.nMainContact];
+                    oCustomerData.sMainContact = oMapContact[oCustomerData.nMainContact];
                     oCustomerData.aExtraContacts = oCustomerData.aExtraContacts.map( (nExtra: any) => oMapContact[nExtra] );
                     delete oCustomerData._nId;
+                    delete oCustomerData.nMainContact;
                 } );
 
                 // console.log('202511261830 -> Customer', aCustomersData._aInstances);

@@ -94,7 +94,7 @@
             fTransform: FORM.toCapitalize
         },
         bHasKey: {
-            fCheck: FORM.isDefined,
+            fCheck: null,
             fTransform: null
         }
     };
@@ -138,8 +138,8 @@
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
-        // $inspect(oError).with(console.trace);
-        // $inspect(sTitle).with(console.trace);
+        $inspect(oError).with(console.trace);
+        $inspect(oData).with(console.trace);
     }
 </script>
 

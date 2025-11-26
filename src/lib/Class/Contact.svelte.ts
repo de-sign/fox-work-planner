@@ -146,7 +146,7 @@ class Contact {
         this.sCity = oData.sCity;
         this.aPhoneNumbers = oData.aPhoneNumbers;
         this.sInformations = oData.sInformations;
-        this.bHasKey = oData.bHasKey;
+        this.bHasKey = !!oData.bHasKey;
 
         Contact.store();
     }
