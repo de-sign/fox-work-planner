@@ -11,6 +11,10 @@ export function isText(sValue: string): boolean {
     return !!( sValue && sValue.trim() );
 }
 
+export function isNumber(nValue: number): boolean {
+    return !!( nValue && !isNaN(nValue) );
+}
+
 export function isPostalCode(sValue: string): boolean {
     const rPostaCode = new RegExp(/^(?:0[1-9]|[1-8]\d|9[0-8])\s?\d{3}$/i);
     return isText(sValue) && rPostaCode.test( sValue.trim() );

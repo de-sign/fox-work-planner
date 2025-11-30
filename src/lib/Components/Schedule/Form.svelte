@@ -31,6 +31,7 @@
         aWeekTypes = CONFIG.SCHEDULE_CALENDAR_WEEK_TYPE,
         oDefaultData = {
             sCustomer: aCustomers[0]?.sUUID,
+            nPrice: 17.00,
             nDay: 1,
             sWeekType: aWeekTypes[0].sValue,
             sTimeStart: '08:00',
@@ -44,10 +45,10 @@
         // Title
         switch(sFormType){
             case SCHEDULE_FORM_TYPE.NEW_SCHEDULE:
-                sTitle = 'Ajoute une nouvelle heure programmé';
+                sTitle = 'Ajoute une nouvelle heure programmée';
                 break;
             case SCHEDULE_FORM_TYPE.MODIFY_SCHEDULE:
-                sTitle = 'Modifie une heure programmé existante';
+                sTitle = 'Modifie une heure programmée existante';
                 break;
         }
 
@@ -92,6 +93,10 @@
                     FORM.isText(sValue) &&
                     parseInt(oData.sTimeStart.replace(':', '')) < parseInt(sValue.replace(':', ''));
             },
+            fTransform: null
+        },
+        nPrice: {
+            fCheck: FORM.isNumber,
             fTransform: null
         },
         sInformations: {
@@ -311,6 +316,22 @@
                         <i class="bulma-help bulma-has-text-danger">L'heure de fin est obligatoire et doit être supérieur à l'heure de début</i>
                     {/if}
                 </div> -->
+
+                <!-- nPrice -->
+                <div class="bulma-field">
+                    <label class="bulma-label" for="Schedule__nPrice">Tarif horaire</label>
+                    <div class="bulma-field bulma-has-addons">
+                        <div class="bulma-control bulma-is-flex-grow-1">
+                            <input id="Schedule__nPrice" class="bulma-input { oError.sTimeStart ? 'bulma-is-danger' : '' }" bind:value="{oData.nPrice}" type="number" placeholder="{oPlaceholder.nPrice.toFixed(2)}">
+                        </div>
+                        <div class="bulma-control">
+                            <span class="bulma-button bulma-is-static">€</span>
+                        </div>
+                    </div>
+                    {#if oError.nPrice}
+                        <i class="bulma-help bulma-has-text-danger">Ce champ est obligatoire</i>
+                    {/if}
+                </div>
 
                 <!-- sInformations -->
                  <div class="bulma-field">

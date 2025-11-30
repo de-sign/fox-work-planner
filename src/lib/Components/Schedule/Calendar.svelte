@@ -15,8 +15,10 @@
     } = $props();
 
     const bCustomers = Customer.hasCustomers(),
-        oSchedules = Schedule.getAll(),
-        aDays = CONFIG.SCHEDULE_CALENDAR_DAYS.map( sValue => sValue.charAt(0) ),
+        oSchedules = Schedule.getAll();
+
+    /* -- Calendar */
+    const aDays = CONFIG.SCHEDULE_CALENDAR_DAYS.map( sValue => sValue.charAt(0) ),
         nStartHour = CONFIG.SCHEDULE_CALENDAR_HOUR_START,
         nMaxHourForDay = CONFIG.SCHEDULE_CALENDAR_HOUR_MAX_BY_DAY,
         aHours = Array.from(
@@ -99,7 +101,7 @@
 </script>
 
 <!-- Variable CSS -->
-<section class="fox-app-page" style="--fox-calendar-cell-height: {nCellHeight - 1}px">
+<section class="fox-app-page" style="--fox-calendar-cell-height: {nCellHeight}px">
 
     <!-- Page Content -->
     <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -112,23 +114,39 @@
             </div>
 
             {#if bCustomers}
-                <div class="fox-calendar bulma-block bulma-fixed-grid bulma-has-7-cols bulma-mt-6">
+<!-- 
+                <div class="bulma-buttons bulma-has-addons bulma-is-justify-content-flex-end">
+                    <div class="bulma-button bulma-is-link bulma-is-selected" title="Affichage calendrier">
+                        <span class="bulma-icon bulma-is-small">
+                            <i class="fa-solid fa-calendar"></i>
+                        </span>
+                    </div>
+                    <button class="bulma-button bulma-is-hovered" onclick="{ () => Pages.oDisplay.change('list') }" title="Affichage liste">
+                        <span class="bulma-icon bulma-is-small">
+                            <i class="fa-solid fa-list"></i>
+                        </span>
+                    </button>
+                </div>
+-->
+                <div class="fox-calendar bulma-block bulma-fixed-grid bulma-has-7-cols">
                     <div class="bulma-grid bulma-is-gap-0">
-                        <div class="bulma-cell bulma-is-size-7 fox-calendar-hour">
-                            <span>{nStartHour}h</span>
+                        <div class="bulma-cell fox-calendar-header">
+                            <span class="bulma-is-size-7 fox-calendar-hour">{nStartHour}h</span>
+                            <span>D</span>
                         </div>
                         {#each aDays as sDay}
                             <div class="bulma-cell fox-calendar-header">
                                 {sDay}
                             </div>
                         {/each}
-                        <div class="bulma-cell bulma-is-size-7 fox-calendar-hour fox-calendar-is-right">
-                            <span>{nStartHour}h</span>
+                        <div class="bulma-cell fox-calendar-header fox-calendar-is-right">
+                            <span class="bulma-is-size-7 fox-calendar-hour">{nStartHour}h</span>
+                            <span>S</span>
                         </div>
 
                         {#each aHours as nHour}
-                            <div class="bulma-cell bulma-is-size-7 fox-calendar-hour">
-                                <span>{nHour + 1}h</span>
+                            <div class="bulma-cell">
+                                <span class="bulma-is-size-7 fox-calendar-hour">{nHour + 1}h</span>
                             </div>
                             {#each aDays as sDay, nDay}
                                 {#if oSchedulesGrouped[nDay + ':' + nHour] }
@@ -143,7 +161,7 @@
                                                     Pages.oView.open(oSchedule.oTarget);
                                                 } }
                                             >
-                                                {#if oSchedule.oTarget.sWeekType == 'everyWeek'}
+                                                {#if oSchedule.oTarget.sWeekType == 'EVERY_WEEK'}
                                                     {oSchedule.oTarget.sDuration}<br/>
                                                     {oSchedule.oTarget.oCustomer.sShortName}
                                                 {:else}
@@ -170,8 +188,8 @@
                                     <button class="bulma-cell fox-calendar-cell { CONFIG.SCHEDULE_CALENDAR_HOUR_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }" title="Selectionner la cellule" onclick={ oEvent => { oEvent.stopPropagation(); selectCell(nDay, nHour) } }></button>
                                 {/if}
                             {/each}
-                            <div class="bulma-cell bulma-is-size-7 fox-calendar-hour fox-calendar-is-right">
-                                <span>{nHour + 1}h</span>
+                            <div class="bulma-cell fox-calendar-is-right">
+                                <span class="bulma-is-size-7 fox-calendar-hour">{nHour + 1}h</span>
                             </div>
                         {/each}
                     </div>
@@ -246,30 +264,34 @@
         text-align: center;
     }
 
+    .fox-calendar .bulma-cell.fox-calendar-is-right {
+        border-right: none;
+    }
+
     .fox-calendar-header {
         font-weight: bold;
     }
 
-    .fox-calendar-hour {
-        text-align: left !important;
-        color: var(--bulma-text-weak);
-    }
-
-    .fox-calendar-hour > * {
-        display: inline-block;
-        padding-right: calc( var(--bulma-block-spacing) / 2 );
-        background-color: var(--bulma-body-background-color);
-        transform: translateY( calc( var(--fox-calendar-cell-height) / 2) );
+    .fox-calendar-header > * {
         position: relative;
         z-index: 10;
+        color: var(--bulma-border);
     }
 
-    .fox-calendar-hour.fox-calendar-is-right {
-        text-align: right !important;
-        border-right: none !important;
+    .fox-calendar-hour {
+        font-weight: normal;
+        color: var(--bulma-text-weak);
+        padding-right: calc( var(--bulma-block-spacing) / 2 );
+        background-color: var(--bulma-body-background-color);
+        position: absolute;
+        z-index: 10;
+        top: calc( var(--fox-calendar-cell-height) / 2);
+        left: 0;
     }
 
-    .fox-calendar-hour.fox-calendar-is-right > * {
+    .fox-calendar-is-right .fox-calendar-hour {
+        left: auto;
+        right: 0;
         padding: 0 0 0 calc( var(--bulma-block-spacing) / 2 );
     }
 

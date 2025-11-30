@@ -67,8 +67,11 @@
                 <p>Chez {oContactView.sName}</p>
                 <p>Tous les {sDay}s</p>
                 <p>{oWeekType.sDescription}</p>
+            </div>
+            <div class="bulma-block bulma-is-italic">
                 <p>De {oTarget.sTimeStart.replace(':', 'h')} à {oTarget.sTimeEnd.replace(':', 'h')}</p>
                 <p>Durée de {oTarget.sDuration}</p>
+                <p>À {oTarget.sPrice} € de l'heure</p>
             </div>
             {#if oTarget.sInformations}
                 <div class="bulma-block">

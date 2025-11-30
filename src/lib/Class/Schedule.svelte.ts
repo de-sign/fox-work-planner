@@ -17,6 +17,7 @@ const CONFIG = {
         sWeekType: 'EVERY_WEEK',
         sTimeStart: '09:00',
         sTimeEnd: '12:00',
+        nPrice: 17.00,
         sInformations: 'Horae laboris Poupi, amoris mei, fungens ut substitutus.',
     }
 };
@@ -33,6 +34,7 @@ export interface IScheduleOptions {
     sWeekType: string;
     sTimeStart: string;
     sTimeEnd: string;
+    nPrice: number;
     sInformations?: string
 };
 
@@ -89,6 +91,7 @@ class Schedule {
     public sWeekType: string = $state('');
     public sTimeStart: string = $state('');
     public sTimeEnd: string = $state('');
+    public nPrice: number = $state(0.0);
     public sInformations: string | undefined = $state();
 
     public get sUUID() {
@@ -113,6 +116,10 @@ class Schedule {
         const sHour = Math.floor(this.nDuration / 60) + 'h',
             sMin = this.nDuration % 60;
         return sHour + (sMin || '');
+    }
+
+    public get sPrice(): string {
+        return this.nPrice.toFixed(2).replace('.', ',');
     }
 
     /** Constructor */
@@ -141,6 +148,7 @@ class Schedule {
             sWeekType: this.sWeekType,
             sTimeStart: this.sTimeStart,
             sTimeEnd: this.sTimeEnd,
+            nPrice: this.nPrice,
             sInformations: this.sInformations
         };
     }
@@ -152,6 +160,7 @@ class Schedule {
         this.sWeekType = oData.sWeekType;
         this.sTimeStart = oData.sTimeStart;
         this.sTimeEnd = oData.sTimeEnd;
+        this.nPrice = oData.nPrice;
         this.sInformations = oData.sInformations;
 
         Schedule.store();

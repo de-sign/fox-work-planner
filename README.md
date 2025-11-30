@@ -108,7 +108,7 @@ Menu qui permet voir les **heures de travail** par **client** avec le revenu que
 ### TODO
 
 ##### Besoins
-- WIP
+- Ajouter les différentes tailles d'images du logo dans la balise HEAD
 
 ##### Idées
 - Utiliser l'API History pour la navigation entre Component et Page

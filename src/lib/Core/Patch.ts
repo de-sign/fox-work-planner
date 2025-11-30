@@ -41,6 +41,20 @@ const CONFIG = {
                 // console.log('202511261830 -> Customer', aCustomersData._aInstances);
                 Store.set(PROPERTY_NAME.APP_DATA_CUSTOMER, aCustomersData._aInstances);
             }
+        },
+
+        // Add Price propertie 
+        202511292230: () => {
+            // Schedule
+            const aScheduleData = Store.get(PROPERTY_NAME.APP_DATA_SCHEDULE);
+            if( aScheduleData ){
+                aScheduleData.forEach( (oScheduleData: TObject) => {
+                    oScheduleData.nPrice = 17.00;
+                } );
+
+                // console.log('202511292230 -> Schedule', aScheduleData);
+                Store.set(PROPERTY_NAME.APP_DATA_SCHEDULE, aScheduleData);
+            }
         }
     }
 };
@@ -96,7 +110,7 @@ class Patch extends EventEmitter {
         }
 
         if( aPatchApply.length ){
-            // Store.set(PROPERTY_NAME.APP_LAST_PATCH, aPatchApply[aPatchApply.length - 1] );
+            Store.set(PROPERTY_NAME.APP_LAST_PATCH, aPatchApply[aPatchApply.length - 1] );
             this.emit(EVENT_NAME.PATCH_APPLY, aPatchApply); // Trigger
         }
     }

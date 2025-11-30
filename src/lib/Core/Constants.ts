@@ -20,9 +20,12 @@ export enum EVENT_NAME {
 export enum PROPERTY_NAME {
     APP_LAST_PATCH = 'patch',
     APP_DARK_MODE = 'dark-mode',
+
     APP_DATA_CUSTOMER = 'customers',
     APP_DATA_CONTACT = 'contacts',
-    APP_DATA_SCHEDULE = 'schedules'
+    APP_DATA_SCHEDULE = 'schedules',
+
+    APP_SCHEDULE_DISPLAY = 'schedule-display'
 }
 
 /* ----- CUSTOMER_FORM */
