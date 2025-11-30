@@ -63,23 +63,34 @@
                     </span>
                 </h2>
             </div>
-            <div class="bulma-block bulma-is-italic">
-                <p>Chez {oContactView.sName}</p>
+
+            <div class="bulma-block">
                 <p>Tous les {sDay}s</p>
-                <p>{oWeekType.sDescription}</p>
+                <p>Chez {oContactView.sName}</p>
+                <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text bulma-mt-2">
+                    <span class="bulma-icon bulma-is-small">
+                        <i class="fa-solid fa-calendar-week"></i>
+                    </span>
+                    <span>{oWeekType.sDescription}</span>
+                </span>
             </div>
-            <div class="bulma-block bulma-is-italic">
+
+            <div class="bulma-block">
                 <p>De {oTarget.sTimeStart.replace(':', 'h')} à {oTarget.sTimeEnd.replace(':', 'h')}</p>
-                <p>Durée de {oTarget.sDuration}</p>
                 <p>À {oTarget.sPrice} € de l'heure</p>
+                <p class="bulma-is-italic bulma-is-size-7 bulma-m-2">
+                    ⤷ Pour une durée de <u>{oTarget.sDuration}</u>, soit un total de <u>{oTarget.sTotalPrice} €</u>
+                </p>
             </div>
-            {#if oTarget.sInformations}
-                <div class="bulma-block">
+            
+            <div class="bulma-block">
+                {#if oTarget.sInformations}
                     <div class="bulma-content bulma-is-small bulma-mb-2">
                         <blockquote>{oTarget.sInformations}</blockquote>
                     </div>
-                </div>
-            {/if}
+                {/if}
+            </div>
+
             <div class="bulma-field bulma-is-grouped bulma-is-grouped-right">
                 <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={openModal}>
                     <span class="bulma-icon">

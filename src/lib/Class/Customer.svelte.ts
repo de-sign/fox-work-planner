@@ -142,6 +142,10 @@ class Customer {
         return this.oMainContact.sShortName;
     }
 
+    public get sReverseName(): string {
+        return this.oMainContact.sReverseName;
+    }
+
     public hasMainKey(): boolean {
         return this.oMainContact.bHasKey;
     }

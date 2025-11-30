@@ -108,6 +108,7 @@ Menu qui permet voir les **heures de travail** par **client** avec le revenu que
 ### TODO
 
 ##### Besoins
+- Supprimer les Schedules à la suppression d'un Customer
 - Ajouter les différentes tailles d'images du logo dans la balise HEAD
 
 ##### Idées

@@ -159,6 +159,10 @@ class Contact {
         return this.sFirstName.charAt(0) + '. ' + this.sLastName;
     }
 
+    public get sReverseName(): string {
+        return this.sLastName + ' ' + this.sFirstName;
+    }
+
     public getAddress(bAddPhoneNumbers: boolean = true): string[] {
 
         const aResult = [this.sAddress];

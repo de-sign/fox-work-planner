@@ -64,11 +64,13 @@
                             <span>{oGroup.sLetter}</span>
                         </div>
                         {#each oGroup.aCustomers as oCustomer}
+
                             <section class="fox-customer-list bulma-block">
+
                                 <article class="fox-customer-list-item">
                                     <button class="bulma-box" onclick={ () => Pages.oView.open(oCustomer) }>
                                         {#if oCustomer.hasMainKey()}
-                                            <span class="bulma-tag bulma-is-info bulma-is-light bulma-icon">
+                                            <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon">
                                                 <i class="fa-solid fa-key"></i>
                                             </span>
                                         {/if}
@@ -80,13 +82,14 @@
                                         </span>
                                     </button>
                                 </article>
+
                                 {#if oCustomer.aExtraContacts.length}
                                     <div class="fox-customer-list">
                                         {#each oCustomer.aExtraContacts as oContact}
                                             <article class="fox-customer-list-item">
                                                 <button class="bulma-box"  onclick={ () => Pages.oView.open(oContact) }>
                                                     {#if oContact.bHasKey}
-                                                        <span class="bulma-tag bulma-is-info bulma-is-light bulma-icon">
+                                                        <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon">
                                                             <i class="fa-solid fa-key"></i>
                                                         </span>
                                                     {/if}
@@ -101,7 +104,9 @@
                                         {/each}
                                     </div>
                                 {/if}
+
                             </section>
+
                         {/each}
                     </section>
                 {/each}

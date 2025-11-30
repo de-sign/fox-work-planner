@@ -86,7 +86,7 @@
                                 </div>
                             {/if}
                             {#if oContactView.bHasKey}
-                                <span class="bulma-tag bulma-is-info bulma-is-light bulma-icon-text bulma-mb-2">
+                                <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text bulma-mb-2">
                                     <span class="bulma-icon">
                                         <i class="fa-solid fa-key"></i>
                                     </span>
@@ -131,7 +131,7 @@
                         <article class="fox-customer-list-item">
                             <button class="bulma-box" onclick={ () => open(oContact) }>
                                 {#if oContact.bHasKey}
-                                    <span class="bulma-tag bulma-is-info bulma-is-light bulma-icon">
+                                    <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon">
                                         <i class="fa-solid fa-key"></i>
                                     </span>
                                 {/if}
@@ -168,7 +168,7 @@
                     <article class="fox-customer-list-item">
                         <button class="bulma-box" onclick={ () => open(oCustomerView) }>
                             {#if oCustomerView.hasMainKey()}
-                                <span class="bulma-tag bulma-is-info bulma-is-light bulma-icon">
+                                <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon">
                                     <i class="fa-solid fa-key"></i>
                                 </span>
                             {/if}

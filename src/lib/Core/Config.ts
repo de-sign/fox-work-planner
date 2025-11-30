@@ -118,7 +118,7 @@ export const CONFIG = {
     SCHEDULE_CALENDAR_HOUR_BREAK: [8, 12, 13, 17],
     SCHEDULE_CALENDAR_WEEK_TYPE: [
         { sValue: 'EVERY_WEEK', sText: 'Hebdomadaire', sDescription: 'Toutes les semaines' },
-        { sValue: 'EVEN_WEEK', sText: 'Bimensuel paire', sDescription: 'En semaine paire' },
-        { sValue: 'ODD_WEEK', sText: 'Bimensuel impaire', sDescription: 'En semaine impaire' }
+        { sValue: 'EVEN_WEEK', sText: 'Bimensuel paire', sDescription: 'En semaine paire', sTag: 'Paire' },
+        { sValue: 'ODD_WEEK', sText: 'Bimensuel impaire', sDescription: 'En semaine impaire', sTag: 'Imp.' }
     ]
 }

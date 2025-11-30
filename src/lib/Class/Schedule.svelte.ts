@@ -122,6 +122,10 @@ class Schedule {
         return this.nPrice.toFixed(2).replace('.', ',');
     }
 
+    public get sTotalPrice(): string {
+        return (this.nDuration / 60 * this.nPrice).toFixed(2).replace('.', ',');
+    }
+
     /** Constructor */
     public constructor(oData: IScheduleOptions) {
         this._sUUID = oData._sUUID != null ? oData._sUUID : crypto.randomUUID();

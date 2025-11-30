@@ -26,7 +26,9 @@
         oData: TObject = $state({}),
         oError: TObject = $state({});
 
-    const aCustomers = Object.values( Customer.getAll() ),
+    const aCustomers = Object
+            .values( Customer.getAll() )
+            .sort( (oA, oB) => oA.sReverseName.localeCompare(oB.sReverseName, 'fr', { numeric: true }) ),
         aDays = CONFIG.SCHEDULE_CALENDAR_DAYS,
         aWeekTypes = CONFIG.SCHEDULE_CALENDAR_WEEK_TYPE,
         oDefaultData = {

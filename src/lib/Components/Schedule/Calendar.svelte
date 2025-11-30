@@ -39,7 +39,7 @@
         
             // Group and Sort
             aCopySchedule
-                .sort( (oA, oB) => oB.nTimeStart - oA.nTimeStart )
+                .sort( (oA, oB) => oA.nTimeStart - oB.nTimeStart )
                 .forEach( oSchedule => {
 
                     const [nHour, nMinute] = oSchedule.sTimeStart.split(':').map( (sValue: string) => parseInt(sValue) ),
@@ -114,7 +114,7 @@
             </div>
 
             {#if bCustomers}
-<!-- 
+            
                 <div class="bulma-buttons bulma-has-addons bulma-is-justify-content-flex-end">
                     <div class="bulma-button bulma-is-link bulma-is-selected" title="Affichage calendrier">
                         <span class="bulma-icon bulma-is-small">
@@ -127,7 +127,7 @@
                         </span>
                     </button>
                 </div>
--->
+
                 <div class="fox-calendar bulma-block bulma-fixed-grid bulma-has-7-cols">
                     <div class="bulma-grid bulma-is-gap-0">
                         <div class="bulma-cell fox-calendar-header">
@@ -153,7 +153,7 @@
                                     <div class="bulma-cell fox-calendar-cell { CONFIG.SCHEDULE_CALENDAR_HOUR_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
                                         {#each oSchedulesGrouped[nDay + ':' + nHour] as oSchedule}
                                             <button
-                                                title="Modifier une heure programmée"
+                                                title="Voir une heure programmée"
                                                 class="fox-calendar-task bulma-button bulma-is-link bulma-is-light bulma-is-size-7"
                                                 style="{Object.keys(oSchedule.oStyle).map(sStyle => `${sStyle}: ${oSchedule.oStyle[sStyle]}`).join(';')}"
                                                 onclick={ oEvent => {
