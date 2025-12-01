@@ -3,7 +3,15 @@
     /* -- Core */
     import { CONFIG } from '../../Core/Config';
 
-    /* -- Style */
+    /* -- Svelte */
+    import { COMPONENTS } from '../../Core/Import';
+    CONFIG.MENU_LIST_ITEMS.forEach( oMenuList => {
+        oMenuList.aItems.forEach( oMenuItem => {
+            if( oMenuItem.bIsComponent && oMenuItem.sComponent ){
+                oMenuItem.oComponent = COMPONENTS[ oMenuItem.sComponent ];
+            }
+        } );
+    } );
 
     /* ---- Component */
     let {

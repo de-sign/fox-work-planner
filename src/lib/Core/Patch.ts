@@ -1,10 +1,8 @@
 // Imports
 import type { TObject, TListeners } from './Type';
 import { EVENT_NAME, PROPERTY_NAME } from './Constants';
-import EventEmitter from 'eventemitter3';
 
-// ### ERROR - Loop independancies issue
-// import { CONFIG } from './Config';
+import EventEmitter from 'eventemitter3';
 import Store from './Store';
 
 // Key Format -> YYYYMMDDHHMM

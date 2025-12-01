@@ -1,19 +1,10 @@
 // Imports
 import type { TObject } from '../Core/Type';
 import { PROPERTY_NAME } from '../Core/Constants';
+import { CONFIG } from '../Core/Config';
 
 import Store from '../Core/Store';
 import Contact from './Contact.svelte';
-
-
-// ### ERROR - Loop independancies issue
-// import { CONFIG } from '../Core/Config';
-const CONFIG = {
-    CUSTOMER_PLACHOLDER: {
-        _sUUID: '',
-        sMainContact: ''
-    }
-};
 
 
 /**
@@ -62,12 +53,12 @@ class Customer {
         }
     }
     
-    public static getAll(): TObject<Customer> {
-        return _oInstances;
-    }
-    
     public static hasCustomers(): boolean {
         return !!Object.getOwnPropertyNames(_oInstances).length;
+    }
+    
+    public static getAll(): TObject<Customer> {
+        return _oInstances;
     }
 
     public static get(sUUID: string): Customer {

@@ -169,13 +169,13 @@
                             </div>
                             {#each aCustomerSchedules as oSchedule}
                                 <article>
-                                    <b>{CONFIG.SCHEDULE_CALENDAR_DAYS[oSchedule.nDay - 1]} : </b>
+                                    <b>{oSchedule.sDay} : </b>
                                     {#if oSchedule.sWeekType != 'EVERY_WEEK'}
                                         <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text">
                                             <span class="bulma-icon bulma-is-small">
                                                 <i class="fa-solid fa-calendar-week"></i>
                                             </span>
-                                            <span>{ CONFIG.SCHEDULE_CALENDAR_WEEK_TYPE[ SCHEDULE_WEEK_TYPE[oSchedule.sWeekType as keyof typeof SCHEDULE_WEEK_TYPE] ].sTag }</span>
+                                            <span>{oSchedule.oWeekType.sTag}</span>
                                         </span>
                                     {/if}
                                     {oSchedule.sTimeStart.replace(':', 'h')} - {oSchedule.sTimeEnd.replace(':', 'h')}

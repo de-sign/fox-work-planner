@@ -1,27 +1,10 @@
 // Imports
 import type { TObject } from '../Core/Type';
 import { PROPERTY_NAME } from '../Core/Constants';
+import { CONFIG } from '../Core/Config';
 
 import Store from '../Core/Store';
 import Customer from './Customer.svelte';
-
-
-// ### ERROR - Loop independancies issue
-// import { CONFIG } from '../Core/Config';
-const CONFIG = {
-    CONTACT_PLACEHOLDER: {
-        _sUUID: '',
-        sFirstName: 'Jésabelle',
-        sLastName: 'FONTAINE',
-        sAddress: '6 rue Georges Bizet',
-        sAddressSupplement: 'Appt 430 - 4ème étages',
-        sPostalCode: '90 000',
-        sCity: 'BELFORT',
-        aPhoneNumbers: ['+33 6 81 54 41 17'],
-        sInformations: 'Contactus Poupi, amoris mei, fungens ut substitutus.',
-        bHasKey: true
-    }
-};
 
 
 /**

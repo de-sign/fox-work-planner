@@ -1,15 +1,9 @@
 // Imports
 import type { TObject, TFlag } from './Type';
 import { EVENT_NAME, PROPERTY_NAME } from './Constants';
+import { CONFIG } from '../Core/Config';
+
 import EventEmitter from 'eventemitter3';
-
-
-// ### ERROR - Loop independancies issue
-// import { CONFIG } from './Config';
-const CONFIG = {
-    STORE_STORABLE_KEYS: Object.values(PROPERTY_NAME),
-    STORE_PREFIX_KEY: 'fox-app-'
-};
 
 
 /**

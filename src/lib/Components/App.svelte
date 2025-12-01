@@ -7,6 +7,11 @@
     /* -- Svelte */
     import Menu from './Menu/Menu.svelte';
 
+    import { COMPONENTS } from '../Core/Import';
+    Object.values(CONFIG.CONTENT_ITEMS).forEach( oContentItem => {
+        oContentItem.oComponent = COMPONENTS[ oContentItem.sComponent ];
+    } );
+
     /* -- Style */
     
     /* ---- Component */

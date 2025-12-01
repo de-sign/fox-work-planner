@@ -2,19 +2,21 @@
 // ### ERROR - Loop independancies issue
 // import { PROPERTY_NAME } from './Constants';
 import type { TObject } from '../Core/Type';
+import { PROPERTY_NAME } from './Constants';
 
 // ---- Application
-import Theme from '../Components/Menu/Theme.svelte';
-import Todo from '../Components/Todo.svelte';
-
-import Customer from '../Components/Customer/Pages.svelte';
-import Schedule from '../Components/Schedule/Pages.svelte';
+// -- > Move to 'Import.ts
+// import Theme from '../Components/Menu/Theme.svelte';
+// import Todo from '../Components/Todo.svelte';
+// import Customer from '../Components/Customer/Pages.svelte';
+// import Schedule from '../Components/Schedule/Pages.svelte';
 
 // ---- Interface TS
 interface MenuItem {
-    sLabel?: string,
+    sLabel: string,
     sContent?: string,
     bIsComponent?: boolean,
+    sComponent?: string,
     oComponent?: any
 }
 
@@ -26,31 +28,41 @@ export const CONFIG = {
     DEBUG_PRINT_LOG: true,
     DEBUG_WINDOW_PROPERTY: true,
     DEBUG_WINDOW_PROPERTY_NAME: 'oFoxDebug',
-
-    // ### ERROR - Loop independancies issue
     
     // -- Store
-    // STORE_STORABLE_KEYS: Object.values(PROPERTY_NAME),
-    // STORE_PREFIX_KEY: 'fox-app-',
+    STORE_STORABLE_KEYS: Object.values(PROPERTY_NAME),
+    STORE_PREFIX_KEY: 'fox-app-',
 
     // -- Class
-    // CONTACT_PLACEHOLDER: {
-    //     _sUUID: 0,
-    //     sFirstName: 'Jésabelle',
-    //     sLastName: 'FONTAINE',
-    //     sAddress: '6 rue Georges Bizet',
-    //     sAddressSupplement: 'Appt 430 - 4ème étages',
-    //     sPostalCode: '90000',
-    //     sCity: 'BELFORT',
-    //     aPhoneNumbers: ['0681544117'],
-    //     sInformations: 'Contact de Poupi <3 servant de substitut',
-    //     bHasKey: true
-    // },
+    CONTACT_PLACEHOLDER: {
+        _sUUID: '',
+        sFirstName: 'Jésabelle',
+        sLastName: 'FONTAINE',
+        sAddress: '6 rue Georges Bizet',
+        sAddressSupplement: 'Appt 430 - 4ème étages',
+        sPostalCode: '90 000',
+        sCity: 'BELFORT',
+        aPhoneNumbers: ['+33 6 81 54 41 17'],
+        sInformations: 'Contactus Poupi, amoris mei, fungens ut substitutus.',
+        bHasKey: true
+    },
 
-    // CUSTOMER_PLACHOLDER: {
-    //     _sUUID: 0,
-    //     sMainContact: 0
-    // },
+    CUSTOMER_PLACHOLDER: {
+        _sUUID: '',
+        sMainContact: ''
+    },
+
+    SCHEDULE_PLACEHOLDER: {
+        _sUUID: '',
+        // sTitle: 'Ménage à fond',
+        sCustomer: '',
+        nDay: 1,
+        sWeekType: 'EVERY_WEEK',
+        sTimeStart: '09:00',
+        sTimeEnd: '12:00',
+        nPrice: 17.00,
+        sInformations: 'Horae laboris Poupi, amoris mei, fungens ut substitutus.',
+    },
 
     // ---- Application
     // -- Menu Item
@@ -81,8 +93,9 @@ export const CONFIG = {
             aItems: <MenuItem[]> [
                 // Special - Switch Theme 
                 {
+                    sLabel: 'Thème',
                     bIsComponent: true,
-                    oComponent: Theme
+                    sComponent: 'Theme',
                 }
             ]
         }
@@ -93,19 +106,19 @@ export const CONFIG = {
     CONTENT_DEFAULT: 'Schedule',
     CONTENT_ITEMS: <TObject<TObject>> {
         Planning: {
-            oComponent: Todo,
+            sComponent: 'Todo',
             nPagesCount: 3
         },
         Income: {
-            oComponent: Todo,
+            sComponent: 'Todo',
             nPagesCount: 3
         },
         Customer: {
-            oComponent: Customer,
+            sComponent: 'Customer',
             nPagesCount: 3
         },
         Schedule: {
-            oComponent: Schedule,
+            sComponent: 'Schedule',
             nPagesCount: 3
         }
     },
@@ -117,7 +130,7 @@ export const CONFIG = {
     SCHEDULE_CALENDAR_HOUR_MAX_BY_DAY: 10,
     SCHEDULE_CALENDAR_HOUR_BREAK: [8, 12, 13, 17],
     SCHEDULE_CALENDAR_WEEK_TYPE: [
-        { sValue: 'EVERY_WEEK', sText: 'Hebdomadaire', sDescription: 'Toutes les semaines' },
+        { sValue: 'EVERY_WEEK', sText: 'Hebdomadaire', sDescription: 'Toutes les semaines', sTag: '' },
         { sValue: 'EVEN_WEEK', sText: 'Bimensuel paire', sDescription: 'En semaine paire', sTag: 'Paire' },
         { sValue: 'ODD_WEEK', sText: 'Bimensuel impaire', sDescription: 'En semaine impaire', sTag: 'Imp.' }
     ]

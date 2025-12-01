@@ -15,9 +15,7 @@
     } = $props();
     
     let oTarget: Schedule = $state(Schedule.oPlaceholder),
-        oContactView: Contact = $derived( oTarget.oCustomer.oMainContact ),
-        oWeekType = $derived( CONFIG.SCHEDULE_CALENDAR_WEEK_TYPE[ SCHEDULE_WEEK_TYPE[oTarget.sWeekType as keyof typeof SCHEDULE_WEEK_TYPE] ] ),
-        sDay = $derived( CONFIG.SCHEDULE_CALENDAR_DAYS[oTarget.nDay - 1] );
+        oContactView: Contact = $derived( oTarget.oCustomer.oMainContact );
 
     export function open(oNewTarget: Schedule) {
         oTarget = oNewTarget;
@@ -53,7 +51,7 @@
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
             <div class="bulma-block">
-                <h1 class="bulma-title fox-is-text-ellipsis">{sDay} chez {oContactView.sShortName}</h1>
+                <h1 class="bulma-title fox-is-text-ellipsis">{oTarget.sDay} chez {oContactView.sShortName}</h1>
                 <h2 class="bulma-subtitle">
                     <span class="bulma-icon-text">
                         <span class="bulma-icon">
@@ -65,13 +63,13 @@
             </div>
 
             <div class="bulma-block">
-                <p>Tous les {sDay}s</p>
+                <p>Tous les {oTarget.sDay}s</p>
                 <p>Chez {oContactView.sName}</p>
                 <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text bulma-mt-2">
                     <span class="bulma-icon bulma-is-small">
                         <i class="fa-solid fa-calendar-week"></i>
                     </span>
-                    <span>{oWeekType.sDescription}</span>
+                    <span>{oTarget.oWeekType.sDescription}</span>
                 </span>
             </div>
 

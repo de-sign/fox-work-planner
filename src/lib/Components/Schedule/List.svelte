@@ -33,8 +33,6 @@
                     oDays[nDay].push(oSchedule);
                 } );
 
-            console.log(oDays);
-
             Object.keys(oDays)
                 .sort( (sA, sB) => sA.localeCompare(sB, 'fr', { numeric: true }) )
                 .forEach( sDay => {
@@ -96,7 +94,7 @@
                                                         <span class="bulma-icon bulma-is-small">
                                                             <i class="fa-solid fa-calendar-week"></i>
                                                         </span>
-                                                        <span>{ CONFIG.SCHEDULE_CALENDAR_WEEK_TYPE[ SCHEDULE_WEEK_TYPE[oSchedule.sWeekType as keyof typeof SCHEDULE_WEEK_TYPE] ].sTag }</span>
+                                                        <span>{oSchedule.oWeekType.sTag}</span>
                                                     </span>
                                                 {/if}
 
