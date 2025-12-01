@@ -52,6 +52,15 @@ body {
 
 /* ---- FOX Application */
 
+.fox-svg-icon {
+    fill: currentColor;
+    & use,
+    & image {
+        width: inherit;
+        height: inherit;
+    }
+}
+
 /* -- Helper */
 .fox-is-text-ellipsis {
     white-space: nowrap;

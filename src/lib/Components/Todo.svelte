@@ -1,7 +1,7 @@
 <script lang="ts">
     /* ---- Import */
     /* -- Style */
-    import iFoxLogo from '/fox.svg';
+    import sFoxSolid from '../../assets/images/logo_solid_reverse.svg';
 
     /* ---- Component */
     let {
@@ -15,11 +15,13 @@
         <!-- Page Content -->
         <div class="fox-app-page-content bulma-section">
             <div class="bulma-container bulma-is-max-tablet">
-                <h1 class="bulma-title">
-                    <img class="bulma-icon" src={iFoxLogo} alt="Fox Logo" />
-                    Work Planner
-                </h1>
-                <h2 class="bulma-subtitle">Plan your working hours #1</h2>
+                <div class="bulma-block bulma-has-text-centered">
+                    <img class="bulma-px-6 bulma-mb-4" src="{sFoxSolid}" alt="Fox logo - solid"/>
+                    <h1 class="bulma-title">
+                        Work Planner
+                    </h1>
+                    <h2 class="bulma-subtitle">Plan your working hours #1</h2>
+                </div>
                 <div class="bulma-content">
                     <p>
                         Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -66,11 +68,13 @@
         <!-- Page Content -->
         <div class="fox-app-page-content bulma-section">
             <div class="bulma-container bulma-is-max-tablet">
-                <h1 class="bulma-title">
-                    <img class="bulma-icon" src={iFoxLogo} alt="Fox Logo" />
-                    Work Planner
-                </h1>
-                <h2 class="bulma-subtitle">Plan your working hours #2</h2>
+                <div class="bulma-block bulma-has-text-centered">
+                    <img class="bulma-px-6 bulma-mb-4" src="{sFoxSolid}" alt="Fox logo - solid"/>
+                    <h1 class="bulma-title">
+                        Work Planner
+                    </h1>
+                    <h2 class="bulma-subtitle">Plan your working hours #2</h2>
+                </div>
                 <div class="bulma-content">
                     <p>
                         Lorem ipsum, dolor sit amet consectetur adipisicing elit.
@@ -117,11 +121,13 @@
         <!-- Page Content -->
         <div class="fox-app-page-content bulma-section">
             <div class="bulma-container bulma-is-max-tablet">
-                <h1 class="bulma-title">
-                    <img class="bulma-icon" src={iFoxLogo} alt="Fox Logo" />
-                    Work Planner
-                </h1>
-                <h2 class="bulma-subtitle">Plan your working hours #3</h2>
+                <div class="bulma-block bulma-has-text-centered">
+                    <img class="bulma-px-6 bulma-mb-4" src="{sFoxSolid}" alt="Fox logo - solid"/>
+                    <h1 class="bulma-title">
+                        Work Planner
+                    </h1>
+                    <h2 class="bulma-subtitle">Plan your working hours #3</h2>
+                </div>
                 <div class="bulma-content">
                     <p>
                         Lorem ipsum dolor sit amet consectetur adipisicing elit.

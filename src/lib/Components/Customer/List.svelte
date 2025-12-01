@@ -57,59 +57,57 @@
                 <h1 class="bulma-title">Clients</h1>
                 <h2 class="bulma-subtitle">Administre tes clients</h2>
             </div>
-            {#if aCustomersGrouped.length}
-                {#each aCustomersGrouped as oGroup}
-                    <section class="bulma-block">
-                        <div class="fox-separator">
-                            <span>{oGroup.sLetter}</span>
-                        </div>
-                        {#each oGroup.aCustomers as oCustomer}
+            {#each aCustomersGrouped as oGroup}
+                <section class="bulma-block">
+                    <div class="fox-separator">
+                        <span>{oGroup.sLetter}</span>
+                    </div>
+                    {#each oGroup.aCustomers as oCustomer}
 
-                            <section class="fox-customer-list bulma-block">
+                        <section class="fox-customer-list bulma-block">
 
-                                <article class="fox-customer-list-item">
-                                    <button class="bulma-box" onclick={ () => Pages.oView.open(oCustomer) }>
-                                        {#if oCustomer.hasMainKey()}
-                                            <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon">
-                                                <i class="fa-solid fa-key"></i>
-                                            </span>
-                                        {/if}
-                                        <span class="bulma-icon-text">
-                                            <span class="bulma-icon">
-                                                <i class="fa-solid fa-user-tie fa-xl"></i>
-                                            </span>
-                                            <span class="bulma-ml-3">{oCustomer.sName}</span>
+                            <article class="fox-customer-list-item">
+                                <button class="bulma-box" onclick={ () => Pages.oView.open(oCustomer) }>
+                                    {#if oCustomer.hasMainKey()}
+                                        <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon">
+                                            <i class="fa-solid fa-key"></i>
                                         </span>
-                                    </button>
-                                </article>
+                                    {/if}
+                                    <span class="bulma-icon-text">
+                                        <span class="bulma-icon">
+                                            <i class="fa-solid fa-user-tie fa-xl"></i>
+                                        </span>
+                                        <span class="bulma-ml-3">{oCustomer.sName}</span>
+                                    </span>
+                                </button>
+                            </article>
 
-                                {#if oCustomer.aExtraContacts.length}
-                                    <div class="fox-customer-list">
-                                        {#each oCustomer.aExtraContacts as oContact}
-                                            <article class="fox-customer-list-item">
-                                                <button class="bulma-box"  onclick={ () => Pages.oView.open(oContact) }>
-                                                    {#if oContact.bHasKey}
-                                                        <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon">
-                                                            <i class="fa-solid fa-key"></i>
-                                                        </span>
-                                                    {/if}
-                                                    <span class="bulma-icon-text">
-                                                        <span class="bulma-icon">
-                                                            <i class="fa-solid fa-user-group fa-lg"></i>
-                                                        </span>
-                                                        <span class="bulma-mx-2">{oContact.sName}</span>
+                            {#if oCustomer.aExtraContacts.length}
+                                <div class="fox-customer-list">
+                                    {#each oCustomer.aExtraContacts as oContact}
+                                        <article class="fox-customer-list-item">
+                                            <button class="bulma-box"  onclick={ () => Pages.oView.open(oContact) }>
+                                                {#if oContact.bHasKey}
+                                                    <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon">
+                                                        <i class="fa-solid fa-key"></i>
                                                     </span>
-                                                </button>
-                                            </article>
-                                        {/each}
-                                    </div>
-                                {/if}
+                                                {/if}
+                                                <span class="bulma-icon-text">
+                                                    <span class="bulma-icon">
+                                                        <i class="fa-solid fa-user-group fa-lg"></i>
+                                                    </span>
+                                                    <span class="bulma-mx-2">{oContact.sName}</span>
+                                                </span>
+                                            </button>
+                                        </article>
+                                    {/each}
+                                </div>
+                            {/if}
 
-                            </section>
+                        </section>
 
-                        {/each}
-                    </section>
-                {/each}
+                    {/each}
+                </section>
             {:else}
                 <div class="bulma-notification bulma-has-text-centered">
                     <span class="bulma-icon-text">
@@ -119,7 +117,7 @@
                         <span>Aucun client trouvé</span>
                     </span>
                 </div>
-            {/if}
+            {/each}
         </div>
     </div>
 
