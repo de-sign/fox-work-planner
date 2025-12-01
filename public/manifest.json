@@ -1,12 +1,16 @@
 {
+  "id": "b6cda53a-2609-428e-9d99-6d8767f85cd6",
   "name": "FOX Work Planner",
-  "short_name": "FOX WP",
+  "short_name": "FOX Work Planne",
   "description": "FOX Work Planner - Plan your working hours",
   "dir": "auto",
+
   "lang": "fr-FR",
   "display": "standalone",
   "orientation": "portrait",
-  "start_url": "",
+  "start_url": "/",
+  "scope": "/",
+  
   "background_color": "#f3f4f6",
   "theme_color": "#f3f4f6",
   "icons": [
