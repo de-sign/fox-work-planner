@@ -100,6 +100,10 @@ class Schedule {
         return nHour * 60 + nMinute;
     }
 
+    public get sTime(): string {
+        return this.sTimeStart.replace(':', 'h') + ' - ' + this.sTimeEnd.replace(':', 'h');
+    }
+
     public get nDuration(): number {
         return this.nTimeEnd - this.nTimeStart;
     }

@@ -4,7 +4,9 @@
     import type { TObject } from '../../Core/Type';
     import { CUSTOMER_FORM_TYPE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
+
     import Customer from '../../Class/Customer.svelte';
+    import Item from './Item.svelte';
 
     /* ---- Component */
     let {
@@ -63,49 +65,16 @@
                         <span>{oGroup.sLetter}</span>
                     </div>
                     {#each oGroup.aCustomers as oCustomer}
-
-                        <section class="fox-customer-list bulma-block">
-
-                            <article class="fox-customer-list-item">
-                                <button class="bulma-box" onclick={ () => Pages.oView.open(oCustomer) }>
-                                    {#if oCustomer.hasMainKey()}
-                                        <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon">
-                                            <i class="fa-solid fa-key"></i>
-                                        </span>
-                                    {/if}
-                                    <span class="bulma-icon-text">
-                                        <span class="bulma-icon">
-                                            <i class="fa-solid fa-user-tie fa-xl"></i>
-                                        </span>
-                                        <span class="bulma-ml-3">{oCustomer.sName}</span>
-                                    </span>
-                                </button>
-                            </article>
-
+                        <section class="fox-list bulma-block">
+                            <Item Item={{ oTarget: oCustomer, click: () => Pages.oView.open(oCustomer) }}/>
                             {#if oCustomer.aExtraContacts.length}
-                                <div class="fox-customer-list">
+                                <div class="fox-list">
                                     {#each oCustomer.aExtraContacts as oContact}
-                                        <article class="fox-customer-list-item">
-                                            <button class="bulma-box"  onclick={ () => Pages.oView.open(oContact) }>
-                                                {#if oContact.bHasKey}
-                                                    <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon">
-                                                        <i class="fa-solid fa-key"></i>
-                                                    </span>
-                                                {/if}
-                                                <span class="bulma-icon-text">
-                                                    <span class="bulma-icon">
-                                                        <i class="fa-solid fa-user-group fa-lg"></i>
-                                                    </span>
-                                                    <span class="bulma-mx-2">{oContact.sName}</span>
-                                                </span>
-                                            </button>
-                                        </article>
+                                        <Item Item={{ oTarget: oContact, click: () => Pages.oView.open(oContact) }}/>
                                     {/each}
                                 </div>
                             {/if}
-
                         </section>
-
                     {/each}
                 </section>
             {:else}

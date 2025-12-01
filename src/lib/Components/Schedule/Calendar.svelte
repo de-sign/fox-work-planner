@@ -8,6 +8,8 @@
     import Customer from '../../Class/Customer.svelte';
     import Schedule from '../../Class/Schedule.svelte';
 
+    import Item from '../Schedule/Item.svelte';
+
     /* ---- Component */
     let {
         App,
@@ -152,22 +154,11 @@
                                 {#if oSchedulesGrouped[nDay + ':' + nHour] }
                                     <div class="bulma-cell fox-calendar-cell { CONFIG.SCHEDULE_CALENDAR_HOUR_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
                                         {#each oSchedulesGrouped[nDay + ':' + nHour] as oSchedule}
-                                            <button
-                                                title="Voir une heure programmée"
-                                                class="fox-calendar-task bulma-button bulma-is-link bulma-is-light bulma-is-size-7"
-                                                style="{Object.keys(oSchedule.oStyle).map(sStyle => `${sStyle}: ${oSchedule.oStyle[sStyle]}`).join(';')}"
-                                                onclick={ oEvent => {
+                                            <Item sType="calendar" Item={{ ...oSchedule, click: (oEvent: any) => {
                                                     oEvent.stopPropagation();
                                                     Pages.oView.open(oSchedule.oTarget);
-                                                } }
-                                            >
-                                                {#if oSchedule.oTarget.sWeekType == 'EVERY_WEEK'}
-                                                    {oSchedule.oTarget.sDuration}<br/>
-                                                    {oSchedule.oTarget.oCustomer.sShortName}
-                                                {:else}
-                                                    {oSchedule.oTarget.oCustomer.sShortName} - {oSchedule.oTarget.sDuration}
-                                                {/if}
-                                            </button>
+                                                } }}
+                                            />
                                         {/each}
                                     </div>
                                 {:else if sCellSelected == nDay + ':' + nHour}
@@ -307,16 +298,5 @@
     .fox-calendar-cell.fox-calendar-is-break {
         background-color: var(--bulma-border-weak);
         border-right-color: var(--bulma-border);
-    }
-
-    .fox-calendar-task {
-        z-index: 10;
-        border-width: 1px;
-        padding: calc(var(--bulma-button-padding-vertical) - var(--bulma-button-border-width)) 0;
-        
-        display: block;
-        writing-mode: vertical-lr;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 </style>

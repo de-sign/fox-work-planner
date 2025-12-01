@@ -9,6 +9,8 @@
     import Customer from '../../Class/Customer.svelte';
     import Schedule from '../../Class/Schedule.svelte';
 
+    import Item from '../Schedule/Item.svelte';
+
     /* ---- Component */
     let {
         App,
@@ -84,30 +86,9 @@
                                 <span>{oGroup.sDay}</span>
                             </div>
 
-                            <section class="fox-schedule-list">
+                            <section class="fox-list">
                                 {#each oGroup.aSchedules as oSchedule}
-                                    <article class="fox-schedule-list-item">
-                                        <button class="bulma-box" onclick={ () => Pages.oView.open(oSchedule) }>
-                                            <div class="bulma-icon-text">
-                                                {#if oSchedule.sWeekType != 'EVERY_WEEK'}
-                                                    <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text">
-                                                        <span class="bulma-icon bulma-is-small">
-                                                            <i class="fa-solid fa-calendar-week"></i>
-                                                        </span>
-                                                        <span>{oSchedule.oWeekType.sTag}</span>
-                                                    </span>
-                                                {/if}
-
-                                                <span class="bulma-icon">
-                                                    <i class="fa-solid fa-calendar-day fa-xl"></i>
-                                                </span>
-                                                <div class="bulma-ml-3 bulma-has-text-left">
-                                                    <p>{oSchedule.oCustomer.sName}</p>
-                                                    <p class="bulma-is-size-7">{oSchedule.sTimeStart.replace(':', 'h')} - {oSchedule.sTimeEnd.replace(':', 'h')} -> {oSchedule.sDuration}</p>
-                                                </div>
-                                            </div>
-                                        </button>
-                                    </article>
+                                    <Item sType="list" Item={{ oTarget: oSchedule, click: () => Pages.oView.open(oSchedule) }}/>
                                 {/each}
                             </section>
 

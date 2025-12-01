@@ -3,9 +3,13 @@
     /* -- Core */
     import { CUSTOMER_FORM_TYPE, CUSTOMER_PAGE, SCHEDULE_WEEK_TYPE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
+
     import Customer from '../../Class/Customer.svelte';
     import Contact from '../../Class/Contact.svelte';
     import Schedule from '../../Class/Schedule.svelte';
+    
+    import Item from './Item.svelte';
+    import ItemSchedule from '../Schedule/Item.svelte';
 
     /* ---- Component */
     let {
@@ -87,167 +91,125 @@
 
 <section class="fox-app-page">
     <!-- Page Content -->
-    <div class="fox-app-page-content">
+    <div class="fox-app-page-content bulma-section">
+        <div class="bulma-container bulma-is-max-tablet">
 
-        <header class="bulma-hero">
-            <div class="bulma-hero-body">
-                <div class="bulma-container bulma-is-max-tablet">
-                    <div class="bulma-block">
-                        <h1 class="bulma-title fox-is-text-ellipsis">{oContactView.sName}</h1>
-                        <h2 class="bulma-subtitle">
-                            {#if bIsCustomerView}
-                                <span class="bulma-icon-text">
-                                    <span class="bulma-icon">
-                                        <i class="fa-solid fa-user-tie"></i>
-                                    </span>
-                                    <span>Client principal</span>
-                                </span>
-                            {:else}
-                                <span class="bulma-icon-text">
-                                    <span class="bulma-icon">
-                                        <i class="fa-solid fa-user-group"></i>
-                                    </span>
-                                    <span>Contact supplémentaire</span>
-                                </span>
-                            {/if}
-                        </h2>
-                    </div>
-                    <address class="bulma-block">
-                        {@html '<p>' + oContactView.getAddress().join('</p><p>') + '</p>'}
-                    </address>
-                    {#if oContactView.bHasKey || oContactView.sInformations}
-                        <div class="bulma-block">
-                            {#if oContactView.sInformations}
-                                <div class="bulma-content bulma-is-small bulma-mb-2">
-                                    <blockquote>{oContactView.sInformations}</blockquote>
-                                </div>
-                            {/if}
-                            {#if oContactView.bHasKey}
-                                <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text bulma-mb-2">
-                                    <span class="bulma-icon">
-                                        <i class="fa-solid fa-key"></i>
-                                    </span>
-                                    <span>Je possède un double des clefs</span>
-                                </span>
-                            {/if}
+            <div class="bulma-block">
+                <h1 class="bulma-title fox-is-text-ellipsis">{oContactView.sName}</h1>
+                <h2 class="bulma-subtitle">
+                    {#if bIsCustomerView}
+                        <span class="bulma-icon-text">
+                            <span class="bulma-icon">
+                                <i class="fa-solid fa-user-tie"></i>
+                            </span>
+                            <span>Client principal</span>
+                        </span>
+                    {:else}
+                        <span class="bulma-icon-text">
+                            <span class="bulma-icon">
+                                <i class="fa-solid fa-user-group"></i>
+                            </span>
+                            <span>Contact supplémentaire</span>
+                        </span>
+                    {/if}
+                </h2>
+            </div>
+
+            <address class="bulma-block">
+                {@html '<p>' + oContactView.getAddress().join('</p><p>') + '</p>'}
+            </address>
+
+            {#if oContactView.bHasKey || oContactView.sInformations}
+                <div class="bulma-block">
+                    {#if oContactView.sInformations}
+                        <div class="bulma-content bulma-is-small bulma-mb-2">
+                            <blockquote>{oContactView.sInformations}</blockquote>
                         </div>
                     {/if}
-                    <div class="bulma-field bulma-is-grouped bulma-is-grouped-right">
-                        <a class="bulma-button bulma-is-hovered" href="tel:{oContactView.aPhoneNumbers[0]}">
+                    {#if oContactView.bHasKey}
+                        <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text bulma-mb-2">
                             <span class="bulma-icon">
-                                <i class="fa-solid fa-phone"></i>
+                                <i class="fa-solid fa-key"></i>
                             </span>
-                            <span>Appel</span>
+                            <span>Je possède un double des clefs</span>
+                        </span>
+                    {/if}
+                </div>
+            {/if}
+            
+            <div class="bulma-mb-6">
+                <div class="bulma-field bulma-is-grouped bulma-is-grouped-right">
+                    <a class="bulma-button bulma-is-hovered" href="tel:{oContactView.aPhoneNumbers[0]}">
+                        <span class="bulma-icon">
+                            <i class="fa-solid fa-phone"></i>
+                        </span>
+                        <span>Appel</span>
+                    </a>
+                    {#if oContactView.getMobilePhoneNumbers().length}
+                        <a class="bulma-button bulma-is-hovered" href="sms:{oContactView.getMobilePhoneNumbers()[0]}">
+                            <span class="bulma-icon">
+                                <i class="fa-solid fa-message"></i>
+                            </span>
+                            <span>SMS</span>
                         </a>
-                        {#if oContactView.getMobilePhoneNumbers().length}
-                            <a class="bulma-button bulma-is-hovered" href="sms:{oContactView.getMobilePhoneNumbers()[0]}">
+                    {/if}
+                    <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={openModal}>
+                        <span class="bulma-icon">
+                            <i class="fa-solid fa-user-xmark"></i>
+                        </span>
+                        <span>Supprimer</span>
+                    </button>
+                </div>
+            </div>
+
+            {#if bIsCustomerView}
+
+                {#if aCustomerSchedules.length}
+                    <div class="bulma-block">
+                        <div class="fox-separator">
+                            <span>Heures programmées</span>
+                        </div>
+                        {#each aCustomerSchedules as oSchedule}
+                            <ItemSchedule sType="simple" Item={{ oTarget: oSchedule }}/>
+                        {/each}
+                    </div>
+                {/if}
+
+                <div class="bulma-block">
+                    <div class="fox-separator">
+                        <span>Contacts supplémentaires</span>
+                    </div>
+                    {#each oCustomerView.aExtraContacts as oContact}
+                        <Item Item={{ oTarget: oContact, click: () => open(oContact) }}/>
+                    {:else}
+                        <div class="bulma-notification bulma-has-text-centered bulma-is-size-7">
+                            <span class="bulma-icon-text bulma-is-small">
                                 <span class="bulma-icon">
-                                    <i class="fa-solid fa-message"></i>
+                                    <i class="fa-solid fa-users-slash fa-lg"></i>
                                 </span>
-                                <span>SMS</span>
-                            </a>
-                        {/if}
-                        <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={openModal}>
-                            <span class="bulma-icon">
-                                <i class="fa-solid fa-user-xmark"></i>
+                                <span>Aucun contact supplémentaire</span>
                             </span>
-                            <span>Supprimer</span>
+                        </div>
+                    {/each}
+                    <div class="bulma-has-text-right bulma-mt-5">
+                        <button class="bulma-button bulma-is-hovered" onclick="{ () => Pages.oForm.open(CUSTOMER_FORM_TYPE.NEW_CONTACT, { oCustomer: oCustomerView }) }">
+                            <span class="bulma-icon">
+                                <i class="fa-solid fa-user-plus"></i>
+                            </span>
+                            <span>Ajouter</span>
                         </button>
                     </div>
                 </div>
-            </div>
-        </header>
-
-        <section class="bulma-section">
-            <div class="bulma-container bulma-is-max-tablet">
-                {#if bIsCustomerView}
-
-                    {#if aCustomerSchedules.length}
-                        <div class="bulma-block">
-                            <div class="fox-separator bulma-mb-2">
-                                <span>Heures programmées</span>
-                            </div>
-                            {#each aCustomerSchedules as oSchedule}
-                                <article>
-                                    <b>{oSchedule.sDay} : </b>
-                                    {#if oSchedule.sWeekType != 'EVERY_WEEK'}
-                                        <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text">
-                                            <span class="bulma-icon bulma-is-small">
-                                                <i class="fa-solid fa-calendar-week"></i>
-                                            </span>
-                                            <span>{oSchedule.oWeekType.sTag}</span>
-                                        </span>
-                                    {/if}
-                                    {oSchedule.sTimeStart.replace(':', 'h')} - {oSchedule.sTimeEnd.replace(':', 'h')}
-                                    <i class="bulma-is-size-7">-> {oSchedule.sDuration}</i>
-                                </article>
-                            {/each}
-                        </div>
-                    {/if}
-
-                    <div class="bulma-block">
-                        <div class="fox-separator">
-                            <span>Contacts supplémentaires</span>
-                        </div>
-                        {#each oCustomerView.aExtraContacts as oContact}
-                            <article class="fox-customer-list-item">
-                                <button class="bulma-box" onclick={ () => open(oContact) }>
-                                    {#if oContact.bHasKey}
-                                        <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon">
-                                            <i class="fa-solid fa-key"></i>
-                                        </span>
-                                    {/if}
-                                    <span class="bulma-icon-text">
-                                        <span class="bulma-icon">
-                                            <i class="fa-solid fa-user-group fa-xl"></i>
-                                        </span>
-                                        <span class="bulma-ml-3">{oContact.sName}</span>
-                                    </span>
-                                </button>
-                            </article>
-                        {:else}
-                            <div class="bulma-notification bulma-has-text-centered bulma-is-size-7">
-                                <span class="bulma-icon-text bulma-is-small">
-                                    <span class="bulma-icon">
-                                        <i class="fa-solid fa-users-slash fa-lg"></i>
-                                    </span>
-                                    <span>Aucun contact supplémentaire</span>
-                                </span>
-                            </div>
-                        {/each}
-                        <div class="bulma-has-text-right bulma-mt-5">
-                            <button class="bulma-button bulma-is-hovered" onclick="{ () => Pages.oForm.open(CUSTOMER_FORM_TYPE.NEW_CONTACT, { oCustomer: oCustomerView }) }">
-                                <span class="bulma-icon">
-                                    <i class="fa-solid fa-user-plus"></i>
-                                </span>
-                                <span>Ajouter</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                {:else}
-
+                
+            {:else}
+                <div class="bulma-block">
                     <div class="fox-separator">
                         <span>Client principal</span>
                     </div>
-                    <article class="fox-customer-list-item">
-                        <button class="bulma-box" onclick={ () => open(oCustomerView) }>
-                            {#if oCustomerView.hasMainKey()}
-                                <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon">
-                                    <i class="fa-solid fa-key"></i>
-                                </span>
-                            {/if}
-                            <span class="bulma-icon-text">
-                                <span class="bulma-icon">
-                                    <i class="fa-solid fa-user-tie fa-xl"></i>
-                                </span>
-                                <span class="bulma-ml-3">{oCustomerView.sName}</span>
-                            </span>
-                            </button>
-                    </article>
-                {/if}
-            </div>
-        </section>
+                    <Item Item={{ oTarget: oCustomerView, click: () => open(oCustomerView) }}/>
+                </div>
+            {/if}
+        </div>
     </div>
 
     <!-- Navbar -->

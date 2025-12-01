@@ -137,7 +137,7 @@ class Customer {
         return this.oMainContact.sReverseName;
     }
 
-    public hasMainKey(): boolean {
+    public get bHasKey(): boolean {
         return this.oMainContact.bHasKey;
     }
 

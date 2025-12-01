@@ -22,6 +22,8 @@
         var(--bulma-scheme-s)
         var(--bulma-border-l)
     );
+
+    --bulma-block-spacing: 2rem;
 }
 
 html,
@@ -74,6 +76,7 @@ body {
     position: relative;
     /*font-size: var(--bulma-size-medium);*/
     color: var(--bulma-text-weak);
+    margin-bottom: 0.5rem;
 
     & > * {
         padding: 0 calc( var(--bulma-block-spacing) / 2 );
@@ -94,8 +97,7 @@ body {
     }
 }
 
-.fox-customer-list,
-.fox-schedule-list {
+.fox-list {
 
     & & {
         padding-left: 3rem;
