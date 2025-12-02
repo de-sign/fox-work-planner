@@ -94,7 +94,7 @@
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
 
-            <div class="bulma-block">
+            <header class="fox-app-title">
                 <h1 class="bulma-title fox-is-text-ellipsis">{oContactView.sName}</h1>
                 <h2 class="bulma-subtitle">
                     {#if bIsCustomerView}
@@ -113,7 +113,7 @@
                         </span>
                     {/if}
                 </h2>
-            </div>
+            </header>
 
             <address class="bulma-block">
                 {@html '<p>' + oContactView.getAddress().join('</p><p>') + '</p>'}

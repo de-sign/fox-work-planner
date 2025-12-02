@@ -28,7 +28,7 @@
     <!-- Page Content -->
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
-            <div class="bulma-block">
+            <div class="fox-app-title">
                 <h1 class="bulma-title">Template</h1>
                 <h2 class="bulma-subtitle">Page modèle pour création de composant rapide</h2>
             </div>

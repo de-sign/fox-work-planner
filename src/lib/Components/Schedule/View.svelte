@@ -50,7 +50,8 @@
     <!-- Page Content -->
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
-            <div class="bulma-block">
+
+            <header class="fox-app-title">
                 <h1 class="bulma-title fox-is-text-ellipsis">{oTarget.sDay} chez {oContactView.sShortName}</h1>
                 <h2 class="bulma-subtitle">
                     <span class="bulma-icon-text">
@@ -60,7 +61,7 @@
                         <span>Durée de {oTarget.sDuration}</span>
                     </span>
                 </h2>
-            </div>
+            </header>
 
             <div class="bulma-block">
                 <p>Tous les {oTarget.sDay}s</p>

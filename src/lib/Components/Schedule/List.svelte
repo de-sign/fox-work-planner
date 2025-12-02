@@ -59,7 +59,7 @@
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
 
-            <div class="fox-app-title--has-buttons bulma-block">
+            <header class="fox-app-title fox-app-title--has-buttons">
                 <div>
                     <h1 class="bulma-title">Planification</h1>
                     <h2 class="bulma-subtitle">Définis ta semaine type</h2>
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                 {/if}
-            </div>
+            </header>
 
             {#if bCustomers}
 

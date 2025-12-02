@@ -24,6 +24,7 @@
     );
 
     --bulma-block-spacing: 2rem;
+    --fox-block-spacing: 1.5rem;
 }
 
 html,
@@ -144,7 +145,7 @@ $menu-transition-timing-function: ease;
 }
 
 .fox-app-menu {
-    padding-left: calc( 1.5rem * 2);
+    padding-left: calc(2 * var(--fox-block-spacing));
 
     &-background {
         z-index: -100;
@@ -162,7 +163,7 @@ $menu-transition-timing-function: ease;
 .fox-app--is-menu-open {
 
     &.fox-app-view {
-        margin-left: calc(1.5rem * -2);
+        margin-left: calc(-2 * var(--fox-block-spacing));
     }
 
     .fox-app-menu {
@@ -220,8 +221,8 @@ $page-transition-timing-function: ease;
 
     &-navbar {
         flex: none;
-        padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
+        padding-top: var(--fox-block-spacing);
+        padding-bottom: var(--fox-block-spacing);
 
         & > * {
             display: flex;
@@ -229,7 +230,7 @@ $page-transition-timing-function: ease;
         }
 
         &-item {
-            padding-right: 1.5rem;
+            padding-right: var(--fox-block-spacing);
 
             &:first-child {
                 flex: 1 1 auto;
@@ -243,20 +244,30 @@ $page-transition-timing-function: ease;
 }
 
 /* -- Title */
-.fox-app-title--has-buttons {
-    display: flex;
-    align-items: flex-start;
+.fox-app-title {
+    
+    position: sticky;
+    top: calc(-2 * var(--fox-block-spacing));
+    margin: calc(-1 * var(--fox-block-spacing)) calc(-1 * var(--fox-block-spacing)) calc( var(--bulma-block-spacing) - var(--fox-block-spacing) );
+    padding: var(--fox-block-spacing);
+    z-index: 50;
+    background-color: var(--bulma-body-background-color);
 
-    & > * {
-        padding-right: 1.5rem;
-        flex-wrap: nowrap !important;
+    &--has-buttons {
+        display: flex;
+        align-items: flex-start;
 
-        &:first-child {
-            flex: 1 1 auto;
-        }
+        & > * {
+            padding-right: var(--fox-block-spacing);
+            flex-wrap: nowrap !important;
 
-        &:last-child {
-            padding-right: 0;
+            &:first-child {
+                flex: 1 1 auto;
+            }
+
+            &:last-child {
+                padding-right: 0;
+            }
         }
     }
 }

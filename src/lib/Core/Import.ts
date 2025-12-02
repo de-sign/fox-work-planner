@@ -11,7 +11,7 @@ export const COMPONENTS: TObject = {
     Theme: Theme,
 
     // CONTENT_ITEMS
-    Planning: Todo,
+    Agenda: Todo,
     Income: Todo,
     Customer: Customer,
     Schedule: Schedule

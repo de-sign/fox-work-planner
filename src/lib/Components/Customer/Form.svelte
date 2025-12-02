@@ -148,7 +148,8 @@
     <!-- Page Content -->
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
-            <header class="bulma-block">
+
+            <header class="fox-app-title">
                 <h1 class="bulma-title">Formulaire</h1>
                 <h2 class="bulma-subtitle">{sTitle}</h2>
             </header>

@@ -55,10 +55,12 @@
     <!-- Page Content -->
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
-            <div class="bulma-block">
+
+            <header class="fox-app-title">
                 <h1 class="bulma-title">Clients</h1>
                 <h2 class="bulma-subtitle">Administre tes clients</h2>
-            </div>
+            </header>
+
             {#each aCustomersGrouped as oGroup}
                 <section class="bulma-block">
                     <div class="fox-separator">
