@@ -29,8 +29,8 @@
     const aCustomers = Object
             .values( Customer.getAll() )
             .sort( (oA, oB) => oA.sReverseName.localeCompare(oB.sReverseName, 'fr', { numeric: true }) ),
-        aDays = CONFIG.SCHEDULE_CALENDAR_DAYS,
-        aWeekTypes = CONFIG.SCHEDULE_CALENDAR_WEEK_TYPE,
+        aDays = CONFIG.CALENDAR_DAYS,
+        aWeekTypes = CONFIG.CALENDAR_WEEK_TYPE,
         oDefaultData = {
             sCustomer: aCustomers[0]?.sUUID,
             nPrice: 17.00,

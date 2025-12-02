@@ -68,28 +68,33 @@ export const CONFIG = {
     // -- Menu Item
     MENU_LIST_ITEMS: [
         {
-            sLabel: 'Menu',
+            sLabel: 'Menu Principal',
             aItems: <MenuItem[]>[
                 {
-                    sLabel: 'Clients',
-                    sContent: 'Customer'
-                },
-                {
-                    sLabel: 'Emploi du temps',
-                    sContent: 'Schedule'
-                },
-                {
-                    sLabel: 'Programme',
-                    sContent: 'Planning'
+                    sLabel: 'Agenda',
+                    sContent: 'Agenda'
                 },
                 {
                     sLabel: 'Rémunération',
                     sContent: 'Income'
                 }
             ]
+        },
+        {
+            sLabel: 'Administration',
+            aItems: <MenuItem[]>[
+                {
+                    sLabel: 'Clients',
+                    sContent: 'Customer'
+                },
+                {
+                    sLabel: 'Planification',
+                    sContent: 'Schedule'
+                },
+            ]
         }, 
         {
-            sLabel: '<br/>Paramètres',
+            sLabel: 'Paramètres',
             aItems: <MenuItem[]> [
                 // Special - Switch Theme 
                 {
@@ -102,15 +107,15 @@ export const CONFIG = {
     ],
 
     // -- Component Content
-    // CONTENT_DEFAULT: 'Planning',
+    // CONTENT_DEFAULT: 'Agenda',
     CONTENT_DEFAULT: 'Schedule',
     CONTENT_ITEMS: <TObject<TObject>> {
-        Planning: {
-            sComponent: 'Todo',
+        Agenda: {
+            sComponent: 'Agenda',
             nPagesCount: 3
         },
         Income: {
-            sComponent: 'Todo',
+            sComponent: 'Income',
             nPagesCount: 3
         },
         Customer: {
@@ -124,12 +129,12 @@ export const CONFIG = {
     },
     CONTENT_PAGE_SCROLLTOP_SELECTOR: '.fox-app-page-content',
 
-    // -- Schedule calendar
-    SCHEDULE_CALENDAR_DAYS: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'],
-    SCHEDULE_CALENDAR_HOUR_START: 8,
-    SCHEDULE_CALENDAR_HOUR_MAX_BY_DAY: 10,
-    SCHEDULE_CALENDAR_HOUR_BREAK: [8, 12, 13, 17],
-    SCHEDULE_CALENDAR_WEEK_TYPE: [
+    // -- Calendar
+    CALENDAR_DAYS: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'],
+    CALENDAR_HOUR_START: 8,
+    CALENDAR_HOUR_MAX_BY_DAY: 10,
+    CALENDAR_HOUR_BREAK: [8, 12, 13, 17],
+    CALENDAR_WEEK_TYPE: [
         { sValue: 'EVERY_WEEK', sText: 'Hebdomadaire', sDescription: 'Toutes les semaines', sTag: '' },
         { sValue: 'EVEN_WEEK', sText: 'Bimensuel paire', sDescription: 'En semaine paire', sTag: 'Paire' },
         { sValue: 'ODD_WEEK', sText: 'Bimensuel impaire', sDescription: 'En semaine impaire', sTag: 'Imp.' }

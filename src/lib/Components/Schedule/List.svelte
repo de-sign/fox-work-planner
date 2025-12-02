@@ -39,7 +39,7 @@
                 .sort( (sA, sB) => sA.localeCompare(sB, 'fr', { numeric: true }) )
                 .forEach( sDay => {
                     aReturn.push( {
-                        sDay: CONFIG.SCHEDULE_CALENDAR_DAYS[parseInt(sDay) - 1],
+                        sDay: CONFIG.CALENDAR_DAYS[parseInt(sDay) - 1],
                         aSchedules: oDays[sDay]
                     } )
                 } );
@@ -58,25 +58,29 @@
     <!-- Page Content -->
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
-            <div class="bulma-block">
-                <h1 class="bulma-title">Emploi du temps</h1>
-                <h2 class="bulma-subtitle">Définis ta semaine type</h2>
+
+            <div class="fox-app-title--has-buttons bulma-block">
+                <div>
+                    <h1 class="bulma-title">Planification</h1>
+                    <h2 class="bulma-subtitle">Définis ta semaine type</h2>
+                </div>
+                {#if bCustomers}
+                    <div class="bulma-buttons bulma-has-addons">
+                        <button class="bulma-button bulma-is-hovered" onclick="{ () => Pages.oDisplay.change('calendar') }" title="Affichage calendrier">
+                            <span class="bulma-icon bulma-is-small">
+                                <i class="fa-solid fa-calendar"></i>
+                            </span>
+                        </button>
+                        <div class="bulma-button bulma-is-link bulma-is-selected" title="Affichage liste">
+                            <span class="bulma-icon bulma-is-small">
+                                <i class="fa-solid fa-list"></i>
+                            </span>
+                        </div>
+                    </div>
+                {/if}
             </div>
 
             {#if bCustomers}
-
-                <div class="bulma-buttons bulma-has-addons bulma-is-justify-content-flex-end">
-                    <button class="bulma-button bulma-is-hovered" onclick="{ () => Pages.oDisplay.change('calendar') }" title="Affichage calendrier">
-                        <span class="bulma-icon bulma-is-small">
-                            <i class="fa-solid fa-calendar"></i>
-                        </span>
-                    </button>
-                    <div class="bulma-button bulma-is-link bulma-is-selected" title="Affichage liste">
-                        <span class="bulma-icon bulma-is-small">
-                            <i class="fa-solid fa-list"></i>
-                        </span>
-                    </div>
-                </div>
 
                 {#if aSchedulesGrouped.length}
                     {#each aSchedulesGrouped as oGroup}

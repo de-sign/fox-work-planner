@@ -39,7 +39,7 @@
                     </span>
                 </button>
             </div>
-            <div class="bulma-hero-body">
+            <div class="bulma-hero-body bulma-has-text-centered">
                 <h1 class="bulma-title">Work Planner</h1>
                 <h2 class="bulma-subtitle">Plan your working hours</h2>
             </div>
@@ -47,8 +47,8 @@
         
         <div class="bulma-card-content">
             <section class="bulma-menu">
-            	{#each CONFIG.MENU_LIST_ITEMS as oMenuList}
-                    <p class="bulma-menu-label">{@html oMenuList.sLabel}</p>
+            	{#each CONFIG.MENU_LIST_ITEMS as oMenuList, nIndex}
+                    <p class="bulma-menu-label { nIndex ? 'bulma-mt-5' : '' }">{@html oMenuList.sLabel}</p>
                     <ul class="bulma-menu-list">
             	        {#each oMenuList.aItems as oMenuItem}
                             {#if oMenuItem.bIsComponent}

@@ -65,7 +65,7 @@
                         <span>{oGroup.sLetter}</span>
                     </div>
                     {#each oGroup.aCustomers as oCustomer}
-                        <section class="fox-list bulma-block">
+                        <section class="fox-list">
                             <Item Item={{ oTarget: oCustomer, click: () => Pages.oView.open(oCustomer) }}/>
                             {#if oCustomer.aExtraContacts.length}
                                 <div class="fox-list">

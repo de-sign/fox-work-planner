@@ -17,9 +17,7 @@
             <div class="bulma-container bulma-is-max-tablet">
                 <div class="bulma-block bulma-has-text-centered">
                     <img class="bulma-px-6 bulma-mb-4" src="{sFoxSolid}" alt="Fox logo - solid"/>
-                    <h1 class="bulma-title">
-                        Work Planner
-                    </h1>
+                    <h1 class="bulma-title">Work Planner</h1>
                     <h2 class="bulma-subtitle">Plan your working hours #1</h2>
                 </div>
                 <div class="bulma-content">
@@ -70,9 +68,7 @@
             <div class="bulma-container bulma-is-max-tablet">
                 <div class="bulma-block bulma-has-text-centered">
                     <img class="bulma-px-6 bulma-mb-4" src="{sFoxSolid}" alt="Fox logo - solid"/>
-                    <h1 class="bulma-title">
-                        Work Planner
-                    </h1>
+                    <h1 class="bulma-title">Work Planner</h1>
                     <h2 class="bulma-subtitle">Plan your working hours #2</h2>
                 </div>
                 <div class="bulma-content">
@@ -123,9 +119,7 @@
             <div class="bulma-container bulma-is-max-tablet">
                 <div class="bulma-block bulma-has-text-centered">
                     <img class="bulma-px-6 bulma-mb-4" src="{sFoxSolid}" alt="Fox logo - solid"/>
-                    <h1 class="bulma-title">
-                        Work Planner
-                    </h1>
+                    <h1 class="bulma-title">Work Planner</h1>
                     <h2 class="bulma-subtitle">Plan your working hours #3</h2>
                 </div>
                 <div class="bulma-content">
