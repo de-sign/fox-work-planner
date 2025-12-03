@@ -146,13 +146,17 @@ class Contact {
         return this.sLastName + ' ' + this.sFirstName;
     }
 
+    public get sMapsQuery(): string {
+        return this.sAddress + ' ' + this.sPostalCode.replace(' ', '') + ' ' + this.sCity;
+    }
+
     public getAddress(bAddPhoneNumbers: boolean = true): string[] {
 
         const aResult = [this.sAddress];
         if( this.sAddressSupplement ){
             aResult.push(this.sAddressSupplement);
         }
-        aResult.push(this.sPostalCode + ' ' +this.sCity);
+        aResult.push(this.sPostalCode + ' ' + this.sCity);
 
         if( bAddPhoneNumbers ){
             aResult.push( ...this.aPhoneNumbers );

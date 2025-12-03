@@ -47,13 +47,13 @@
             sSubTitle: 'Définis ta semaine type',
             aButtons: [
                 {
-                    sClass: sDisplay == 'calendar' ? 'bulma-is-link bulma-is-selected' : 'bulma-is-hovered',
+                    sClass: sDisplay == 'calendar' ? 'bulma-is-link bulma-is-selected' : '',
                     sTitle: 'Affichage calendrier',
                     sIcon: 'fa-calendar',
                     click: () => changeDisplay('calendar')
                 },
                 {
-                    sClass: sDisplay == 'list' ? 'bulma-is-link bulma-is-selected' : 'bulma-is-hovered',
+                    sClass: sDisplay == 'list' ? 'bulma-is-link bulma-is-selected' : '',
                     sTitle: 'Affichage liste',
                     sIcon: 'fa-list',
                     click: () => changeDisplay('list')

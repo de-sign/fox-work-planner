@@ -130,10 +130,7 @@
                 {#if oSchedulesGrouped[nDay + ':' + nHour] }
                     <div class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOUR_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
                         {#each oSchedulesGrouped[nDay + ':' + nHour] as oSchedule}
-                            <Item sType="calendar" Item={{ ...oSchedule, click: (oEvent: any) => {
-                                    oEvent.stopPropagation();
-                                    Pages.oView.open(oSchedule.oTarget);
-                                } }}
+                            <Item sType="calendar" Item={{ ...oSchedule, click: () => Pages.oView.open(oSchedule.oTarget) }}
                             />
                         {/each}
                     </div>

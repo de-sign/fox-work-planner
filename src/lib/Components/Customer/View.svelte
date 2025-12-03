@@ -165,21 +165,29 @@
             {/if}
             
             <div class="bulma-mb-6">
-                <div class="bulma-field bulma-is-grouped bulma-is-grouped-right">
-                    <a class="bulma-button bulma-is-hovered" href="tel:{oContactView.aPhoneNumbers[0]}">
-                        <span class="bulma-icon">
-                            <i class="fa-solid fa-phone"></i>
-                        </span>
-                        <span>Appel</span>
-                    </a>
-                    {#if oContactView.getMobilePhoneNumbers().length}
+                <div class="bulma-field bulma-is-grouped bulma-is-grouped-right bulma-is-flex-wrap-wrap">
+                    <div class="bulma-buttons bulma-has-addons bulma-m-0">
+                        <a class="bulma-button bulma-is-hovered" target="_blank" href="https://maps.google.com/?q={oContactView.sMapsQuery}">
+                            <span class="bulma-icon">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </span>
+                            <span>Maps</span>
+                        </a>
+                        {#if oContactView.getMobilePhoneNumbers().length}
                         <a class="bulma-button bulma-is-hovered" href="sms:{oContactView.getMobilePhoneNumbers()[0]}">
                             <span class="bulma-icon">
                                 <i class="fa-solid fa-message"></i>
                             </span>
                             <span>SMS</span>
                         </a>
-                    {/if}
+                        {/if}
+                        <a class="bulma-button bulma-is-hovered" href="tel:{oContactView.aPhoneNumbers[0]}">
+                            <span class="bulma-icon">
+                                <i class="fa-solid fa-phone"></i>
+                            </span>
+                            <span>Appel</span>
+                        </a>
+                    </div>
                     <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={openModal}>
                         <span class="bulma-icon">
                             <i class="fa-solid fa-user-xmark"></i>

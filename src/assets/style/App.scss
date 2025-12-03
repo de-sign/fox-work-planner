@@ -244,7 +244,7 @@ $page-transition-timing-function: ease;
             margin: 0 calc(-1 * var(--fox-block-spacing)) -15px;
             top: calc(-1 * var(--fox-block-spacing));
             position: relative;
-            z-index: 50;
+            z-index: 20;
         }
 
         &::after {
