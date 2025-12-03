@@ -12,7 +12,6 @@ import Customer from './Customer.svelte';
  */
 export interface IScheduleOptions {
     _sUUID?: string;
-    // sTitle?: string;
     sCustomer: string;
     nDay: number;
     sWeekType: string;
@@ -70,7 +69,6 @@ class Schedule {
     /** Instance Properties */
     private _sUUID: string = '';
     public oCustomer: Customer = $state(Customer.oPlaceholder);
-    // public sTitle: string = $state('');
     public nDay: number = $state(0);
     public sWeekType: string = $state('');
     public sTimeStart: string = $state('');
@@ -143,7 +141,6 @@ class Schedule {
         return {
             _sUUID: this._sUUID,
             sCustomer: this.oCustomer.sUUID,
-            // sTitle: this.sTitle,
             nDay: this.nDay,
             sWeekType: this.sWeekType,
             sTimeStart: this.sTimeStart,
@@ -155,7 +152,6 @@ class Schedule {
 
     public update(oData: IScheduleOptions): void {
         this.oCustomer = Customer.get(oData.sCustomer);
-        // this.sTitle = oData.sTitle;
         this.nDay = oData.nDay;
         this.sWeekType = oData.sWeekType;
         this.sTimeStart = oData.sTimeStart;

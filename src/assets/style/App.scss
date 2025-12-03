@@ -1,4 +1,4 @@
-/* ---- Root */
+/* ---- Bulma variables */
 :root {
     /* General */
     --bulma-shadow: 0 0 0 1px hsl(
@@ -24,23 +24,22 @@
     );
 
     --bulma-block-spacing: 2rem;
-    --fox-block-spacing: 1.5rem;
 }
 
-html,
-body {
-    position: relative;
-    overflow: hidden;
+    /* Section */
+.bulma-section {
+    --bulma-section-padding: 1.5rem;
+}
+
+    /* Content */
+.bulma-content {
+    --bulma-content-blockquote-background-color: var(--bulma-border-weak);
 }
 
     /* Notification */
 .bulma-notification {
     --bulma-notification-background-l: var(--bulma-border-weak-l);
     --bulma-notification-color-l: var(--bulma-text-weak-l);
-}
-    /* Content */
-.bulma-content {
-    --bulma-content-blockquote-background-color: var(--bulma-border-weak);
 }
 
     /* Tag */
@@ -53,7 +52,17 @@ body {
     --bulma-button-disabled-background-color: transparent;
 }
 
+
 /* ---- FOX Application */
+:root {
+    --fox-block-spacing: 1.5rem;
+}
+
+html,
+body {
+    position: relative;
+    overflow: hidden;
+}
 
 /* -- Helper */
 .fox-svg-icon {
@@ -65,7 +74,7 @@ body {
     }
 }
 
-.fox-is-text-ellipsis {
+.fox--has-text-ellipsis {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -108,6 +117,10 @@ body {
     &-item {
         position: relative;
         margin: 0.5rem auto;
+
+        &:last-child {
+            margin-bottom: 0 !important;
+        }
 
         & > button {
             display: block;
@@ -160,7 +173,7 @@ $menu-transition-timing-function: ease;
 }
 
 /* -- Menu opened --*/
-.fox-app--is-menu-open {
+.fox-app--has-menu-open {
 
     &.fox-app-view {
         margin-left: calc(-2 * var(--fox-block-spacing));
@@ -217,49 +230,50 @@ $page-transition-timing-function: ease;
     &-content {
         flex: 1 1 auto;
         overflow: auto;
+
+        & > * {
+            min-height: 100%;
+        }
+
+        &::before,
+        &::after {
+            content: '';
+            display: block;
+            background-color: var(--bulma-body-background-color);
+            height: 15px;
+            margin: 0 calc(-1 * var(--fox-block-spacing)) -15px;
+            top: calc(-1 * var(--fox-block-spacing));
+            position: relative;
+            z-index: 50;
+        }
+
+        &::after {
+            margin: -15px calc(-1 * var(--fox-block-spacing)) 0;
+            top: initial;
+            bottom: calc(-1 * var(--fox-block-spacing));
+        }
     }
 
+    &-title,
     &-navbar {
+        position: relative;
+        z-index: 10;
+        box-shadow: 0 0 15px -5px rgba(0, 0, 0, 0.25);
         flex: none;
-        padding-top: var(--fox-block-spacing);
-        padding-bottom: var(--fox-block-spacing);
 
         & > * {
             display: flex;
+            align-items: flex-start;
+            flex-wrap: nowrap !important;
+        }
+
+        &:last-child > * {
             align-items: flex-end;
         }
 
         &-item {
+            max-width: 100%;
             padding-right: var(--fox-block-spacing);
-
-            &:first-child {
-                flex: 1 1 auto;
-            }
-
-            &:last-child {
-                padding-right: 0;
-            }
-        }
-    }
-}
-
-/* -- Title */
-.fox-app-title {
-    
-    position: sticky;
-    top: calc(-2 * var(--fox-block-spacing));
-    margin: calc(-1 * var(--fox-block-spacing)) calc(-1 * var(--fox-block-spacing)) calc( var(--bulma-block-spacing) - var(--fox-block-spacing) );
-    padding: var(--fox-block-spacing);
-    z-index: 50;
-    background-color: var(--bulma-body-background-color);
-
-    &--has-buttons {
-        display: flex;
-        align-items: flex-start;
-
-        & > * {
-            padding-right: var(--fox-block-spacing);
-            flex-wrap: nowrap !important;
 
             &:first-child {
                 flex: 1 1 auto;

@@ -3,16 +3,15 @@
     /* -- Core */
     import type { TObject } from '../Core/Type';
     import { CONFIG } from '../Core/Config';
+    import { COMPONENTS } from '../Core/Import';
+
+    import EventEmitter from 'eventemitter3';
 
     /* -- Svelte */
     import Menu from './Menu/Menu.svelte';
-
-    import { COMPONENTS } from '../Core/Import';
     Object.values(CONFIG.CONTENT_ITEMS).forEach( oContentItem => {
         oContentItem.oComponent = COMPONENTS[ oContentItem.sComponent ];
     } );
-
-    /* -- Style */
     
     /* ---- Component */
     /* -- Content Component */
@@ -94,12 +93,13 @@
             next: nextPage,
             previous: previousPage,
             back: backPage
-        }
+        },
+        oEmitter: new EventEmitter()
     };
 
 </script>
 
-<div class="fox-app-view { bOpenMenu ? 'fox-app--is-menu-open' : '' }" >
+<div class="fox-app-view { bOpenMenu ? 'fox-app--has-menu-open' : '' }" >
     <!-- Menu -->
     <Menu
         sContentSelected={sContentSelected}

@@ -4,6 +4,11 @@
     import { CUSTOMER_FORM_TYPE, CUSTOMER_PAGE, SCHEDULE_WEEK_TYPE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
 
+    /* -- Template */
+    import Title from '../Template/Title.svelte';
+    import Navbar from '../Template/Navbar.svelte';
+
+    /* -- Content */
     import Customer from '../../Class/Customer.svelte';
     import Contact from '../../Class/Contact.svelte';
     import Schedule from '../../Class/Schedule.svelte';
@@ -81,6 +86,45 @@
         App.oPage.back();
     }
 
+    /* ---- Template */
+    /* -- Title */
+    const oTitle = $derived.by( () => {
+        return {
+            sTitle: oContactView.sName,
+            sSubTitle : bIsCustomerView ?
+                `<span class="bulma-icon-text">
+                    <span class="bulma-icon">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </span>
+                    <span>Client principal</span>
+                </span>` :
+                `<span class="bulma-icon-text">
+                    <span class="bulma-icon">
+                        <i class="fa-solid fa-user-group fa-sm"></i>
+                    </span>
+                    <span>Contact supplémentaire</span>
+                </span>`
+        };
+    } );
+    
+    /* -- Navbar */
+    const oNavbar = {
+        oBack: {
+            sTitle: 'Retourner à la page précédente',
+            sIcon: 'fa-chevron-left',
+            sText: 'Retour',
+            click: App.oPage.back
+        },
+        aButtons: [
+            {
+                sTitle: 'Modifier le client',
+                sIcon: 'fa-user-pen',
+                sText: 'Modifier',
+                click: () => Pages.oForm.open(CUSTOMER_FORM_TYPE.MODIFY_CONTACT, oFormEdit)
+            }
+        ]
+    };
+
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
         // $inspect(oTarget).with(console.trace);
@@ -90,30 +134,13 @@
 </script>
 
 <section class="fox-app-page">
+
+    <!-- Page Title -->
+    <Title Item={oTitle} />
+
     <!-- Page Content -->
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
-
-            <header class="fox-app-title">
-                <h1 class="bulma-title fox-is-text-ellipsis">{oContactView.sName}</h1>
-                <h2 class="bulma-subtitle">
-                    {#if bIsCustomerView}
-                        <span class="bulma-icon-text">
-                            <span class="bulma-icon">
-                                <i class="fa-solid fa-user-tie"></i>
-                            </span>
-                            <span>Client principal</span>
-                        </span>
-                    {:else}
-                        <span class="bulma-icon-text">
-                            <span class="bulma-icon">
-                                <i class="fa-solid fa-user-group"></i>
-                            </span>
-                            <span>Contact supplémentaire</span>
-                        </span>
-                    {/if}
-                </h2>
-            </header>
 
             <address class="bulma-block">
                 {@html '<p>' + oContactView.getAddress().join('</p><p>') + '</p>'}
@@ -211,28 +238,9 @@
             {/if}
         </div>
     </div>
-
-    <!-- Navbar -->
-    <nav class="fox-app-page-navbar bulma-section">
-        <div class="bulma-container bulma-is-max-tablet">
-            <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-hovered" onclick={App.oPage.back} >
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </span>
-                    <span>Retour</span>
-                </button>
-            </div>
-            <div class="fox-app-page-navbar-item">
-                <button class="bulma-button" onclick="{ () => Pages.oForm.open(CUSTOMER_FORM_TYPE.MODIFY_CONTACT, oFormEdit) }">
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-user-pen"></i>
-                    </span>
-                    <span>Modifier</span>
-                </button>
-            </div>
-        </div>
-    </nav>
+    
+    <!-- Page Navbar -->
+    <Navbar Item={oNavbar} />
 
     <!-- Modal -->
     <aside class="bulma-modal bulma-is-justify-content-flex-end { bOpenModal ? 'bulma-is-active' : '' }" >

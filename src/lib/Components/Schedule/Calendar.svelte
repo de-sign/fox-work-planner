@@ -2,10 +2,11 @@
     /* ---- Import */
     /* -- Core */
     import type { TObject } from '../../Core/Type';
-    import { CUSTOMER_PAGE, SCHEDULE_FORM_TYPE } from '../../Core/Constants';
+    import { SCHEDULE_FORM_TYPE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
+    import * as Svelte from 'svelte';
 
-    import Customer from '../../Class/Customer.svelte';
+    /* -- Content */
     import Schedule from '../../Class/Schedule.svelte';
 
     import Item from '../Schedule/Item.svelte';
@@ -16,11 +17,9 @@
         Pages
     } = $props();
 
-    const bCustomers = Customer.hasCustomers(),
-        oSchedules = Schedule.getAll();
-
     /* -- Calendar */
-    const aDays = CONFIG.CALENDAR_DAYS.map( sValue => sValue.charAt(0) ),
+    const oSchedules = Schedule.getAll(),
+        aDays = CONFIG.CALENDAR_DAYS.map( sValue => sValue.charAt(0) ),
         nStartHour = CONFIG.CALENDAR_HOUR_START,
         nMaxHourForDay = CONFIG.CALENDAR_HOUR_MAX_BY_DAY,
         aHours = Array.from(
@@ -83,7 +82,7 @@
         sCellSelected = nDay + ':' + nHour;
     }
 
-    function unselectCell(): void {
+    function unselectCell(): void { // ???
         sCellSelected = '0:0';
     }
 
@@ -95,6 +94,10 @@
         };
     }
 
+    Svelte.onMount( () => App.oEmitter.on('fox-app-page--click', unselectCell) );
+    Svelte.onDestroy( () => App.oEmitter.removeListener('fox-app-page--click', unselectCell) );
+    
+
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
         // $inspect(oSchedulesGrouped).with(console.trace);
@@ -103,153 +106,63 @@
 </script>
 
 <!-- Variable CSS -->
-<section class="fox-app-page" style="--fox-calendar-cell-height: {nCellHeight}px">
+<div class="fox-calendar bulma-block bulma-fixed-grid bulma-has-7-cols" style="--fox-calendar-cell-height: {nCellHeight}px">
+    <div class="bulma-grid bulma-is-gap-0">
+        <div class="bulma-cell fox-calendar-header">
+            <span class="bulma-is-size-7 fox-calendar-hour">{nStartHour}h</span>
+            <span>D</span>
+        </div>
+        {#each aDays as sDay}
+            <div class="bulma-cell fox-calendar-header">
+                {sDay}
+            </div>
+        {/each}
+        <div class="bulma-cell fox-calendar-header fox-calendar-is-right">
+            <span class="bulma-is-size-7 fox-calendar-hour">{nStartHour}h</span>
+            <span>S</span>
+        </div>
 
-    <!-- Page Content -->
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div class="fox-app-page-content bulma-section" onclick={unselectCell}>
-        <div class="bulma-container bulma-is-max-tablet">
-            
-            <header class="fox-app-title fox-app-title--has-buttons">
-                <div>
-                    <h1 class="bulma-title">Planification</h1>
-                    <h2 class="bulma-subtitle">Définis ta semaine type</h2>
-                </div>
-                {#if bCustomers}
-                    <div class="bulma-buttons bulma-has-addons">
-                        <div class="bulma-button bulma-is-link bulma-is-selected" title="Affichage calendrier">
+        {#each aHours as nHour}
+            <div class="bulma-cell">
+                <span class="bulma-is-size-7 fox-calendar-hour">{nHour + 1}h</span>
+            </div>
+            {#each aDays as sDay, nDay}
+                {#if oSchedulesGrouped[nDay + ':' + nHour] }
+                    <div class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOUR_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
+                        {#each oSchedulesGrouped[nDay + ':' + nHour] as oSchedule}
+                            <Item sType="calendar" Item={{ ...oSchedule, click: (oEvent: any) => {
+                                    oEvent.stopPropagation();
+                                    Pages.oView.open(oSchedule.oTarget);
+                                } }}
+                            />
+                        {/each}
+                    </div>
+                {:else if sCellSelected == nDay + ':' + nHour}
+                    <div class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOUR_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
+                        <button
+                            class="bulma-button bulma-is-link bulma-is-outlined" title="Ajouter une planification"
+                            onclick={ oEvent => {
+                                oEvent.stopPropagation();
+                                Pages.oForm.open(SCHEDULE_FORM_TYPE.NEW_SCHEDULE, parseCellToForm(nDay, nHour) );
+                            } }
+                        >
                             <span class="bulma-icon bulma-is-small">
-                                <i class="fa-solid fa-calendar"></i>
-                            </span>
-                        </div>
-                        <button class="bulma-button bulma-is-hovered" onclick="{ () => Pages.oDisplay.change('list') }" title="Affichage liste">
-                            <span class="bulma-icon bulma-is-small">
-                                <i class="fa-solid fa-list"></i>
+                                <i class="fa-solid fa-plus"></i>
                             </span>
                         </button>
                     </div>
-                {/if}
-            </header>
-
-            {#if bCustomers}
-
-                <div class="fox-calendar bulma-block bulma-fixed-grid bulma-has-7-cols">
-                    <div class="bulma-grid bulma-is-gap-0">
-                        <div class="bulma-cell fox-calendar-header">
-                            <span class="bulma-is-size-7 fox-calendar-hour">{nStartHour}h</span>
-                            <span>D</span>
-                        </div>
-                        {#each aDays as sDay}
-                            <div class="bulma-cell fox-calendar-header">
-                                {sDay}
-                            </div>
-                        {/each}
-                        <div class="bulma-cell fox-calendar-header fox-calendar-is-right">
-                            <span class="bulma-is-size-7 fox-calendar-hour">{nStartHour}h</span>
-                            <span>S</span>
-                        </div>
-
-                        {#each aHours as nHour}
-                            <div class="bulma-cell">
-                                <span class="bulma-is-size-7 fox-calendar-hour">{nHour + 1}h</span>
-                            </div>
-                            {#each aDays as sDay, nDay}
-                                {#if oSchedulesGrouped[nDay + ':' + nHour] }
-                                    <div class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOUR_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
-                                        {#each oSchedulesGrouped[nDay + ':' + nHour] as oSchedule}
-                                            <Item sType="calendar" Item={{ ...oSchedule, click: (oEvent: any) => {
-                                                    oEvent.stopPropagation();
-                                                    Pages.oView.open(oSchedule.oTarget);
-                                                } }}
-                                            />
-                                        {/each}
-                                    </div>
-                                {:else if sCellSelected == nDay + ':' + nHour}
-                                    <div class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOUR_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
-                                        <button
-                                            class="bulma-button bulma-is-link bulma-is-outlined" title="Ajouter une heure programmée"
-                                            onclick={ oEvent => {
-                                                oEvent.stopPropagation();
-                                                Pages.oForm.open(SCHEDULE_FORM_TYPE.NEW_SCHEDULE, parseCellToForm(nDay, nHour) );
-                                            } }
-                                        >
-                                            <span class="bulma-icon bulma-is-small">
-                                                <i class="fa-solid fa-plus"></i>
-                                            </span>
-                                        </button>
-                                    </div>
-                                {:else}
-                                    <button class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOUR_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }" title="Selectionner la cellule" onclick={ oEvent => { oEvent.stopPropagation(); selectCell(nDay, nHour) } }></button>
-                                {/if}
-                            {/each}
-                            <div class="bulma-cell fox-calendar-is-right">
-                                <span class="bulma-is-size-7 fox-calendar-hour">{nHour + 1}h</span>
-                            </div>
-                        {/each}
-                    </div>
-                </div>
-            {:else}
-                <div class="bulma-notification bulma-has-text-centered">
-                    <span class="bulma-block bulma-icon-text">
-                        <span class="bulma-icon">
-                            <i class="fa-solid fa-user-slash"></i>
-                        </span>
-                        <span>Aucun client trouvé</span>
-                    </span>
-                </div>
-                <p class="fox-calendar-notification bulma-block">
-                    Tu dois d'abord créer un
-                    <button class="bulma-block bulma-button bulma-is-small" onclick="{ () => App.oContent.change('Customer', CUSTOMER_PAGE.FORM) }">
-                        <span class="bulma-icon">
-                            <i class="fa-solid fa-user-plus"></i>
-                        </span>
-                        <span>client</span>
-                    </button>
-                    avant de pouvoir lui ajouter une heure programmée !
-                </p>
-            {/if}
-
-        </div>
-    </div>
-
-    <!-- Navbar -->
-    <nav class="fox-app-page-navbar bulma-section">
-        <div class="bulma-container bulma-is-max-tablet">
-            <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-hovered" onclick={App.oMenu.open} >
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-bars"></i>
-                    </span>
-                    <span>Menu</span>
-                </button>
-            </div>
-            <div class="fox-app-page-navbar-item">
-                {#if bCustomers}
-                    <button class="bulma-button bulma-is-link" onclick="{ () => Pages.oForm.open(SCHEDULE_FORM_TYPE.NEW_SCHEDULE) }">
-                        <span class="bulma-icon">
-                            <i class="fa-solid fa-calendar-plus"></i>
-                        </span>
-                        <span>Ajouter</span>
-                    </button>
                 {:else}
-                    <button class="bulma-button bulma-is-link" onclick="{ () => App.oContent.change('Customer', CUSTOMER_PAGE.FORM) }">
-                        <span class="bulma-icon">
-                            <i class="fa-solid fa-user-plus"></i>
-                        </span>
-                        <span>Ajouter</span>
-                    </button>
+                    <button class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOUR_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }" title="Selectionner la cellule" onclick={ oEvent => { oEvent.stopPropagation(); selectCell(nDay, nHour) } }></button>
                 {/if}
+            {/each}
+            <div class="bulma-cell fox-calendar-is-right">
+                <span class="bulma-is-size-7 fox-calendar-hour">{nHour + 1}h</span>
             </div>
-        </div>
-    </nav>
-</section>
+        {/each}
+    </div>
+</div>
 
 <style>
-    .fox-calendar-notification .bulma-button {
-        vertical-align: middle;
-    }
-
     .fox-calendar .bulma-cell {
         position: relative;
         min-height: var(--fox-calendar-cell-height);

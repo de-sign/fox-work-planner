@@ -18,7 +18,7 @@
 
 {#if sType == 'calendar'}
     <button
-        title="Voir une heure programmée"
+        title="Voir une planification"
         class="fox-calendar-task bulma-button bulma-is-link bulma-is-light bulma-is-size-7"
         style="{Object.keys(Item.oStyle).map(sStyle => `${sStyle}: ${Item.oStyle[sStyle]}`).join(';')}"
         onclick={Item.click}

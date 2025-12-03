@@ -5,6 +5,11 @@
     import { CUSTOMER_FORM_TYPE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
 
+    /* -- Template */
+    import Title from '../Template/Title.svelte';
+    import Navbar from '../Template/Navbar.svelte';
+
+    /* -- Content */
     import Customer from '../../Class/Customer.svelte';
     import Item from './Item.svelte';
 
@@ -42,6 +47,32 @@
 
             return aReturn;
         } );
+        
+    /* ---- Template */
+    /* -- Title */
+    const oTitle = {
+        sTitle: 'Clients',
+        sSubTitle: 'Administre tes clients'
+    };
+
+    /* -- Navbar */
+    const oNavbar = {
+        oBack: {
+            sTitle: 'Ouvrir le menu',
+            sIcon: 'fa-bars',
+            sText: 'Menu',
+            click: App.oMenu.open
+        },
+        aButtons: [
+            {
+                sClass: 'bulma-is-link',
+                sTitle: 'Ajouter un client',
+                sIcon: 'fa-user-plus',
+                sText: 'Ajouter',
+                click: () => Pages.oForm.open(CUSTOMER_FORM_TYPE.NEW_CUSTOMER)
+            }
+        ]
+    };
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
@@ -52,15 +83,12 @@
 
 <section class="fox-app-page">
 
+    <!-- Page Title -->
+    <Title Item={oTitle} />
+
     <!-- Page Content -->
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
-
-            <header class="fox-app-title">
-                <h1 class="bulma-title">Clients</h1>
-                <h2 class="bulma-subtitle">Administre tes clients</h2>
-            </header>
-
             {#each aCustomersGrouped as oGroup}
                 <section class="bulma-block">
                     <div class="fox-separator">
@@ -91,28 +119,10 @@
             {/each}
         </div>
     </div>
-
-    <!-- Navbar -->
-    <nav class="fox-app-page-navbar bulma-section">
-        <div class="bulma-container bulma-is-max-tablet">
-            <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-hovered" onclick={App.oMenu.open} >
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-bars"></i>
-                    </span>
-                    <span>Menu</span>
-                </button>
-            </div>
-            <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-link" onclick="{ () => Pages.oForm.open(CUSTOMER_FORM_TYPE.NEW_CUSTOMER) }">
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-user-plus"></i>
-                    </span>
-                    <span>Ajouter</span>
-                </button>
-            </div>
-        </div>
-    </nav>
+    
+    <!-- Page Navbar -->
+    <Navbar Item={oNavbar} />
+    
 </section>
 
 <style>

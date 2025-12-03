@@ -1,6 +1,6 @@
 // Imports
 import type { TObject, TFlag } from './Type';
-import { EVENT_NAME, PROPERTY_NAME } from './Constants';
+import { EVENT_NAME } from './Constants';
 import { CONFIG } from '../Core/Config';
 
 import EventEmitter from 'eventemitter3';

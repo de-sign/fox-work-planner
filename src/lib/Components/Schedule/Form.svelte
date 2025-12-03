@@ -9,6 +9,11 @@
     import { CONFIG } from '../../Core/Config';
     import * as FORM from '../../Core/Form';
 
+    /* -- Template */
+    import Title from '../Template/Title.svelte';
+    import Navbar from '../Template/Navbar.svelte';
+
+    /* -- Content */
     import Customer from '../../Class/Customer.svelte';
     import Schedule from '../../Class/Schedule.svelte';
 
@@ -22,7 +27,7 @@
     let oPlaceholder: Schedule = Schedule.oPlaceholder,
         oTarget: Schedule | undefined = $state(),
         sType: string = $state(SCHEDULE_FORM_TYPE.NEW_SCHEDULE),
-        sTitle: string = $state('Default Title'),
+        sSubTitle: string = $state('Default Title'),
         oData: TObject = $state({}),
         oError: TObject = $state({});
 
@@ -47,10 +52,10 @@
         // Title
         switch(sFormType){
             case SCHEDULE_FORM_TYPE.NEW_SCHEDULE:
-                sTitle = 'Ajoute une nouvelle heure programmée';
+                sSubTitle = 'Ajoute une nouvelle planification';
                 break;
             case SCHEDULE_FORM_TYPE.MODIFY_SCHEDULE:
-                sTitle = 'Modifie une heure programmée existante';
+                sSubTitle = 'Modifie une planification existante';
                 break;
         }
 
@@ -69,10 +74,6 @@
 
     /* -- Form */
     const oFields: TObject<TObject> = {
-        // sTitle: {
-        //     fCheck: null,
-        //     fTransform: FORM.toCapitalize
-        // },
         sCustomer: {
             fCheck: FORM.isDefined,
             fTransform: null
@@ -130,6 +131,33 @@
             Pages.oView?.open(oWillView);
         }
     }
+        
+    /* ---- Template */
+    /* -- Title */
+    const oTitle = $derived.by( () => {
+        return {
+            sTitle: 'Formulaire',
+            sSubTitle: sSubTitle
+        };
+    } );
+    
+    /* -- Navbar */
+    const oNavbar = {
+        oBack: {
+            sTitle: 'Retourner à la page précédente',
+            sIcon: 'fa-chevron-left',
+            sText: 'Retour',
+            click: App.oPage.back
+        },
+        aButtons: [
+            {
+                sTitle: 'Valider le formulaire',
+                sIcon: 'fa-check',
+                sText: 'Valider',
+                click: validate
+            }
+        ]
+    };
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
@@ -139,24 +167,14 @@
 
 <section class="fox-app-page">
 
+    <!-- Page Title -->
+    <Title Item={oTitle} />
+
     <!-- Page Content -->
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
-            
-            <header class="fox-app-title">
-                <h1 class="bulma-title">Formulaire</h1>
-                <h2 class="bulma-subtitle">{sTitle}</h2>
-            </header>
 
             <form class="bulma-block">
-
-                <!-- sTitle -->
-                <!-- <div class="bulma-field">
-                    <label class="bulma-label" for="Schedule__sTitle">Titre</label>
-                    <div class="bulma-control">
-                        <input id="Schedule__sTitle" bind:value="{oData.sTitle}" class="bulma-input" type="text" placeholder="{oPlaceholder.sTitle}">
-                    </div>
-                </div> -->
 
                 <!-- sCustomer -->
                 <div class="bulma-field">
@@ -227,38 +245,6 @@
                     {/if}
                 </div>
 
-                <!-- nDay + sWeekType -->
-                <!-- <div class="bulma-field">
-                    <div class="bulma-label bulma-is-flex">
-                        <label class="bulma-is-flex-grow-1 bulma-is-flex-shrink-1" for="Schedule__nDay">Jour de la semaine</label>
-                        <label class="bulma-is-flex-grow-1 bulma-is-flex-shrink-1 bulma-has-text-right" for="Schedule__sWeekType">Fréquence</label>
-                    </div>
-                    <div class="bulma-field bulma-has-addons">
-                        <div class="bulma-control bulma-is-expanded">
-                            <div class="bulma-select bulma-is-fullwidth">
-                                <select id="Schedule__nDay" bind:value="{oData.nDay}" >
-                                    {#each aDays as sDays, nIndex}
-                                        <option value={nIndex + 1}>
-                                            {sDays}
-                                        </option>
-                                    {/each}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="bulma-control bulma-is-expanded">
-                            <div class="bulma-select bulma-is-fullwidth">
-                                <select id="Schedule__sWeekType" bind:value="{oData.sWeekType}" >
-                                    {#each aWeekTypes as oWeekType}
-                                        <option value={oWeekType.sValue}>
-                                            {oWeekType.sText}
-                                        </option>
-                                    {/each}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-
                 <!-- sTimeStart -->
                 <div class="bulma-field">
                     <label class="bulma-label" for="Schedule__sTimeStart">Heure de début</label>
@@ -287,39 +273,6 @@
                     {/if}
                 </div>
 
-                
-                <!-- sTimeStart + sTimeEnd-->
-                <!-- <div class="bulma-field">
-                    
-                    <div class="bulma-label bulma-is-flex">
-                        <label class="bulma-is-flex-grow-1 bulma-is-flex-shrink-1" for="Schedule__sTimeStart">Heure de début</label>
-                        <label class="bulma-is-flex-grow-1 bulma-is-flex-shrink-1 bulma-has-text-right" for="Schedule__sTimeEnd">Heure de fin</label>
-                    </div>
-                    <div class="bulma-field bulma-has-addons">
-                        <div class="bulma-control bulma-has-icons-right">
-                            <input id="Schedule__sTimeStart" bind:value="{oData.sTimeStart}" class="bulma-input { oError.sTimeStart ? 'bulma-is-danger' : '' }" type="time" placeholder="{oPlaceholder.sTimeStart}">
-                            <span class="bulma-icon bulma-is-right bulma-has-text-danger">
-                                <i class="fas fa-asterisk fa-2xs"></i>
-                            </span>
-                        </div>
-                        <div class="bulma-control bulma-is-expanded">
-                            <div class="bulma-button bulma-is-static bulma-is-fullwidth">à</div>
-                        </div>
-                        <div class="bulma-control bulma-has-icons-right">
-                            <input id="Schedule__sTimeEnd" bind:value="{oData.sTimeEnd}" class="bulma-input { oError.sTimeEnd ? 'bulma-is-danger' : '' }" type="time" placeholder="{oPlaceholder.sTimeEnd}">
-                            <span class="bulma-icon bulma-is-right bulma-has-text-danger">
-                                <i class="fas fa-asterisk fa-2xs"></i>
-                            </span>
-                        </div>
-                    </div>
-                    {#if oError.sTimeStart}
-                        <i class="bulma-help bulma-has-text-danger">L'heure de début est obligatoire</i>
-                    {/if}
-                    {#if oError.sTimeEnd}
-                        <i class="bulma-help bulma-has-text-danger">L'heure de fin est obligatoire et doit être supérieur à l'heure de début</i>
-                    {/if}
-                </div> -->
-
                 <!-- nPrice -->
                 <div class="bulma-field">
                     <label class="bulma-label" for="Schedule__nPrice">Tarif horaire</label>
@@ -347,28 +300,10 @@
             </form>
         </div>
     </div>
+    
+    <!-- Page Navbar -->
+    <Navbar Item={oNavbar} />
 
-    <!-- Navbar -->
-    <nav class="fox-app-page-navbar bulma-section">
-        <div class="bulma-container bulma-is-max-tablet">
-            <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-hovered" onclick={App.oPage.back} >
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-xmark"></i>
-                    </span>
-                    <span>Annuler</span>
-                </button>
-            </div>
-            <div class="fox-app-page-navbar-item">
-                <button class="bulma-button" onclick={validate}>
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-check"></i>
-                    </span>
-                    <span>Valider</span>
-                </button>
-            </div>
-        </div>
-    </nav>
 </section>
 
 <style>

@@ -8,6 +8,11 @@
     import { CONFIG } from '../../Core/Config';
     import * as FORM from '../../Core/Form';
 
+    /* -- Template */
+    import Title from '../Template/Title.svelte';
+    import Navbar from '../Template/Navbar.svelte';
+
+    /* -- Content */
     import Contact from '../../Class/Contact.svelte';
     import Customer from '../../Class/Customer.svelte';
 
@@ -21,7 +26,7 @@
     let oPlaceholder: Contact = Contact.oPlaceholder,
         oTarget: TObject | undefined = $state({}),
         sType: string = $state(CUSTOMER_FORM_TYPE.NEW_CUSTOMER),
-        sTitle: string = $state('Ajoute un nouveau client'),
+        sSubTitle: string = $state('Ajoute un nouveau client'),
         oData: TObject = $state({ aPhoneNumbers: [null] }),
         oError: TObject = $state({ aPhoneNumbers: [] });
 
@@ -33,13 +38,13 @@
         // Title
         switch(sFormType){
             case CUSTOMER_FORM_TYPE.NEW_CUSTOMER:
-                sTitle = 'Ajoute un nouveau client';
+                sSubTitle = 'Ajoute un nouveau client';
                 break;
             case CUSTOMER_FORM_TYPE.NEW_CONTACT:
-                sTitle = 'Ajoute un nouveau contact';
+                sSubTitle = 'Ajoute un nouveau contact';
                 break;
             case CUSTOMER_FORM_TYPE.MODIFY_CONTACT:
-                sTitle = 'Modifie un contact existant';
+                sSubTitle = 'Modifie un contact existant';
                 break;
         }
 
@@ -135,6 +140,33 @@
             Pages.oView?.open(oWillView);
         }
     }
+        
+    /* ---- Template */
+    /* -- Title */
+    const oTitle = $derived.by( () => {
+        return {
+            sTitle: 'Formulaire',
+            sSubTitle: sSubTitle
+        };
+    } );
+    
+    /* -- Navbar */
+    const oNavbar = {
+        oBack: {
+            sTitle: 'Retourner à la page précédente',
+            sIcon: 'fa-chevron-left',
+            sText: 'Retour',
+            click: App.oPage.back
+        },
+        aButtons: [
+            {
+                sTitle: 'Valider le formulaire',
+                sIcon: 'fa-check',
+                sText: 'Valider',
+                click: validate
+            }
+        ]
+    };
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
@@ -145,14 +177,12 @@
 
 <section class="fox-app-page">
 
+    <!-- Page Title -->
+    <Title Item={oTitle} />
+
     <!-- Page Content -->
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
-
-            <header class="fox-app-title">
-                <h1 class="bulma-title">Formulaire</h1>
-                <h2 class="bulma-subtitle">{sTitle}</h2>
-            </header>
 
             <form class="bulma-block">
 
@@ -293,27 +323,9 @@
         </div>
     </div>
     
-    <!-- Navbar -->
-    <nav class="fox-app-page-navbar bulma-section">
-        <div class="bulma-container bulma-is-max-tablet">
-            <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-hovered" onclick={App.oPage.back} >
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-xmark"></i>
-                    </span>
-                    <span>Annuler</span>
-                </button>
-            </div>
-            <div class="fox-app-page-navbar-item">
-                <button class="bulma-button" onclick={validate}>
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-check"></i>
-                    </span>
-                    <span>Valider</span>
-                </button>
-            </div>
-        </div>
-    </nav>
+    <!-- Page Navbar -->
+    <Navbar Item={oNavbar} />
+
 </section>
 
 <style>

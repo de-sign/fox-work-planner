@@ -5,6 +5,11 @@
     import { SCHEDULE_WEEK_TYPE, SCHEDULE_FORM_TYPE, SCHEDULE_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
 
+    /* -- Template */
+    import Title from '../Template/Title.svelte';
+    import Navbar from '../Template/Navbar.svelte';
+
+    /* -- Content */
     import Contact from '../../Class/Contact.svelte';
     import Schedule from '../../Class/Schedule.svelte';
 
@@ -39,6 +44,38 @@
         App.oPage.back();
     }
 
+    /* ---- Template */
+    const oTitle = $derived.by( () => {
+        return {
+            sTitle: `${oTarget.sDay} chez ${oContactView.sShortName}`,
+            sSubTitle: '' + 
+                `<span class="bulma-icon-text">
+                    <span class="bulma-icon">
+                        <i class="fa-solid fa-clock"></i>
+                    </span>
+                    <span>Durée de ${oTarget.sDuration}</span>
+                </span>`
+        };
+    } );
+    
+    /* -- Navbar */
+    const oNavbar = {
+        oBack: {
+            sTitle: 'Retourner à la page précédente',
+            sIcon: 'fa-chevron-left',
+            sText: 'Retour',
+            click: App.oPage.back
+        },
+        aButtons: [
+            {
+                sTitle: 'Modifier l\'heure plannifiée',
+                sIcon: 'fa-calendar-day',
+                sText: 'Modifier',
+                click: () => Pages.oForm.open(SCHEDULE_FORM_TYPE.MODIFY_SCHEDULE, oTarget)
+            }
+        ]
+    };
+
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
         // $inspect(uVariable).with(console.trace);
@@ -47,21 +84,11 @@
 
 <section class="fox-app-page">
 
+    <!-- Page Title -->
+    <Title Item={oTitle} />
     <!-- Page Content -->
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
-
-            <header class="fox-app-title">
-                <h1 class="bulma-title fox-is-text-ellipsis">{oTarget.sDay} chez {oContactView.sShortName}</h1>
-                <h2 class="bulma-subtitle">
-                    <span class="bulma-icon-text">
-                        <span class="bulma-icon">
-                            <i class="fa-solid fa-clock"></i>
-                        </span>
-                        <span>Durée de {oTarget.sDuration}</span>
-                    </span>
-                </h2>
-            </header>
 
             <div class="bulma-block">
                 <p>Tous les {oTarget.sDay}s</p>
@@ -100,28 +127,9 @@
             </div>
         </div>
     </div>
-
-    <!-- Navbar -->
-    <nav class="fox-app-page-navbar bulma-section">
-        <div class="bulma-container bulma-is-max-tablet">
-            <div class="fox-app-page-navbar-item">
-                <button class="bulma-button bulma-is-hovered" onclick={App.oPage.back} >
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </span>
-                    <span>Retour</span>
-                </button>
-            </div>
-            <div class="fox-app-page-navbar-item">
-                <button class="bulma-button" onclick="{ () => Pages.oForm.open(SCHEDULE_FORM_TYPE.MODIFY_SCHEDULE, oTarget) }">
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-calendar-day"></i>
-                    </span>
-                    <span>Modifier</span>
-                </button>
-            </div>
-        </div>
-    </nav>
+    
+    <!-- Page Navbar -->
+    <Navbar Item={oNavbar} />
 
     <!-- Modal -->
     <aside class="bulma-modal bulma-is-justify-content-flex-end { bOpenModal ? 'bulma-is-active' : '' }" >
@@ -129,7 +137,7 @@
         <div class="bulma-modal-content">
             <div class="bulma-box bulma-p-5">
                 <p class="bulma-block">
-                    Es-tu sûr de vouloir supprimer cette heure programmée
+                    Es-tu sûr de vouloir supprimer cette planification
                     de <b>{oTarget.sTimeStart.replace(':', 'h')}</b> à <b>{oTarget.sTimeEnd.replace(':', 'h')}</b>
                     pour <b>{oContactView.sName}</b>&nbsp;?
                 </p>
