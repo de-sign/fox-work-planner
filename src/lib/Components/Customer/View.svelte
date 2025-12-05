@@ -43,7 +43,7 @@
     let bOpenModal: boolean = $state(false),
         sHTMLInfos: string = $derived.by( () => {
             
-            let aInfos: string[] = ['<b>' + oCustomerView.sName + '</b>'],
+            let aInfos: string[] = ['<b>' + oContactView.sName + '</b>'],
                 sInfo: string = '';
 
             if( bIsCustomerView ){
@@ -51,7 +51,7 @@
                     aInfos.push('ses <u>contacts supplémentaires</u>');
                 }
                 if( aCustomerSchedules.length ){
-                    aInfos.push('ses <u>heures programmées</u>');
+                    aInfos.push('ses <u>planifications</u>');
                 }
             }
 
@@ -94,13 +94,13 @@
             sSubTitle : bIsCustomerView ?
                 `<span class="bulma-icon-text">
                     <span class="bulma-icon">
-                        <i class="fa-solid fa-user-tie"></i>
+                        <i class="fa-solid ${ oCustomerView.bEnable ? 'fa-user-tie' : 'fa-user-slash' }"></i>
                     </span>
                     <span>Client principal</span>
                 </span>` :
                 `<span class="bulma-icon-text">
                     <span class="bulma-icon">
-                        <i class="fa-solid fa-user-group fa-sm"></i>
+                        <i class="fa-solid ${ oCustomerView.bEnable ? 'fa-user-group' : 'fa-users-slash' } fa-sm"></i>
                     </span>
                     <span>Contact supplémentaire</span>
                 </span>`
@@ -146,16 +146,24 @@
                 {@html '<p>' + oContactView.getAddress().join('</p><p>') + '</p>'}
             </address>
 
-            {#if oContactView.bHasKey || oContactView.sInformations}
+            {#if oContactView.sInformations || !oCustomerView.bEnable || oContactView.bHasKey}
                 <div class="bulma-block">
                     {#if oContactView.sInformations}
                         <div class="bulma-content bulma-is-small bulma-mb-2">
                             <blockquote>{oContactView.sInformations}</blockquote>
                         </div>
                     {/if}
+                    {#if !oCustomerView.bEnable}
+                        <span class="fox-customer-disable bulma-tag bulma-is-danger bulma-is-light bulma-icon-text">
+                            <span class="bulma-icon bulma-is-small">
+                                <i class="fa-solid fa-user-slash"></i>
+                            </span>
+                            <span>Désactivé</span>
+                        </span>
+                    {/if}
                     {#if oContactView.bHasKey}
-                        <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text bulma-mb-2">
-                            <span class="bulma-icon">
+                        <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text">
+                            <span class="bulma-icon bulma-is-small">
                                 <i class="fa-solid fa-key"></i>
                             </span>
                             <span>Je possède un double des clefs</span>
@@ -188,12 +196,36 @@
                             <span>Appel</span>
                         </a>
                     </div>
-                    <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={openModal}>
-                        <span class="bulma-icon">
-                            <i class="fa-solid fa-user-xmark"></i>
-                        </span>
-                        <span>Supprimer</span>
-                    </button>
+                    {#if bIsCustomerView}
+                        {#if oCustomerView.bEnable}
+                            <button class="bulma-button" onclick={() => oCustomerView.changeEnable(false)}>
+                                <span class="bulma-icon">
+                                    <i class="fa-solid fa-user-slash"></i>
+                                </span>
+                                <span>Désactiver</span>
+                            </button>
+                        {:else}
+                            <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={openModal}>
+                                <span class="bulma-icon">
+                                    <i class="fa-solid fa-user-xmark"></i>
+                                </span>
+                                <span>Supprimer</span>
+                            </button>
+                            <button class="bulma-button" onclick={() => oCustomerView.changeEnable(true)}>
+                                <span class="bulma-icon">
+                                    <i class="fa-solid fa-user-tie"></i>
+                                </span>
+                                <span>Activer</span>
+                            </button>
+                        {/if}
+                    {:else}
+                        <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={openModal}>
+                            <span class="bulma-icon">
+                                <i class="fa-solid fa-user-xmark"></i>
+                            </span>
+                            <span>Supprimer</span>
+                        </button>
+                    {/if}
                 </div>
             </div>
 
@@ -202,7 +234,7 @@
                 {#if aCustomerSchedules.length}
                     <div class="bulma-block">
                         <div class="fox-separator">
-                            <span>Heures programmées</span>
+                            <span>Planifications</span>
                         </div>
                         {#each aCustomerSchedules as oSchedule}
                             <ItemSchedule sType="simple" Item={{ oTarget: oSchedule }}/>
@@ -215,7 +247,7 @@
                         <span>Contacts supplémentaires</span>
                     </div>
                     {#each oCustomerView.aExtraContacts as oContact}
-                        <Item Item={{ oTarget: oContact, click: () => open(oContact) }}/>
+                        <Item Item={{ bEnable: oCustomerView.bEnable, oTarget: oContact, click: () => open(oContact) }}/>
                     {:else}
                         <div class="bulma-notification bulma-has-text-centered bulma-is-size-7">
                             <span class="bulma-icon-text bulma-is-small">
@@ -241,7 +273,7 @@
                     <div class="fox-separator">
                         <span>Client principal</span>
                     </div>
-                    <Item Item={{ oTarget: oCustomerView, click: () => open(oCustomerView) }}/>
+                    <Item Item={{ bEnable: oCustomerView.bEnable, oTarget: oCustomerView, click: () => open(oCustomerView) }}/>
                 </div>
             {/if}
         </div>

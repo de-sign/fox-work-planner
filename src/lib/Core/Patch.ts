@@ -47,11 +47,28 @@ const CONFIG = {
             const aScheduleData = Store.get(PROPERTY_NAME.APP_DATA_SCHEDULE);
             if( aScheduleData ){
                 aScheduleData.forEach( (oScheduleData: TObject) => {
-                    oScheduleData.nPrice = 17.00;
+                    if( oScheduleData.nPrice == null ){
+                        oScheduleData.nPrice = 17.00;
+                    }
                 } );
 
                 // console.log('202511292230 -> Schedule', aScheduleData);
                 Store.set(PROPERTY_NAME.APP_DATA_SCHEDULE, aScheduleData);
+            }
+        },
+
+        // Add Customer Enable property
+        202512041430: () => {
+            const aCustomersData = Store.get(PROPERTY_NAME.APP_DATA_CUSTOMER);
+            if( aCustomersData  ){
+                aCustomersData.forEach( (oCustomerData: TObject) => {
+                    if( oCustomerData.bEnable == null ){
+                        oCustomerData.bEnable = true;
+                    }
+                } );
+
+                // console.log('202512041430 -> Customer', aCustomersData);
+                Store.set(PROPERTY_NAME.APP_DATA_CUSTOMER, aCustomersData);
             }
         }
     }

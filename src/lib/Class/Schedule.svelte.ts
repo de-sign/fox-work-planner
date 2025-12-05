@@ -76,6 +76,10 @@ class Schedule {
     public nPrice: number = $state(0.0);
     public sInformations: string | undefined = $state();
 
+    public get sId(): string {
+        return this.constructor.name + '-' + this._sUUID;
+    }
+
     public get sUUID() {
         return this._sUUID;
     }

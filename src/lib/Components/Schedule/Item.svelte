@@ -18,9 +18,10 @@
 
 {#if sType == 'calendar'}
     <button
-        title="Voir une planification"
+        id="{Item.oTarget.sId}" 
         class="fox-calendar-task bulma-button bulma-is-link bulma-is-light bulma-is-size-7"
         style="{Object.keys(Item.oStyle).map(sStyle => `${sStyle}: ${Item.oStyle[sStyle]}`).join(';')}"
+        title="Voir une planification"
         onclick={Item.click}
     >
         {#if Item.oTarget.sWeekType == 'EVERY_WEEK'}
@@ -32,7 +33,7 @@
     </button>
 
 {:else if sType == 'list'}
-    <article class="fox-list-item">
+    <article id="{Item.oTarget.sId}" class="fox-list-item">
         <button class="bulma-box" onclick={Item.click}>
             <div class="bulma-icon-text">
                 {#if Item.oTarget.sWeekType != 'EVERY_WEEK'}
@@ -56,7 +57,7 @@
     </article>
     
 {:else if sType == 'simple'}
-    <div>
+    <div id="{Item.oTarget.sId}" >
         <b>{Item.oTarget.sDay} : </b>
         {#if Item.oTarget.sWeekType != 'EVERY_WEEK'}
             <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text">

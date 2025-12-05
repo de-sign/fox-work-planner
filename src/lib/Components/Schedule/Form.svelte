@@ -31,8 +31,7 @@
         oData: TObject = $state({}),
         oError: TObject = $state({});
 
-    const aCustomers = Object
-            .values( Customer.getAll() )
+    const aCustomers = Object.values( Customer.getAll() ).filter( oCustomer => oCustomer.bEnable )
             .sort( (oA, oB) => oA.sReverseName.localeCompare(oB.sReverseName, 'fr', { numeric: true }) ),
         aDays = CONFIG.CALENDAR_DAYS,
         aWeekTypes = CONFIG.CALENDAR_WEEK_TYPE,
@@ -277,11 +276,14 @@
                 <div class="bulma-field">
                     <label class="bulma-label" for="Schedule__nPrice">Tarif horaire</label>
                     <div class="bulma-field bulma-has-addons">
-                        <div class="bulma-control bulma-is-flex-grow-1">
-                            <input id="Schedule__nPrice" class="bulma-input { oError.sTimeStart ? 'bulma-is-danger' : '' }" bind:value="{oData.nPrice}" type="number" placeholder="{oPlaceholder.nPrice.toFixed(2)}">
+                        <div class="bulma-control bulma-is-flex-grow-1  bulma-has-icons-right">
+                            <input id="Schedule__nPrice" class="bulma-input { oError.nPrice ? 'bulma-is-danger' : '' }" bind:value="{oData.nPrice}" type="number" placeholder="{oPlaceholder.nPrice.toFixed(2)}">
+                            <span class="bulma-icon bulma-is-right bulma-has-text-danger">
+                                <i class="fas fa-asterisk fa-2xs"></i>
+                            </span>
                         </div>
                         <div class="bulma-control">
-                            <span class="bulma-button bulma-is-static">€</span>
+                            <span class="bulma-button { oError.nPrice ? 'bulma-is-danger bulma-is-outlined' : 'bulma-is-static' }">€</span>
                         </div>
                     </div>
                     {#if oError.nPrice}

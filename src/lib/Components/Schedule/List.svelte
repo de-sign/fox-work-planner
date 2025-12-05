@@ -16,14 +16,13 @@
         Pages
     } = $props();
 
-    const oSchedules = Schedule.getAll(),
+    const aSchedules = Object.values( Schedule.getAll() ).filter( oSchedule => oSchedule.oCustomer.bEnable ),
         aSchedulesGrouped = $derived.by( () => {
-            const aCopySchedule: Schedule[] = Object.values(oSchedules),
-                aReturn: TObject[] = [],
+            const aReturn: TObject[] = [],
                 oDays: TObject<Schedule[]> = {};
             
             // Group and Sort
-            aCopySchedule
+            aSchedules
                 .sort( (oA, oB) => oA.nTimeStart - oB.nTimeStart )
                 .forEach( oSchedule => {
                     let nDay = oSchedule.nDay;

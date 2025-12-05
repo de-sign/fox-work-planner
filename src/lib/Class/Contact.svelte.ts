@@ -83,8 +83,28 @@ class Contact {
     public sInformations: string | undefined = $state();
     public bHasKey: boolean = $state(false);
 
+    public get sId(): string {
+        return this.constructor.name + '-' + this._sUUID;
+    }
+
     public get sUUID() {
         return this._sUUID;
+    }
+
+    public get sName(): string {
+        return this.sFirstName + ' ' + this.sLastName;
+    }
+
+    public get sShortName(): string {
+        return this.sFirstName.charAt(0) + '. ' + this.sLastName;
+    }
+
+    public get sReverseName(): string {
+        return this.sLastName + ' ' + this.sFirstName;
+    }
+
+    public get sMapsQuery(): string {
+        return this.sAddress + ' ' + this.sPostalCode.replace(' ', '') + ' ' + this.sCity;
     }
 
     /** Constructor */
@@ -132,22 +152,6 @@ class Contact {
         this.bHasKey = !!oData.bHasKey;
 
         Contact.store();
-    }
-
-    public get sName(): string {
-        return this.sFirstName + ' ' + this.sLastName;
-    }
-
-    public get sShortName(): string {
-        return this.sFirstName.charAt(0) + '. ' + this.sLastName;
-    }
-
-    public get sReverseName(): string {
-        return this.sLastName + ' ' + this.sFirstName;
-    }
-
-    public get sMapsQuery(): string {
-        return this.sAddress + ' ' + this.sPostalCode.replace(' ', '') + ' ' + this.sCity;
     }
 
     public getAddress(bAddPhoneNumbers: boolean = true): string[] {

@@ -49,7 +49,8 @@ export const CONFIG = {
 
     CUSTOMER_PLACHOLDER: {
         _sUUID: '',
-        sMainContact: ''
+        sMainContact: '',
+        bEnable: false
     },
 
     SCHEDULE_PLACEHOLDER: {
@@ -130,6 +131,7 @@ export const CONFIG = {
     CONTENT_PAGE_SCROLLTOP_SELECTOR: '.fox-app-page-content',
 
     // -- Calendar
+    CALENDAR_CELL_HEIGHT: 45,
     CALENDAR_DAYS: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'],
     CALENDAR_HOUR_START: 8,
     CALENDAR_HOUR_MAX_BY_DAY: 10,

@@ -96,11 +96,11 @@
                     </div>
                     {#each oGroup.aCustomers as oCustomer}
                         <section class="fox-list">
-                            <Item Item={{ oTarget: oCustomer, click: () => Pages.oView.open(oCustomer) }}/>
+                            <Item Item={{ bEnable: oCustomer.bEnable, oTarget: oCustomer, click: () => Pages.oView.open(oCustomer) }}/>
                             {#if oCustomer.aExtraContacts.length}
                                 <div class="fox-list">
                                     {#each oCustomer.aExtraContacts as oContact}
-                                        <Item Item={{ oTarget: oContact, click: () => Pages.oView.open(oContact) }}/>
+                                        <Item Item={{ bEnable: oCustomer.bEnable, oTarget: oContact, click: () => Pages.oView.open(oContact) }}/>
                                     {/each}
                                 </div>
                             {/if}

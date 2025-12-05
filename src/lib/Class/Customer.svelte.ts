@@ -14,6 +14,7 @@ export interface ICustomerOptions {
     _sUUID?: string;
     sMainContact: string;
     aExtraContacts?: string[];
+    bEnable: boolean;
 }
 
 
@@ -69,56 +70,10 @@ class Customer {
     private _sUUID: string = '';
     public oMainContact: Contact;
     public aExtraContacts: Contact[] = $state([]);
+    public bEnable: boolean = $state(true);
 
-    /** Constructor */
-    public constructor(oData: ICustomerOptions) {
-
-        this._sUUID = oData._sUUID != null ? oData._sUUID : crypto.randomUUID();
-        if( this._sUUID ){
-            _oInstances[this._sUUID] = this;
-        }
-        
-        this.oMainContact = $state( Contact.get(oData.sMainContact) );
-        this.oMainContact.oIsCustomer = this;
-
-        oData.aExtraContacts?.forEach( sUUID => {
-            const oExtraContact = Contact.get(sUUID);
-            this.aExtraContacts.push(oExtraContact);
-            oExtraContact.oIsExtraOf = this;
-        } );
-        Customer.store();
-    }
-
-    /** Destructor */
-    public destroy(): void {
-        /* Destroy Contact */
-        this.oMainContact.destroy();
-        this.aExtraContacts.map( oContact => oContact.destroy() );
-
-        /* Destroy Instance */
-        delete _oInstances[this._sUUID];
-        Customer.store();
-    }
-
-    /** Instance Methods */
-    public serialize(): ICustomerOptions {
-        return {
-            _sUUID: this._sUUID,
-            sMainContact: this.oMainContact.sUUID,
-            aExtraContacts: this.aExtraContacts.map( oContact => oContact.sUUID )
-        };
-    }
-
-    public addExtraContact(oTarget: Contact): void {
-        this.aExtraContacts.push(oTarget);
-        oTarget.oIsExtraOf = this;
-        Customer.store();
-    }
-
-    public removeExtraContact(oTarget: Contact): void {
-        this.aExtraContacts.splice( this.aExtraContacts.indexOf(oTarget), 1);
-        oTarget.oIsExtraOf = null;
-        Customer.store();
+    public get sId(): string {
+        return this.constructor.name + '-' + this._sUUID + '--' + this.oMainContact.sId;
     }
 
     public get sUUID(): string {
@@ -139,6 +94,66 @@ class Customer {
 
     public get bHasKey(): boolean {
         return this.oMainContact.bHasKey;
+    }
+
+    /** Constructor */
+    public constructor(oData: ICustomerOptions) {
+
+        this._sUUID = oData._sUUID != null ? oData._sUUID : crypto.randomUUID();
+        if( this._sUUID ){
+            _oInstances[this._sUUID] = this;
+        }
+        
+        this.oMainContact = $state( Contact.get(oData.sMainContact) );
+        this.oMainContact.oIsCustomer = this;
+
+        oData.aExtraContacts?.forEach( sUUID => {
+            const oExtraContact = Contact.get(sUUID);
+            this.aExtraContacts.push(oExtraContact);
+            oExtraContact.oIsExtraOf = this;
+        } );
+
+        this.bEnable = oData.bEnable;
+
+        Customer.store();
+    }
+
+    /** Destructor */
+    public destroy(): void {
+        /* Destroy Contact */
+        this.oMainContact.destroy();
+        this.aExtraContacts.map( oContact => oContact.destroy() );
+
+        /* Destroy Instance */
+        delete _oInstances[this._sUUID];
+        Customer.store();
+    }
+
+    /** Instance Methods */
+    public serialize(): ICustomerOptions {
+        return {
+            _sUUID: this._sUUID,
+            sMainContact: this.oMainContact.sUUID,
+            aExtraContacts: this.aExtraContacts.map( oContact => oContact.sUUID ),
+            bEnable: this.bEnable
+        };
+    }
+
+    public changeEnable(bValue: boolean): void {
+        this.bEnable = bValue;
+        Customer.store();
+    }
+
+    public addExtraContact(oTarget: Contact): void {
+        this.aExtraContacts.push(oTarget);
+        oTarget.oIsExtraOf = this;
+        Customer.store();
+    }
+
+    public removeExtraContact(oTarget: Contact): void {
+        this.aExtraContacts.splice( this.aExtraContacts.indexOf(oTarget), 1);
+        oTarget.oIsExtraOf = null;
+        Customer.store();
     }
 
 }
