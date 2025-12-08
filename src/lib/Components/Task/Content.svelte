@@ -45,7 +45,7 @@
 
             // Add All days
             for( let nAdd = 0; nAdd < 7; nAdd++ ){
-                aDays.push( new Date(dDay.toJSON()) );
+                aDays.push( new Date( Date.UTC(dDay.getFullYear(), dDay.getMonth(), dDay.getDate()) ) );
                 dDay.setDate( dDay.getDate() + 1 );
             }
 
