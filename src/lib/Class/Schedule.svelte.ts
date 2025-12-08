@@ -85,11 +85,11 @@ class Schedule {
     }
 
     public get sDay(): string {
-        return CONFIG.CALENDAR_DAYS[this.nDay - 1];
+        return CONFIG.CALENDAR_DAYS[this.nDay];
     }
 
     public get oWeekType(): TObject {
-        return CONFIG.CALENDAR_WEEK_TYPE[ SCHEDULE_WEEK_TYPE[this.sWeekType as keyof typeof SCHEDULE_WEEK_TYPE] ];
+        return CONFIG.SCHEDULE_WEEK_TYPE[ SCHEDULE_WEEK_TYPE[this.sWeekType as keyof typeof SCHEDULE_WEEK_TYPE] ];
     }
 
     public get nTimeStart(): number {

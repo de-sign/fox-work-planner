@@ -75,7 +75,7 @@
                 Customer.hasCustomers() ? 
                     {
                         sClass: 'bulma-is-link',
-                        sTitle: 'Ajouter une heure plannifiée',
+                        sTitle: 'Ajouter une planification',
                         sIcon: 'fa-calendar-plus',
                         sText: 'Ajouter',
                         click: () => Pages.oForm.open(SCHEDULE_FORM_TYPE.NEW_SCHEDULE)

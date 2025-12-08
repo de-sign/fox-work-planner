@@ -1,8 +1,7 @@
 <script lang="ts">
     /* ---- Import */
     /* -- Core */
-    /* Add '../' to path ! */
-    import { SCHEDULE_WEEK_TYPE, SCHEDULE_FORM_TYPE, SCHEDULE_PAGE } from '../../Core/Constants';
+    import { TASK_FORM_TYPE, TASK_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
 
     /* -- Template */
@@ -11,7 +10,7 @@
 
     /* -- Content */
     import Contact from '../../Class/Contact.svelte';
-    import Schedule from '../../Class/Schedule.svelte';
+    import Task from '../../Class/Task.svelte';
 
     /* ---- Component */
     let {
@@ -19,12 +18,12 @@
         Pages
     } = $props();
     
-    let oTarget: Schedule = $state(Schedule.oPlaceholder),
+    let oTarget: Task = $state(Task.oPlaceholder),
         oContactView: Contact = $derived( oTarget.oCustomer.oMainContact );
 
-    export function open(oNewTarget: Schedule) {
+    export function open(oNewTarget: Task) {
         oTarget = oNewTarget;
-        App.oPage.open(SCHEDULE_PAGE.VIEW, true);
+        App.oPage.open(TASK_PAGE.VIEW, true);
     }
 
     /* ---- Modal */
@@ -40,7 +39,7 @@
     function remove(): void {
         closeModal();
         oTarget.destroy();
-        oTarget = Schedule.oPlaceholder;
+        oTarget = Task.oPlaceholder;
         App.oPage.back();
     }
 
@@ -51,10 +50,10 @@
             sSubTitle: '' + 
                 `<span class="bulma-icon-text">
                     <span class="bulma-icon">
-                        <i class="fa-solid fa-calendar-day fa-sm"></i>
+                        <i class="fa-solid fa-calendar-day"></i>
                     </span>
                     <span>
-                        ${oTarget.sDay}<span class="bulma-is-size-6">${oTarget.oWeekType.sTag ? ', sem. ' + oTarget.oWeekType.sTag.toLowerCase() : ''}, pour ${oTarget.sDuration}</span>
+                        ${oTarget.sFullDate}<span class="bulma-is-size-6">, pour ${oTarget.sDuration}</span>
                     </span>
                 </span>`
         };
@@ -70,10 +69,10 @@
         },
         aButtons: [
             {
-                sTitle: 'Modifier la planification',
+                sTitle: 'Modifier la tâche',
                 sIcon: 'fa-calendar-day',
                 sText: 'Modifier',
-                click: () => Pages.oForm.open(SCHEDULE_FORM_TYPE.MODIFY_SCHEDULE, oTarget)
+                click: () => Pages.oForm.open(TASK_FORM_TYPE.MODIFY_TASK, oTarget)
             }
         ]
     };
@@ -93,13 +92,13 @@
         <div class="bulma-container bulma-is-max-tablet">
 
             <div class="bulma-block">
-                <p>Tous les {oTarget.sDay}s</p>
+                <p>{oTarget.sFullDate}</p>
                 <p>Chez {oContactView.sName}</p>
-                <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text bulma-mt-2">
+                <span class="bulma-tag bulma-is-light bulma-icon-text bulma-mt-2 {oTarget.oState.sClass}">
                     <span class="bulma-icon bulma-is-small">
-                        <i class="fa-solid fa-calendar-week"></i>
+                        <i class="fa-solid {oTarget.oState.sTag}"></i>
                     </span>
-                    <span>{oTarget.oWeekType.sDescription}</span>
+                    <span>{oTarget.oState.sDescription}</span>
                 </span>
             </div>
 
@@ -120,12 +119,35 @@
             </div>
 
             <div class="bulma-field bulma-is-grouped bulma-is-grouped-right">
-                <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={openModal}>
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-calendar-xmark"></i>
-                    </span>
-                    <span>Supprimer</span>
-                </button>
+                {#if oTarget.sState == 'CANCEL' && oTarget.oSchedule == null}
+                    <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={openModal}>
+                        <span class="bulma-icon">
+                            <i class="fa-solid fa-calendar-xmark"></i>
+                        </span>
+                        <span>Supprimer</span>
+                    </button>
+                {/if}
+                {#if oTarget.sState == 'WAIT'}
+                    <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={() => oTarget.changeState('CANCEL')}>
+                        <span class="bulma-icon">
+                            <i class="fa-solid fa-calendar-xmark"></i>
+                        </span>
+                        <span>Annuler</span>
+                    </button>
+                    <button class="bulma-button" onclick={() => oTarget.changeState('VALID')}>
+                        <span class="bulma-icon">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </span>
+                        <span>Valider</span>
+                    </button>
+                {:else}
+                    <button class="bulma-button" onclick={() => oTarget.changeState('WAIT')}>
+                        <span class="bulma-icon">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                        </span>
+                        <span>En attente</span>
+                    </button>
+                {/if}
             </div>
         </div>
     </div>
@@ -139,7 +161,8 @@
         <div class="bulma-modal-content">
             <div class="bulma-box bulma-p-5">
                 <p class="bulma-block">
-                    Es-tu sûr de vouloir supprimer cette planification
+                    Es-tu sûr de vouloir supprimer cette tâche
+                    du <b>{oTarget.sFullDate}</b>,
                     de <b>{oTarget.sTimeStart.replace(':', 'h')}</b> à <b>{oTarget.sTimeEnd.replace(':', 'h')}</b>
                     pour <b>{oContactView.sName}</b>&nbsp;?
                 </p>

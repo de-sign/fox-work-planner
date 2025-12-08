@@ -2,7 +2,6 @@ import type { TObject } from './Type';
 
 /* -- Temp Components */
 import Template from '../Components/Template/Page.svelte';
-import Todo from '../Components/Todo.svelte';
 
 /* -- Menu Components */
 import Theme from '../Components/Menu/Theme.svelte';
@@ -10,6 +9,7 @@ import Theme from '../Components/Menu/Theme.svelte';
 /* -- Content Components */
 import Customer from '../Components/Customer/Pages.svelte';
 import Schedule from '../Components/Schedule/Pages.svelte';
+import Task from '../Components/Task/Pages.svelte';
 
 /* -- Export */
 export const COMPONENTS: TObject = {
@@ -17,8 +17,8 @@ export const COMPONENTS: TObject = {
     Theme: Theme,
 
     // CONTENT_ITEMS
-    Agenda: Template,
-    Income: Todo,
+    Task: Task,
+    Income: Template,
     Customer: Customer,
     Schedule: Schedule
 };

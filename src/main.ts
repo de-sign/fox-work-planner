@@ -6,6 +6,7 @@ import * as Svelte from 'svelte';
 import Contact from './lib/Class/Contact.svelte';
 import Customer from './lib/Class/Customer.svelte';
 import Schedule from './lib/Class/Schedule.svelte';
+import Task from './lib/Class/Task.svelte';
 import App from './lib/Components/App.svelte';
 
 // -- Style
@@ -21,6 +22,7 @@ Patch.apply();
 Contact.restore();
 Customer.restore();
 Schedule.restore();
+Task.restore();
 
 /* -- Build App */
 const oApp = Svelte.mount(App, {
@@ -37,7 +39,8 @@ if( CONFIG.DEBUG_WINDOW_PROPERTY ) {
             Store,
             Contact,
             Customer,
-            Schedule
+            Schedule,
+            Task
         },
         Svelte: {
             Svelte,

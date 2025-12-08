@@ -55,13 +55,24 @@ export const CONFIG = {
 
     SCHEDULE_PLACEHOLDER: {
         _sUUID: '',
-        // sTitle: 'Ménage à fond',
         sCustomer: '',
         nDay: 1,
         sWeekType: 'EVERY_WEEK',
         sTimeStart: '09:00',
         sTimeEnd: '12:00',
         nPrice: 17.00,
+        sInformations: 'Horae laboris Poupi, amoris mei, fungens ut substitutus.',
+    },
+
+    TASK_PLACEHOLDER: {
+        _sUUID: '',
+        sCustomer: '',
+        sSchedule: '',
+        sDate: '1970-01-01T00:00:00Z',
+        sTimeStart: '09:00',
+        sTimeEnd: '12:00',
+        nPrice: 17.00,
+        sState: 'WAIT',
         sInformations: 'Horae laboris Poupi, amoris mei, fungens ut substitutus.',
     },
 
@@ -73,7 +84,7 @@ export const CONFIG = {
             aItems: <MenuItem[]>[
                 {
                     sLabel: 'Agenda',
-                    sContent: 'Agenda'
+                    sContent: 'Task'
                 },
                 {
                     sLabel: 'Rémunération',
@@ -108,11 +119,10 @@ export const CONFIG = {
     ],
 
     // -- Component Content
-    // CONTENT_DEFAULT: 'Agenda',
-    CONTENT_DEFAULT: 'Schedule',
+    CONTENT_DEFAULT: 'Task',
     CONTENT_ITEMS: <TObject<TObject>> {
-        Agenda: {
-            sComponent: 'Agenda',
+        Task: {
+            sComponent: 'Task',
             nPagesCount: 3
         },
         Income: {
@@ -132,13 +142,27 @@ export const CONFIG = {
 
     // -- Calendar
     CALENDAR_CELL_HEIGHT: 45,
-    CALENDAR_DAYS: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'],
-    CALENDAR_HOUR_START: 8,
-    CALENDAR_HOUR_MAX_BY_DAY: 10,
-    CALENDAR_HOUR_BREAK: [8, 12, 13, 17],
-    CALENDAR_WEEK_TYPE: [
-        { sValue: 'EVERY_WEEK', sText: 'Hebdomadaire', sDescription: 'Toutes les semaines', sTag: '' },
-        { sValue: 'EVEN_WEEK', sText: 'Bimensuel paire', sDescription: 'En semaine paire', sTag: 'Paire' },
-        { sValue: 'ODD_WEEK', sText: 'Bimensuel impaire', sDescription: 'En semaine impaire', sTag: 'Imp.' }
+
+    CALENDAR_HOURS_START: 8,
+    CALENDAR_HOURS_MAX_BY_DAY: 10,
+    CALENDAR_HOURS_BREAK: [8, 12, 13, 17],
+
+    CALENDAR_DAYS: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+    CALENDAR_DAYS_BREAK: [0, 6],
+
+    CALENDAR_MONTHS: [ 'Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juill.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
+
+    // -- Schedule
+    SCHEDULE_WEEK_TYPE: [
+        { sValue: 'EVERY_WEEK', sText: 'Hebdomadaire', sDescription: 'Toutes les semaines', sTag: '', fFilter: (nWeek: number) => true },
+        { sValue: 'EVEN_WEEK', sText: 'Bimensuel paire', sDescription: 'En semaine paire', sTag: 'Paire', fFilter: (nWeek: number) => nWeek % 2 == 0 },
+        { sValue: 'ODD_WEEK', sText: 'Bimensuel impaire', sDescription: 'En semaine impaire', sTag: 'Imp.', fFilter: (nWeek: number) => nWeek % 2 == 1 }
+    ],
+
+    // -- Task
+    TASK_STATE: [
+        { sValue: 'WAIT', sText: 'En attente', sDescription: 'Attente de validation', sClass: 'bulma-is-link', sTag: 'fa-hourglass-half' },
+        { sValue: 'VALID', sText: 'Validée', sDescription: 'Travaillée et validée', sClass: 'bulma-is-success', sTag: 'fa-check' },
+        { sValue: 'CANCEL', sText: 'Annulée', sDescription: 'Annulée par le client', sClass: 'bulma-is-danger', sTag: 'fa-xmark' }
     ]
 }

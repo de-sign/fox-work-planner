@@ -8,7 +8,7 @@
     /* -- Content */
     import Schedule from '../../Class/Schedule.svelte';
 
-    import Item from '../Schedule/Item.svelte';
+    import Item from './Item.svelte';
 
     /* ---- Component */
     let {
@@ -36,7 +36,7 @@
                 .sort( (sA, sB) => sA.localeCompare(sB, 'fr', { numeric: true }) )
                 .forEach( sDay => {
                     aReturn.push( {
-                        sDay: CONFIG.CALENDAR_DAYS[parseInt(sDay) - 1],
+                        sDay: CONFIG.CALENDAR_DAYS[parseInt(sDay)],
                         aSchedules: oDays[sDay]
                     } )
                 } );

@@ -24,8 +24,10 @@ export enum PROPERTY_NAME {
     APP_DATA_CUSTOMER = 'customers',
     APP_DATA_CONTACT = 'contacts',
     APP_DATA_SCHEDULE = 'schedules',
+    APP_DATA_TASK = 'tasks',
 
-    APP_SCHEDULE_DISPLAY = 'schedule-display'
+    APP_SCHEDULE_DISPLAY = 'schedule-display',
+    APP_TASK_DISPLAY = 'task-display'
 }
 
 /* ----- CUSTOMER_FORM */
@@ -43,7 +45,7 @@ export enum CUSTOMER_FORM_TYPE {
 
 /* ----- SCHEDULE_FORM */
 export enum SCHEDULE_PAGE {
-    CALENDAR = 1,
+    CONTENT = 1,
     VIEW,
     FORM
 }
@@ -57,4 +59,22 @@ export enum SCHEDULE_WEEK_TYPE {
     EVERY_WEEK = 0,
     EVEN_WEEK,
     ODD_WEEK
+}
+
+/* ----- TASK_FORM */
+export enum TASK_PAGE {
+    CONTENT = 1,
+    VIEW,
+    FORM
+}
+
+export enum TASK_FORM_TYPE {
+    NEW_TASK = 'NewTask',
+    MODIFY_TASK = 'ModifyTask'
+}
+
+export enum TASK_STATE {
+    WAIT = 0,
+    VALID,
+    CANCEL
 }

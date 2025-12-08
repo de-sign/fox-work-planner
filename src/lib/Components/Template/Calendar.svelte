@@ -13,9 +13,33 @@
     } = $props();
 
     /* -- Calendar */
-    const aDays = CONFIG.CALENDAR_DAYS.map( sValue => sValue.charAt(0) ),
-        nStartHour = CONFIG.CALENDAR_HOUR_START,
-        nMaxHourForDay = CONFIG.CALENDAR_HOUR_MAX_BY_DAY,
+    const aDays: TObject[] = $derived.by( () => {
+            return CONFIG.CALENDAR_DAYS.map( (sValue, nIndex) => {
+                const bBreakDay = CONFIG.CALENDAR_DAYS_BREAK.indexOf(nIndex) != -1,
+                    aClass = [];
+
+                if( bBreakDay ){
+                    aClass.push('fox-calendar-is-break');
+                    if( nIndex ){
+                        aClass.push('fox-calendar-is-right');
+                    }
+                }
+
+                if( Item.nNow == nIndex ){
+                    aClass.push('fox-calendar-is-today');
+                }
+                
+                return {
+                    nDay: nIndex,
+                    sClass: aClass.join(' '),
+                    bHour: bBreakDay,
+                    sText: sValue.charAt(0),
+                    sDate: Item.aDates ? Item.aDates[nIndex].getDate() : null
+                }
+            } )
+        } ),
+        nStartHour = CONFIG.CALENDAR_HOURS_START,
+        nMaxHourForDay = CONFIG.CALENDAR_HOURS_MAX_BY_DAY,
         aHours = Array.from(
             { length: nMaxHourForDay },
             (uValue, nIndex) => nStartHour + nIndex
@@ -38,7 +62,8 @@
 
     function parseCellToForm(nDay: number, nHour: number): TObject {
         return {
-            nDay: nDay + 1, // 0 is Sunday !
+            nDay: nDay,
+            sDate: Item.aDates ? Item.aDates[nDay].toJSON().split('T')[0] : null,
             sTimeStart: nHour.toString().padStart(2, '0') + ':00',
             sTimeEnd: (nHour + 1).toString().padStart(2, '0') + ':00'
         };
@@ -60,45 +85,44 @@
     <div class="bulma-grid bulma-is-gap-0">
 
         <!-- Header -->
-        <div class="bulma-cell fox-calendar-header">
-            <span class="bulma-is-size-7 fox-calendar-hour">{formatHour(nStartHour)}</span>
-            <span>D</span>
-        </div>
-        {#each aDays as sDay}
-            <div class="bulma-cell fox-calendar-header">
-                {sDay}
+        {#each aDays as oDay}
+            <div class="bulma-cell fox-calendar-header {oDay.sClass}">
+                {#if oDay.bHour}
+                    <span class="bulma-is-size-7 fox-calendar-hour">{formatHour(nStartHour)}</span>
+                    <span>{oDay.sText}</span>
+                {:else}
+                    {oDay.sText}
+                {/if}
+                {#if oDay.sDate}
+                    <span class="bulma-is-size-7 fox-calendar-date">{oDay.sDate}</span>
+                {/if}
             </div>
         {/each}
-        <div class="bulma-cell fox-calendar-header fox-calendar-is-right">
-            <span class="bulma-is-size-7 fox-calendar-hour">{formatHour(nStartHour)}</span>
-            <span>S</span>
-        </div>
 
         <!-- Row -->
         {#each aHours as nHour}
-            <div class="bulma-cell">
-                <span class="bulma-is-size-7 fox-calendar-hour">{formatHour(nHour + 1)}</span>
-            </div>
-            {#each aDays as sDay, nDay}
+            {#each aDays as oDay}
 
-                {#if Item.oItems[nDay + ':' + nHour] }
-                    <!-- With Item -->
-                    <div class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOUR_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
-                        {#each Item.oItems[nDay + ':' + nHour] as oItem}
+                <!-- Hour -->
+                {#if oDay.bHour}
+                    <div class="bulma-cell {oDay.sClass}">
+                        <span class="bulma-is-size-7 fox-calendar-hour">{formatHour(nHour + 1)}</span>
+                    </div>
+
+                <!-- With Item -->
+                {:else if Item.oItems[oDay.nDay + ':' + nHour] }
+                    <div class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOURS_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
+                        {#each Item.oItems[oDay.nDay + ':' + nHour] as oItem}
                             <Item.oComponent sType="calendar" Item={{ ...oItem, click: () => Item.clickOnItem(oItem) }} />
                         {/each}
                     </div>
 
-                {:else if sCellSelected == nDay + ':' + nHour}
-                    <!-- Selected -->
-                    <div class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOUR_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
+                <!-- Selected -->
+                {:else if sCellSelected == oDay.nDay + ':' + nHour}
+                    <div class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOURS_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
                         <button
-                            class="bulma-button bulma-is-link bulma-is-outlined"
-                            title="Ajouter une planification"
-                            onclick={ oEvent => {
-                                oEvent.stopPropagation();
-                                Item.clickOnEmpty( parseCellToForm(nDay, nHour) );
-                            } }
+                            class="bulma-button bulma-is-link bulma-is-outlined" title="Ajouter une planification"
+                            onclick={ oEvent => { oEvent.stopPropagation(); Item.clickOnEmpty( parseCellToForm(oDay.nDay, nHour) ); } }
                         >
                             <span class="bulma-icon bulma-is-small">
                                 <i class="fa-solid fa-plus"></i>
@@ -106,20 +130,15 @@
                         </button>
                     </div>
                 
+                <!-- Empty -->
                 {:else}
-                    <!-- Empty -->
                     <button
-                        class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOUR_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }"
-                        title="Selectionner la cellule"
-                        onclick={ oEvent => { oEvent.stopPropagation(); selectCell(nDay, nHour); } }
+                        class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOURS_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }" title="Selectionner la cellule"
+                        onclick={ oEvent => { oEvent.stopPropagation(); selectCell(oDay.nDay, nHour); } }
                     ></button>
                 {/if}
             {/each}
-            <div class="bulma-cell fox-calendar-is-right">
-                <span class="bulma-is-size-7 fox-calendar-hour">{formatHour(nHour + 1)}</span>
-            </div>
         {/each}
-
     </div>
 </div>
 
@@ -141,13 +160,29 @@
         font-weight: bold;
     }
 
-    .fox-calendar-header > * {
-        position: relative;
-        z-index: 10;
+    .fox-calendar-header.fox-calendar-is-break {
         color: var(--bulma-border);
     }
 
+    .fox-calendar-header.fox-calendar-is-today {
+        color: var(--bulma-danger) !important;
+        border-bottom-color: var(--bulma-danger) !important;
+    }
+
+    .fox-calendar-header > * {
+        position: relative;
+        z-index: 10;
+    }
+
+    .fox-calendar-date {
+        display: block;
+        line-height: normal;
+        margin: -0.5rem 0 0.5rem;
+        font-weight: normal;
+    }
+
     .fox-calendar-hour {
+        color: var(--bulma-border);
         white-space: pre;
         font-weight: normal;
         color: var(--bulma-text-weak);
@@ -155,7 +190,7 @@
         background-color: var(--bulma-body-background-color);
         position: absolute;
         z-index: 10;
-        top: calc( var(--fox-calendar-cell-height) / 2);
+        bottom: calc( var(--fox-calendar-cell-height) / -2);
         left: 0;
     }
 

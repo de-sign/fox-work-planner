@@ -244,7 +244,7 @@ $page-transition-timing-function: ease;
             margin: 0 calc(-1 * var(--fox-block-spacing)) -15px;
             top: calc(-1 * var(--fox-block-spacing));
             position: relative;
-            z-index: 20;
+            z-index: 30;
         }
 
         &::after {
@@ -257,17 +257,22 @@ $page-transition-timing-function: ease;
     &-title,
     &-navbar {
         position: relative;
-        z-index: 10;
+        z-index: 20;
         box-shadow: 0 0 15px -5px rgba(0, 0, 0, 0.25);
         flex: none;
 
-        & > * {
+        &-content {
+            max-width: 100%;
             display: flex;
             align-items: flex-start;
             flex-wrap: nowrap !important;
+
+            &:not(:last-child) {
+                margin-bottom: calc(var(--fox-block-spacing) / 2);
+            }
         }
 
-        &:last-child > * {
+        &:last-child &-content {
             align-items: flex-end;
         }
 

@@ -35,7 +35,7 @@
                 .forEach( oSchedule => {
 
                     const [nHour, nMinute] = oSchedule.sTimeStart.split(':').map( (sValue: string) => parseInt(sValue) ),
-                        sCell = (oSchedule.nDay - 1) + ':' + nHour,
+                        sCell = oSchedule.nDay + ':' + nHour,
                         nCell = Math.ceil( oSchedule.nDuration / 60 );
 
                     // Cell start
@@ -56,7 +56,7 @@
 
                     // Cell duration
                     for( let nIndex = 1; nIndex < nCell; nIndex++ ){
-                        let sKeyCell = (oSchedule.nDay - 1) + ':' + ( nHour + nIndex);
+                        let sKeyCell = oSchedule.nDay + ':' + ( nHour + nIndex);
                         if( !oResults[sKeyCell] ){
                             oResults[sKeyCell] = [];
                         }

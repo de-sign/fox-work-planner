@@ -3,9 +3,9 @@
     /* -- Core */
     /* Add '../' to path ! */
     import type { TObject } from '../../Core/Type';
-    import type { IScheduleOptions } from '../../Class/Schedule.svelte';
+    import type { ITaskOptions } from '../../Class/Task.svelte';
 
-    import { SCHEDULE_FORM_TYPE, SCHEDULE_PAGE } from '../../Core/Constants';
+    import { TASK_FORM_TYPE, TASK_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
     import * as FORM from '../../Core/Form';
 
@@ -15,7 +15,7 @@
 
     /* -- Content */
     import Customer from '../../Class/Customer.svelte';
-    import Schedule from '../../Class/Schedule.svelte';
+    import Task from '../../Class/Task.svelte';
 
     /* ---- Component */
     let {
@@ -24,42 +24,40 @@
     } = $props();
 
     /* -- Data */
-    let oPlaceholder: Schedule = Schedule.oPlaceholder,
-        oTarget: Schedule | undefined = $state(),
-        sType: string = $state(SCHEDULE_FORM_TYPE.NEW_SCHEDULE),
+    let oPlaceholder: Task = Task.oPlaceholder,
+        oTarget: Task | undefined = $state(),
+        sType: string = $state(TASK_FORM_TYPE.NEW_TASK),
         sSubTitle: string = $state('Default Title'),
         oData: TObject = $state({}),
         oError: TObject = $state({});
 
     const aCustomers = Object.values( Customer.getAll() ).filter( oCustomer => oCustomer.bEnable )
             .sort( (oA, oB) => oA.sReverseName.localeCompare(oB.sReverseName, 'fr', { numeric: true }) ),
-        aDays = CONFIG.CALENDAR_DAYS,
-        aWeekTypes = CONFIG.SCHEDULE_WEEK_TYPE,
         oDefaultData = {
             sCustomer: aCustomers[0]?.sUUID,
-            nPrice: 17.00,
-            nDay: 1,
-            sWeekType: aWeekTypes[0].sValue,
+            sDate: ( new Date() ).toJSON().split('T')[0],
             sTimeStart: '08:00',
-            sTimeEnd: '09:00'
+            sTimeEnd: '09:00',
+            nPrice: 17.00,
+            sState: 'WAIT'
         };
 
-    export function open(sFormType: string, oFormTarget ?: Schedule | TObject): void {
+    export function open(sFormType: string, oFormTarget ?: Task | TObject): void {
         
         sType = sFormType;
 
         // Title
         switch(sFormType){
-            case SCHEDULE_FORM_TYPE.NEW_SCHEDULE:
-                sSubTitle = 'Ajoute une nouvelle planification';
+            case TASK_FORM_TYPE.NEW_TASK:
+                sSubTitle = 'Ajoute une nouvelle tâche';
                 break;
-            case SCHEDULE_FORM_TYPE.MODIFY_SCHEDULE:
-                sSubTitle = 'Modifie une planification existante';
+            case TASK_FORM_TYPE.MODIFY_TASK:
+                sSubTitle = 'Modifie une tâche existante';
                 break;
         }
 
         // Data & Error
-        if( oFormTarget instanceof Schedule ){
+        if( oFormTarget instanceof Task ){
             oTarget = oFormTarget;
             oData = Object.assign( {}, oDefaultData, oTarget.clone());
         } else {
@@ -68,7 +66,7 @@
         }
         oError = {};
 
-        App.oPage.open(SCHEDULE_PAGE.FORM, true);
+        App.oPage.open(TASK_PAGE.FORM, true);
     }
 
     /* -- Form */
@@ -77,13 +75,15 @@
             fCheck: FORM.isDefined,
             fTransform: null
         },
-        nDay: {
-            fCheck: FORM.isDefined,
+        sSchedule: {
+            fCheck: null,
             fTransform: null
         },
-        sWeekType: {
+        sDate: {
             fCheck: FORM.isDefined,
-            fTransform: null
+            fTransform: (sValue: string) => {
+                return sValue + 'T00:00:00Z';
+            }
         },
         sTimeStart: {
             fCheck: FORM.isText,
@@ -101,6 +101,10 @@
             fCheck: FORM.isNumber,
             fTransform: null
         },
+        sState: {
+            fCheck: FORM.isDefined,
+            fTransform: null
+        },
         sInformations: {
             fCheck: null,
             fTransform: FORM.toCapitalize
@@ -109,18 +113,18 @@
 
     function validate(): void {
         if( FORM.checkData(oData, oFields, oError) ){
-            const oValideData = <IScheduleOptions>FORM.transformData(oData, oFields);
+            const oValideData = <ITaskOptions>FORM.transformData(oData, oFields);
             
-            let oWillView: Schedule | undefined,
-                oNewSchedule: Schedule;
+            let oWillView: Task | undefined,
+                oNewTask: Task;
             
             switch( sType ){
-                case SCHEDULE_FORM_TYPE.NEW_SCHEDULE:
-                    oNewSchedule = new Schedule(oValideData);
-                    oWillView = oNewSchedule;
+                case TASK_FORM_TYPE.NEW_TASK:
+                    oNewTask = new Task(oValideData);
+                    oWillView = oNewTask;
                     break;
 
-                case SCHEDULE_FORM_TYPE.MODIFY_SCHEDULE:
+                case TASK_FORM_TYPE.MODIFY_TASK:
                     oTarget?.update(oValideData);
                     oWillView = oTarget;
                     break;
@@ -177,11 +181,11 @@
 
                 <!-- sCustomer -->
                 <div class="bulma-field">
-                    <label class="bulma-label" for="Schedule__sCustomer">Client</label>
+                    <label class="bulma-label" for="Task__sCustomer">Client</label>
                     {#if aCustomers.length}
                         <div class="bulma-control">
                             <div class="bulma-select bulma-is-fullwidth { oError.sCustomer ? 'bulma-is-danger' : '' }">
-                                <select id="Schedule__sCustomer" bind:value="{oData.sCustomer}" >
+                                <select id="Task__sCustomer" bind:value="{oData.sCustomer}" >
                                     {#each aCustomers as oCustomer}
                                         <option value={ oCustomer.sUUID }>
                                             { oCustomer.sName }
@@ -206,51 +210,25 @@
                     {/if}
                 </div>
 
-                <!-- nDay -->
+                <!-- sDate -->
                 <div class="bulma-field">
-                    <label class="bulma-label" for="Schedule__nDay">Jour de la semaine</label>
-                    <div class="bulma-control">
-                        <div class="bulma-select bulma-is-fullwidth { oError.nDay ? 'bulma-is-danger' : '' }">
-                            <select id="Schedule__nDay" bind:value="{oData.nDay}" >
-                                {#each aDays as sDays, nIndex}
-                                    {#if CONFIG.CALENDAR_DAYS_BREAK.indexOf(nIndex) == -1}
-                                        <option value={nIndex}>
-                                            {sDays}
-                                        </option>
-                                    {/if}
-                                {/each}
-                            </select>
-                        </div>
+                    <label class="bulma-label" for="Task__sDate">Date</label>
+                    <div class="bulma-control bulma-has-icons-right">
+                        <input id="Task__sDate" bind:value="{oData.sDate}" class="bulma-input { oError.sDate ? 'bulma-is-danger' : '' }" type="date" placeholder="{oPlaceholder.sDate}">
+                        <span class="bulma-icon bulma-is-right bulma-has-text-danger">
+                            <i class="fas fa-asterisk fa-2xs"></i>
+                        </span>
                     </div>
-                    {#if oError.nDay}
-                        <i class="bulma-help bulma-has-text-danger">Ce champ est obligatoire</i>
-                    {/if}
-                </div>
-
-                <!-- sWeekType -->
-                <div class="bulma-field">
-                    <label class="bulma-label" for="Schedule__sWeekType">Fréquence mensuelle</label>
-                    <div class="bulma-control">
-                        <div class="bulma-select bulma-is-fullwidth { oError.sWeekType ? 'bulma-is-danger' : '' }">
-                            <select id="Schedule__sWeekType" bind:value="{oData.sWeekType}" >
-                                {#each aWeekTypes as oWeekType}
-                                    <option value={oWeekType.sValue}>
-                                        {oWeekType.sText}
-                                    </option>
-                                {/each}
-                            </select>
-                        </div>
-                    </div>
-                    {#if oError.sWeekType}
+                    {#if oError.sDate}
                         <i class="bulma-help bulma-has-text-danger">Ce champ est obligatoire</i>
                     {/if}
                 </div>
 
                 <!-- sTimeStart -->
                 <div class="bulma-field">
-                    <label class="bulma-label" for="Schedule__sTimeStart">Heure de début</label>
+                    <label class="bulma-label" for="Task__sTimeStart">Heure de début</label>
                     <div class="bulma-control bulma-has-icons-right">
-                        <input id="Schedule__sTimeStart" bind:value="{oData.sTimeStart}" class="bulma-input { oError.sTimeStart ? 'bulma-is-danger' : '' }" type="time" placeholder="{oPlaceholder.sTimeStart}">
+                        <input id="Task__sTimeStart" bind:value="{oData.sTimeStart}" class="bulma-input { oError.sTimeStart ? 'bulma-is-danger' : '' }" type="time" placeholder="{oPlaceholder.sTimeStart}">
                         <span class="bulma-icon bulma-is-right bulma-has-text-danger">
                             <i class="fas fa-asterisk fa-2xs"></i>
                         </span>
@@ -262,9 +240,9 @@
 
                 <!-- sTimeEnd -->
                 <div class="bulma-field">
-                    <label class="bulma-label" for="Schedule__sTimeEnd">Heure de fin</label>
+                    <label class="bulma-label" for="Task__sTimeEnd">Heure de fin</label>
                     <div class="bulma-control bulma-has-icons-right">
-                        <input id="Schedule__sTimeEnd" bind:value="{oData.sTimeEnd}" class="bulma-input { oError.sTimeEnd ? 'bulma-is-danger' : '' }" type="time" placeholder="{oPlaceholder.sTimeEnd}">
+                        <input id="Task__sTimeEnd" bind:value="{oData.sTimeEnd}" class="bulma-input { oError.sTimeEnd ? 'bulma-is-danger' : '' }" type="time" placeholder="{oPlaceholder.sTimeEnd}">
                         <span class="bulma-icon bulma-is-right bulma-has-text-danger">
                             <i class="fas fa-asterisk fa-2xs"></i>
                         </span>
@@ -276,10 +254,10 @@
 
                 <!-- nPrice -->
                 <div class="bulma-field">
-                    <label class="bulma-label" for="Schedule__nPrice">Tarif horaire</label>
+                    <label class="bulma-label" for="Task__nPrice">Tarif horaire</label>
                     <div class="bulma-field bulma-has-addons">
                         <div class="bulma-control bulma-is-flex-grow-1  bulma-has-icons-right">
-                            <input id="Schedule__nPrice" class="bulma-input { oError.nPrice ? 'bulma-is-danger' : '' }" bind:value="{oData.nPrice}" type="number" placeholder="{oPlaceholder.nPrice.toFixed(2)}">
+                            <input id="Task__nPrice" class="bulma-input { oError.nPrice ? 'bulma-is-danger' : '' }" bind:value="{oData.nPrice}" type="number" placeholder="{oPlaceholder.nPrice.toFixed(2)}">
                             <span class="bulma-icon bulma-is-right bulma-has-text-danger">
                                 <i class="fas fa-asterisk fa-2xs"></i>
                             </span>
@@ -295,9 +273,9 @@
 
                 <!-- sInformations -->
                  <div class="bulma-field">
-                    <label class="bulma-label" for="Schedule__sInformations">Informations complémentaires</label>
+                    <label class="bulma-label" for="Task__sInformations">Informations complémentaires</label>
                     <div class="bulma-control">
-                        <textarea id="Schedule__sInformations" bind:value="{oData.sInformations}" class="bulma-textarea" placeholder="{oPlaceholder.sInformations}"></textarea>
+                        <textarea id="Task__sInformations" bind:value="{oData.sInformations}" class="bulma-textarea" placeholder="{oPlaceholder.sInformations}"></textarea>
                     </div>
                 </div>
 

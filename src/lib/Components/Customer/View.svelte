@@ -142,33 +142,29 @@
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
 
-            <address class="bulma-block">
-                {@html '<p>' + oContactView.getAddress().join('</p><p>') + '</p>'}
-            </address>
-
-            {#if oContactView.sInformations || !oCustomerView.bEnable || oContactView.bHasKey}
-                <div class="bulma-block">
-                    {#if oContactView.sInformations}
-                        <div class="bulma-content bulma-is-small bulma-mb-2">
-                            <blockquote>{oContactView.sInformations}</blockquote>
-                        </div>
-                    {/if}
-                    {#if !oCustomerView.bEnable}
-                        <span class="fox-customer-disable bulma-tag bulma-is-danger bulma-is-light bulma-icon-text">
-                            <span class="bulma-icon bulma-is-small">
-                                <i class="fa-solid fa-user-slash"></i>
-                            </span>
-                            <span>Désactivé</span>
+            <div class="bulma-block">
+                <address class="bulma-mb-2">
+                    {@html '<p>' + oContactView.getAddress().join('</p><p>') + '</p>'}
+                </address>
+                <span class="fox-customer-disable bulma-tag bulma-is-light bulma-icon-text {oCustomerView.bEnable ? 'bulma-is-success' : 'bulma-is-danger'}">
+                    <span class="bulma-icon bulma-is-small">
+                        <i class="fa-solid {oCustomerView.bEnable ? 'fa-user-check' : 'fa-user-slash'}"></i>
+                    </span>
+                    <span>{oCustomerView.bEnable ? 'Activé' : 'Désactivé'}</span>
+                </span>
+                {#if oContactView.bHasKey}
+                    <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text">
+                        <span class="bulma-icon bulma-is-small">
+                            <i class="fa-solid fa-key"></i>
                         </span>
-                    {/if}
-                    {#if oContactView.bHasKey}
-                        <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text">
-                            <span class="bulma-icon bulma-is-small">
-                                <i class="fa-solid fa-key"></i>
-                            </span>
-                            <span>Je possède un double des clefs</span>
-                        </span>
-                    {/if}
+                        <span>Je possède un double des clefs</span>
+                    </span>
+                {/if}
+            </div>
+            
+            {#if oContactView.sInformations}
+                <div class="bulma-content bulma-is-small">
+                    <blockquote>{oContactView.sInformations}</blockquote>
                 </div>
             {/if}
             
@@ -182,12 +178,12 @@
                             <span>Maps</span>
                         </a>
                         {#if oContactView.getMobilePhoneNumbers().length}
-                        <a class="bulma-button bulma-is-hovered" href="sms:{oContactView.getMobilePhoneNumbers()[0]}">
-                            <span class="bulma-icon">
-                                <i class="fa-solid fa-message"></i>
-                            </span>
-                            <span>SMS</span>
-                        </a>
+                            <a class="bulma-button bulma-is-hovered" href="sms:{oContactView.getMobilePhoneNumbers()[0]}">
+                                <span class="bulma-icon">
+                                    <i class="fa-solid fa-message"></i>
+                                </span>
+                                <span>SMS</span>
+                            </a>
                         {/if}
                         <a class="bulma-button bulma-is-hovered" href="tel:{oContactView.aPhoneNumbers[0]}">
                             <span class="bulma-icon">

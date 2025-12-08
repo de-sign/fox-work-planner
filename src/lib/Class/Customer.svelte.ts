@@ -14,7 +14,7 @@ export interface ICustomerOptions {
     _sUUID?: string;
     sMainContact: string;
     aExtraContacts?: string[];
-    bEnable: boolean;
+    bEnable?: boolean;
 }
 
 
@@ -113,7 +113,9 @@ class Customer {
             oExtraContact.oIsExtraOf = this;
         } );
 
-        this.bEnable = oData.bEnable;
+        if( oData.bEnable != null ){
+            this.bEnable = oData.bEnable;
+        }
 
         Customer.store();
     }
