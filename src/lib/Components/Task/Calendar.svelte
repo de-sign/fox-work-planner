@@ -81,6 +81,7 @@
             oItems: oTasksByCell,
             aDates: Item.aDates,
             nNow: Item.nNow,
+            dTimeNow: Item.dTimeNow,
 
             clickOnItem: (oTask: TObject) => Pages.oView.open(oTask.oTarget),
             clickOnEmpty: (oCellData: TObject) => Pages.oForm.open(TASK_FORM_TYPE.NEW_TASK, oCellData)

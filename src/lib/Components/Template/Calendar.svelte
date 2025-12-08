@@ -49,15 +49,34 @@
         return (nHour + 'h').padStart(3, ' ');
     }
 
+    // -- Time
+    let sCellTime = $derived.by( () => {
+            let sReturn = '-1:0';
+            if( Item.dTimeNow ){
+                sReturn = Item.nNow + ':' + Math.max( nStartHour, Math.min( Item.dTimeNow.getHours(), nStartHour + nMaxHourForDay - 1) );
+            }
+            return sReturn;
+        } ),
+        sTimeTop = $derived.by( () => {
+            let sResult = '100%';
+            if( Item.dTimeNow.getHours() < nStartHour ){
+                sResult = '-2px';
+            }
+            else if( Item.dTimeNow.getHours() < nStartHour + nMaxHourForDay ){
+                sResult = (( Item.dTimeNow.getMinutes() * CONFIG.CALENDAR_CELL_HEIGHT / 60 ) - 1) + 'px';
+            }
+            return sResult;
+        } );
+
     // -- Select cell 
-    let sCellSelected = $state('0:0');
+    let sCellSelected = $state('-1:0');
 
     function selectCell(nDay: number, nHour: number): void {
         sCellSelected = nDay + ':' + nHour;
     }
 
     function unselectCell(): void {
-        sCellSelected = '0:0';
+        sCellSelected = '-1:0';
     }
 
     function parseCellToForm(nDay: number, nHour: number): TObject {
@@ -75,7 +94,7 @@
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
-        // $inspect(oSchedulesGrouped).with(console.trace);
+        // $inspect(sTimeTop).with(console.trace);
         // $inspect(sCellSelected).with(console.trace);
     }
 </script>
@@ -109,33 +128,39 @@
                         <span class="bulma-is-size-7 fox-calendar-hour">{formatHour(nHour + 1)}</span>
                     </div>
 
-                <!-- With Item -->
-                {:else if Item.oItems[oDay.nDay + ':' + nHour] }
-                    <div class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOURS_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
-                        {#each Item.oItems[oDay.nDay + ':' + nHour] as oItem}
-                            <Item.oComponent sType="calendar" Item={{ ...oItem, click: () => Item.clickOnItem(oItem) }} />
-                        {/each}
-                    </div>
-
-                <!-- Selected -->
-                {:else if sCellSelected == oDay.nDay + ':' + nHour}
-                    <div class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOURS_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
-                        <button
-                            class="bulma-button bulma-is-link bulma-is-outlined" title="Ajouter une planification"
-                            onclick={ oEvent => { oEvent.stopPropagation(); Item.clickOnEmpty( parseCellToForm(oDay.nDay, nHour) ); } }
-                        >
-                            <span class="bulma-icon bulma-is-small">
-                                <i class="fa-solid fa-plus"></i>
-                            </span>
-                        </button>
-                    </div>
-                
-                <!-- Empty -->
                 {:else}
-                    <button
-                        class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOURS_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }" title="Selectionner la cellule"
-                        onclick={ oEvent => { oEvent.stopPropagation(); selectCell(oDay.nDay, nHour); } }
-                    ></button>
+                    <div class="bulma-cell fox-calendar-cell { CONFIG.CALENDAR_HOURS_BREAK.indexOf(nHour) == -1 ? '' : 'fox-calendar-is-break' }">
+
+                        <!-- Time Cursor -->
+                        {#if sCellTime == oDay.nDay + ':' + nHour }
+                            <div class="fox-calendar-time" style:top={sTimeTop} ></div>
+                        {/if}
+
+                        <!-- With Item -->
+                        {#if Item.oItems[oDay.nDay + ':' + nHour] }
+                            {#each Item.oItems[oDay.nDay + ':' + nHour] as oItem}
+                                <Item.oComponent sType="calendar" Item={{ ...oItem, click: () => Item.clickOnItem(oItem) }} />
+                            {/each}
+
+                        <!-- Selected -->
+                        {:else if sCellSelected == oDay.nDay + ':' + nHour}
+                            <button
+                                class="bulma-button bulma-is-link bulma-is-outlined" title="Ajouter une planification"
+                                onclick={ oEvent => { oEvent.stopPropagation(); Item.clickOnEmpty( parseCellToForm(oDay.nDay, nHour) ); } }
+                            >
+                                <span class="bulma-icon bulma-is-small">
+                                    <i class="fa-solid fa-plus"></i>
+                                </span>
+                            </button>
+                        
+                        <!-- Empty -->
+                        {:else}
+                            <button
+                                class="bulma-button bulma-is-ghost" title="Selectionner la cellule"
+                                onclick={ oEvent => { oEvent.stopPropagation(); selectCell(oDay.nDay, nHour); } }
+                            ></button>
+                        {/if}
+                    </div>
                 {/if}
             {/each}
         {/each}
@@ -212,5 +237,29 @@
     .fox-calendar-cell.fox-calendar-is-break {
         background-color: var(--bulma-border-weak);
         border-right-color: var(--bulma-border);
+    }
+
+    .fox-calendar-time {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: var(--bulma-danger);
+    }
+
+    .fox-calendar-time::before {
+        content: '';
+        display: block;
+
+        position: absolute;
+        left: -6px;
+        top: -5px;
+
+        width: 0; 
+        height: 0;
+
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-left: 6px solid var(--bulma-danger);
     }
 </style>

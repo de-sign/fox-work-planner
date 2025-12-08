@@ -5,8 +5,9 @@
     import type { Component } from 'svelte';
     import { PROPERTY_NAME, CUSTOMER_PAGE, SCHEDULE_PAGE, TASK_FORM_TYPE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
-    import { toWeekData } from '../../Core/Form';
 
+    import * as Svelte from 'svelte';
+    import { toWeekData } from '../../Core/Form';
     import Store from '../../Core/Store';
 
     /* -- Template */
@@ -25,13 +26,12 @@
     } = $props();
 
     // -- Change Week
-    let dNow = new Date(),
+    let dDateNow = new Date(),
         dMonday = new Date();
         
-    dNow = new Date( Date.UTC(dNow.getFullYear(), dNow.getMonth(), dNow.getDate()) );
-    dMonday.setDate( (dNow.getDate() - dNow.getDay() + 1) );
+    dDateNow = new Date( Date.UTC(dDateNow.getFullYear(), dDateNow.getMonth(), dDateNow.getDate()) );
+    dMonday.setDate( (dDateNow.getDate() - dDateNow.getDay() + 1) );
     dMonday = new Date( Date.UTC(dMonday.getFullYear(), dMonday.getMonth(), dMonday.getDate()) );
-
 
     // Go to first Monday Day of current Week
     let dMondayOfWeek = $state( new Date(dMonday.toJSON()) ),
@@ -54,7 +54,7 @@
         nNow = $derived.by( () => {
             let nResult = -1;
             aDates.forEach( (dDate, nIndex) => {
-                if( dDate.toJSON() == dNow.toJSON() ){
+                if( dDate.toJSON() == dDateNow.toJSON() ){
                     nResult = nIndex;
                 }
             } );
@@ -76,6 +76,18 @@
             dMondayOfWeek = new Date( dMonday.toJSON() );
         }
     }
+
+    // -- Change Time
+    let dTimeNow = $state( new Date() ),
+        nTimeout = 0;
+
+    function updateTime(): void {
+        dTimeNow = new Date();
+        nTimeout = setTimeout(updateTime, (61 - dTimeNow.getSeconds()) * 1000 );
+    }
+
+    Svelte.onMount(updateTime);
+    Svelte.onDestroy( () => clearTimeout(nTimeout) );
     
     /* -- Theme Switch */
     const oDisplays: TObject = {
@@ -122,7 +134,8 @@
             nWeek: aWeekData[0],
             sWeekKey: aWeekData.join('_'),
             nNow: nNow,
-            aDates: aDates
+            aDates: aDates,
+            dTimeNow: dTimeNow
         };
     } );
 
@@ -157,7 +170,7 @@
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
-        // $inspect(dMondayOfWeek).with(console.trace);
+        // $inspect(dTimeNow).with(console.trace);
         // $inspect(oContent).with(console.trace);
     }
 </script>
@@ -167,27 +180,7 @@
 <section class="fox-app-page" onclick={ () => App.oEmitter.emit('fox-app-page--click') }>
 
     <!-- Page Title -->
-    <Title Item={oTitle}>
-
-        <!-- Week Nav -->
-        <nav class="fox-app-page-title-content bulma-is-align-items-center">
-            <button class="fox-app-page-title-item bulma-has-text-left" onclick="{ () => changeWeek(0) }" title="Aller à la semaine courante">
-                <span class="bulma-is-size-7">{@html sHTMLSelector}</span>
-            </button>
-            <div class="fox-app-page-title-item bulma-buttons bulma-has-addons">
-                <button class="bulma-button" onclick="{ () => changeWeek(-1) }" title="Aller à la semaine précédente">
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </span>
-                </button>
-                <button class="bulma-button" onclick="{ () => changeWeek(1) }" title="Aller à la semaine suivante">
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </span>
-                </button>
-            </div>
-        </nav>
-    </Title>
+    <Title Item={oTitle} />
 
     <!-- Page Content -->
     <div class="fox-app-page-content bulma-section">
@@ -234,7 +227,27 @@
     </div>
     
     <!-- Page Navbar -->
-    <Navbar Item={oNavbar} />
+    <Navbar Item={oNavbar}>
+
+        <!-- Week Nav -->
+        <div class="fox-app-page-title-content bulma-is-align-items-center">
+            <div class="fox-app-page-title-item bulma-buttons bulma-has-addons bulma-is-flex-wrap-nowrap">
+                <button class="bulma-button" onclick="{ () => changeWeek(-1) }" title="Aller à la semaine précédente">
+                    <span class="bulma-icon">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </span>
+                </button>
+                <button class="bulma-is-flex-grow-1" onclick="{ () => changeWeek(0) }" title="Aller à la semaine courante">
+                    <span class="bulma-is-size-7">{@html sHTMLSelector}</span>
+                </button>
+                <button class="bulma-button" onclick="{ () => changeWeek(1) }" title="Aller à la semaine suivante">
+                    <span class="bulma-icon">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </Navbar>
     
 </section>
 
