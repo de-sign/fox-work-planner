@@ -52,8 +52,9 @@
         if( nPageSelected != nValue ){
             aPagesHistory.push(nPageSelected);
             nPageSelected = nValue;
-            if( bScrollTop && hContent ){
-                hContent.querySelectorAll( CONFIG.CONTENT_PAGE_SCROLLTOP_SELECTOR )[nPageSelected - 1]?.scrollTo(0, 0);
+            
+            if( bScrollTop ){
+                scrollTop();
             }
         }
     }
@@ -79,6 +80,10 @@
         aPagesHistory = [];
     }
 
+    function scrollTop(): void {
+        hContent?.querySelectorAll( CONFIG.CONTENT_PAGE_SCROLLTOP_SELECTOR )[nPageSelected - 1]?.scrollTo(0, 0);
+    }
+
     /* ---- App Encapsulation */
     const oApp = {
         oContent: {
@@ -92,7 +97,8 @@
             open: openPage,
             next: nextPage,
             previous: previousPage,
-            back: backPage
+            back: backPage,
+            scrollTop: scrollTop
         },
         oEmitter: new EventEmitter()
     };

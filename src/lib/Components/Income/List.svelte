@@ -37,6 +37,7 @@
         } else {
             dFirstDayOfMonth = new Date( dFirstDay.toJSON() );
         }
+        App.oPage.scrollTop();
     }
 
     /* -- Get Task and create from Schedule */
@@ -210,7 +211,7 @@
                 <div class="bulma-notification bulma-has-text-centered">
                     <span class="bulma-icon-text">
                         <span class="bulma-icon">
-                            <i class="fa-solid fa-calendar-slash"></i>
+                            <i class="fa-solid fa-calendar-xmark"></i>
                         </span>
                         <span>Aucune tâche trouvé</span>
                     </span>

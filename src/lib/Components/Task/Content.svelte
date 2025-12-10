@@ -61,6 +61,7 @@
         } else {
             dMondayOfWeek = new Date( dMonday.toJSON() );
         }
+        App.oPage.scrollTop();
     }
 
     // -- Change Time
@@ -201,7 +202,7 @@
                     Et n'oublie pas de créer des
                     <button class="bulma-block bulma-button bulma-is-small" onclick="{ () => App.oContent.change('Schedule', SCHEDULE_PAGE.FORM) }">
                         <span class="bulma-icon">
-                            <i class="fa-solid calendar-plus"></i>
+                            <i class="fa-solid fa-calendar-plus"></i>
                         </span>
                         <span>planifications</span>
                     </button>
