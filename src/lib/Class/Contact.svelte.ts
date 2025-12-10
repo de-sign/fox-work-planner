@@ -60,6 +60,13 @@ class Contact {
         }
     }
 
+    public static clear(): void {
+        for( let sUUID in _oInstances ){
+            delete _oInstances[sUUID];
+        }
+        Contact._bRestored = false;
+    }
+
     public static getAll(): TObject<Contact> {
         return _oInstances;
     }

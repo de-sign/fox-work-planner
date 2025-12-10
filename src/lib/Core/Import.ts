@@ -4,6 +4,7 @@ import type { TObject } from './Type';
 import Template from '../Components/Template/Page.svelte';
 
 /* -- Menu Components */
+import Data from '../Components/Menu/Data.svelte';
 import Theme from '../Components/Menu/Theme.svelte';
 
 /* -- Content Components */
@@ -15,6 +16,7 @@ import Income from '../Components/Income/List.svelte';
 /* -- Export */
 export const COMPONENTS: TObject = {
     // MENU_LIST_ITEMS
+    Data: Data,
     Theme: Theme,
 
     // CONTENT_ITEMS

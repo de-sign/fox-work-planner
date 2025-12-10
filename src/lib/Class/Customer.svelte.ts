@@ -53,6 +53,13 @@ class Customer {
             Customer._bRestored = true;
         }
     }
+
+    public static clear(): void {
+        for( let sUUID in _oInstances ){
+            delete _oInstances[sUUID];
+        }
+        Customer._bRestored = false;
+    }
     
     public static hasCustomers(): boolean {
         return !!Object.getOwnPropertyNames(_oInstances).length;

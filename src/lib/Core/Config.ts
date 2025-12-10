@@ -108,6 +108,12 @@ export const CONFIG = {
         {
             sLabel: 'Paramètres',
             aItems: <MenuItem[]> [
+                // Special - Export Import
+                {
+                    sLabel: 'Gestion des données',
+                    bIsComponent: true,
+                    sComponent: 'Data',
+                },
                 // Special - Switch Theme 
                 {
                     sLabel: 'Thème',
@@ -139,6 +145,9 @@ export const CONFIG = {
         }
     },
     CONTENT_PAGE_SCROLLTOP_SELECTOR: '.fox-app-page-content',
+
+    // -- Import / Export
+    EXPORT_KEYS_STORE: [ PROPERTY_NAME.APP_DATA_CONTACT, PROPERTY_NAME.APP_DATA_CUSTOMER, PROPERTY_NAME.APP_DATA_SCHEDULE, PROPERTY_NAME.APP_DATA_TASK ],
 
     // -- Calendar
     CALENDAR_CELL_HEIGHT: 45,

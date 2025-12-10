@@ -58,6 +58,13 @@ class Schedule {
         }
     }
 
+    public static clear(): void {
+        for( let sUUID in _oInstances ){
+            delete _oInstances[sUUID];
+        }
+        Schedule._bRestored = false;
+    }
+
     public static getAll(): TObject<Schedule> {
         return _oInstances;
     }

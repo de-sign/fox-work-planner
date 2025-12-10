@@ -34,6 +34,10 @@
     /* Content */
 .bulma-content {
     --bulma-content-blockquote-background-color: var(--bulma-border-weak);
+
+    & blockquote {
+        white-space: pre;
+    }
 }
 
     /* Notification */

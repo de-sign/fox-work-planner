@@ -63,6 +63,13 @@ class Task {
         }
     }
 
+    public static clear(): void {
+        for( let sUUID in _oInstances ){
+            delete _oInstances[sUUID];
+        }
+        Task._bRestored = false;
+    }
+
     public static from(oSchedule: Schedule, dDate: Date): Task {
         const oData: TObject = oSchedule.clone();
 

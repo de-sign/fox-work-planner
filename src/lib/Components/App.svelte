@@ -114,7 +114,7 @@
     />
     <!-- Main content -->
     <main class="fox-app-content">
-        <div bind:this="{hContent}" class="fox-app-pages fox-app--has-{nMaxPage}-pages fox-app--is-page-{nPageSelected}">
+        <div bind:this={hContent} class="fox-app-pages fox-app--has-{nMaxPage}-pages fox-app--is-page-{nPageSelected}">
             <!-- Selected tab content -->
             <oContentSelected.oComponent App={oApp} />
         </div>
