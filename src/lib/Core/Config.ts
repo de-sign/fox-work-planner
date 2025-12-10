@@ -127,7 +127,7 @@ export const CONFIG = {
         },
         Income: {
             sComponent: 'Income',
-            nPagesCount: 3
+            nPagesCount: 1
         },
         Customer: {
             sComponent: 'Customer',
@@ -148,9 +148,11 @@ export const CONFIG = {
     CALENDAR_HOURS_BREAK: [8, 12, 13, 17],
 
     CALENDAR_DAYS: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+    CALENDAR_DAYS_ABBR: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
     CALENDAR_DAYS_BREAK: [0, 6],
 
-    CALENDAR_MONTHS: [ 'Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juill.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
+    CALENDAR_MONTHS: [ 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+    CALENDAR_MONTHS_ABBR: [ 'Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juill.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
 
     // -- Schedule
     SCHEDULE_WEEK_TYPE: [
@@ -161,8 +163,8 @@ export const CONFIG = {
 
     // -- Task
     TASK_STATE: [
-        { sValue: 'WAIT', sText: 'En attente', sDescription: 'Attente de validation', sClass: 'bulma-is-link', sTag: 'fa-hourglass-half' },
-        { sValue: 'VALID', sText: 'Validée', sDescription: 'Travaillée et validée', sClass: 'bulma-is-success', sTag: 'fa-check' },
-        { sValue: 'CANCEL', sText: 'Annulée', sDescription: 'Annulée par le client', sClass: 'bulma-is-danger', sTag: 'fa-xmark' }
+        { sValue: 'WAIT', sText: 'En attente', sDescription: 'Attente de validation', sClass: 'bulma-is-link', sTag: 'fa-hourglass-half', sHTMLTag: 'i' },
+        { sValue: 'VALID', sText: 'Validée', sDescription: 'Travaillée et validée', sClass: 'bulma-is-success', sTag: 'fa-check', sHTMLTag: 'b' },
+        { sValue: 'CANCEL', sText: 'Annulée', sDescription: 'Annulée par le client', sClass: 'bulma-is-danger', sTag: 'fa-xmark', sHTMLTag: 's' }
     ]
 }

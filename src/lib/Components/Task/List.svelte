@@ -26,51 +26,48 @@
         // Add enable Schedule without Task created by his and 
         aResults.forEach( oTask => oTask.oSchedule ? aFromSchedule.push(oTask.oSchedule) : null );
         Object.values( Schedule.getAll() )
-            .filter( oSchedule => {
-                return oSchedule.oCustomer.bEnable && aFromSchedule.indexOf(oSchedule) == -1 && oSchedule.oWeekType.fFilter(Item.nWeek);
-            } )
+            .filter( oSchedule => oSchedule.oCustomer.bEnable && aFromSchedule.indexOf(oSchedule) == -1 && oSchedule.oWeekType.fFilter(Item.nWeek) )
             .forEach( oSchedule => aResults.push( Task.from( oSchedule, Item.aDates[oSchedule.nDay] ) ) );
 
         return aResults;
     } );
-    
 
     const aTasksGrouped = $derived.by( () => {
-            const aReturn: TObject[] = [],
-                oDays: TObject<Task[]> = {};
-            
-            // Add Group for Today
-            if( Item.nNow >= 0 ){
-                oDays[Item.nNow] = [];
-            }
+        const aReturn: TObject[] = [],
+            oDays: TObject<Task[]> = {};
+        
+        // Add Group for Today
+        if( Item.nNow >= 0 ){
+            oDays[Item.nNow] = [];
+        }
 
-            // Group and Sort
-            aTasks
-                .sort( (oA, oB) => oA.nTimeStart - oB.nTimeStart )
-                .forEach( oTask => {
-                    let nDay = oTask.nDay;
-                    if( !oDays[nDay] ){
-                        oDays[nDay] = [];
-                    }
-                    oDays[nDay].push(oTask);
+        // Group and Sort
+        aTasks
+            .sort( (oA, oB) => oA.nTimeStart - oB.nTimeStart )
+            .forEach( oTask => {
+                let nDay = oTask.nDay;
+                if( !oDays[nDay] ){
+                    oDays[nDay] = [];
+                }
+                oDays[nDay].push(oTask);
+            } );
+
+        Object.keys(oDays)
+            .sort( (sA, sB) => sA.localeCompare(sB, 'fr', { numeric: true }) )
+            .forEach( sDay => {
+                const nDay = parseInt(sDay),
+                    dDate = Item.aDates[nDay];
+
+                aReturn.push( {
+                    sDay: CONFIG.CALENDAR_DAYS[dDate.getDay()] + ' ' + dDate.getDate(),
+                    sMonth: CONFIG.CALENDAR_MONTHS_ABBR[dDate.getMonth()] + ' ' + dDate.getFullYear(),
+                    aTasks: oDays[sDay],
+                    bToday: Item.nNow == nDay
                 } );
+            } );
 
-            Object.keys(oDays)
-                .sort( (sA, sB) => sA.localeCompare(sB, 'fr', { numeric: true }) )
-                .forEach( sDay => {
-                    const nDay = parseInt(sDay),
-                        dDate = Item.aDates[nDay];
-
-                    aReturn.push( {
-                        sDay: CONFIG.CALENDAR_DAYS[dDate.getDay()] + ' ' + dDate.getDate(),
-                        sMonth: CONFIG.CALENDAR_MONTHS[dDate.getMonth()] + ' ' + dDate.getFullYear(),
-                        aTasks: oDays[sDay],
-                        bToday: Item.nNow == nDay
-                    } );
-                } );
-
-            return aReturn;
-        } );
+        return aReturn;
+    } );
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){

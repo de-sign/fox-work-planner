@@ -3,7 +3,7 @@ import type { TObject } from '../Core/Type';
 import { PROPERTY_NAME, TASK_STATE } from '../Core/Constants';
 import { CONFIG } from '../Core/Config';
 
-import { toWeekData } from '../Core/Form';
+import * as FoxDate from '../Core/Date';
 
 import Store from '../Core/Store';
 import Customer from './Customer.svelte';
@@ -109,16 +109,20 @@ class Task {
         return this._sUUID;
     }
 
+    public get nDay(): number {
+        return this.dDate.getDay();
+    }
+
+    public get nDate(): number {
+        return this.dDate.getDate();
+    }
+
     public get nWeek(): number {
-        return toWeekData(this.dDate)[0];
+        return FoxDate.toWeekData(this.dDate)[0];
     }
 
     public get sWeekKey(): string {
-        return toWeekData(this.dDate).join('_');
-    }
-
-    public get nDay(): number {
-        return this.dDate.getDay();
+        return FoxDate.toWeekData(this.dDate).join('_');
     }
 
     public get sMonthKey(): string {
@@ -129,8 +133,12 @@ class Task {
         return this.dDate.toJSON().split('T')[0];
     }
 
+    public get sShortDate(): string {
+        return CONFIG.CALENDAR_DAYS_ABBR[this.dDate.getDay()] + ' ' + this.dDate.getDate();
+    }
+
     public get sFullDate(): string {
-        return CONFIG.CALENDAR_DAYS[this.dDate.getDay()] + ' ' + this.dDate.getDate() + ' ' + CONFIG.CALENDAR_MONTHS[this.dDate.getMonth()] + ' ' + this.dDate.getFullYear();
+        return CONFIG.CALENDAR_DAYS[this.dDate.getDay()] + ' ' + this.dDate.getDate() + ' ' + CONFIG.CALENDAR_MONTHS_ABBR[this.dDate.getMonth()] + ' ' + this.dDate.getFullYear();
     }
 
     public get nTimeStart(): number {
@@ -159,6 +167,10 @@ class Task {
 
     public get sPrice(): string {
         return this.nPrice.toFixed(2).replace('.', ',');
+    }
+
+    public get nTotalPrice(): number {
+        return (this.nDuration / 60 * this.nPrice);
     }
 
     public get sTotalPrice(): string {
@@ -219,6 +231,11 @@ class Task {
     public changeState(sValue: string): void {
         this.sState = sValue;
         this._store();
+    }
+
+    public wrapToStateTag(sValue: string): string {
+        const sHTMLTag = this.oState.sHTMLTag;
+        return `<${sHTMLTag}>${sValue}<${sHTMLTag}/>`;
     }
 };
 

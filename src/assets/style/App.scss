@@ -52,6 +52,11 @@
     --bulma-button-disabled-background-color: transparent;
 }
 
+    /* Table */
+.bulma-table {
+    --bulma-table-background-color: var(--bulma-body-background-color);
+}
+
 
 /* ---- FOX Application */
 :root {

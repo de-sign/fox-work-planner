@@ -7,7 +7,7 @@
     import { CONFIG } from '../../Core/Config';
 
     import * as Svelte from 'svelte';
-    import { toWeekData } from '../../Core/Form';
+    import * as FoxDate from '../../Core/Date';
     import Store from '../../Core/Store';
 
     /* -- Template */
@@ -35,22 +35,8 @@
 
     // Go to first Monday Day of current Week
     let dMondayOfWeek = $state( new Date(dMonday.toJSON()) ),
-        aWeekData = $derived( toWeekData(dMondayOfWeek) ),
-        aDates = $derived.by( () => {
-            const aDays: Date[] = [],
-                dDay = new Date( dMondayOfWeek.toJSON() );
-
-            // Go To Sunday
-            dDay.setDate( dDay.getDate() - 1 );
-
-            // Add All days
-            for( let nAdd = 0; nAdd < 7; nAdd++ ){
-                aDays.push( new Date( Date.UTC(dDay.getFullYear(), dDay.getMonth(), dDay.getDate()) ) );
-                dDay.setDate( dDay.getDate() + 1 );
-            }
-
-            return aDays;
-        } ),
+        aWeekData = $derived( FoxDate.toWeekData(dMondayOfWeek) ),
+        aDates = $derived( FoxDate.getDaysOfWeek(dMondayOfWeek) ),
         nNow = $derived.by( () => {
             let nResult = -1;
             aDates.forEach( (dDate, nIndex) => {
@@ -64,8 +50,8 @@
             const dFirst = aDates[0],
                 dLast = aDates[ aDates.length - 1 ];
 
-            return 'Du <span class="bulma-is-size-5">' + dFirst.getDate() +  ' ' + CONFIG.CALENDAR_MONTHS[dFirst.getMonth()] + '</span> ' +
-                'au <span class="bulma-is-size-5">' + dLast.getDate() + ' ' + CONFIG.CALENDAR_MONTHS[dLast.getMonth()] + '</span> ' + dLast.getFullYear();
+            return 'Du <span class="bulma-is-size-5">' + dFirst.getDate() +  ' ' + CONFIG.CALENDAR_MONTHS_ABBR[dFirst.getMonth()] + '</span> ' +
+                'au <span class="bulma-is-size-5">' + dLast.getDate() + ' ' + CONFIG.CALENDAR_MONTHS_ABBR[dLast.getMonth()] + '</span> ' + dLast.getFullYear();
         } );
 
     function changeWeek(nRatio: number): void {
@@ -110,7 +96,7 @@
     const oTitle = $derived.by( () => {
         return {
             sTitle: 'Agenda',
-            sSubTitle: 'Gère tes tâches à venir',
+            sSubTitle: 'Organise tes tâches',
             aButtons: [
                 {
                     sClass: sDisplay == 'calendar' ? 'bulma-is-link bulma-is-selected' : '',

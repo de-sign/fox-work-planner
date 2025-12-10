@@ -28,9 +28,7 @@
         // Add enable Schedule without Task created by his and 
         aResults.forEach( oTask => oTask.oSchedule ? aFromSchedule.push(oTask.oSchedule) : null );
         Object.values( Schedule.getAll() )
-            .filter( oSchedule => {
-                return oSchedule.oCustomer.bEnable && aFromSchedule.indexOf(oSchedule) == -1 && oSchedule.oWeekType.fFilter(Item.nWeek);
-            } )
+            .filter( oSchedule => oSchedule.oCustomer.bEnable && aFromSchedule.indexOf(oSchedule) == -1 && oSchedule.oWeekType.fFilter(Item.nWeek) )
             .forEach( oSchedule => aResults.push( Task.from( oSchedule, Item.aDates[oSchedule.nDay] ) ) );
 
         return aResults;

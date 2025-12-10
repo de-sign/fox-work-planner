@@ -10,6 +10,7 @@ import Theme from '../Components/Menu/Theme.svelte';
 import Customer from '../Components/Customer/Pages.svelte';
 import Schedule from '../Components/Schedule/Pages.svelte';
 import Task from '../Components/Task/Pages.svelte';
+import Income from '../Components/Income/List.svelte';
 
 /* -- Export */
 export const COMPONENTS: TObject = {
@@ -18,7 +19,7 @@ export const COMPONENTS: TObject = {
 
     // CONTENT_ITEMS
     Task: Task,
-    Income: Template,
+    Income: Income,
     Customer: Customer,
     Schedule: Schedule
 };

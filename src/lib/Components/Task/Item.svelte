@@ -50,20 +50,21 @@
             </div>
         </button>
     </article>
-    
-{:else if sType == 'simple'}
-    <div id="{Item.oTarget.sId}" >
-        <b>{Item.oTarget.sDay} : </b>
-        {#if Item.oTarget.sWeekType != 'EVERY_WEEK'}
-            <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text">
+
+{:else if sType == 'tablerow'}
+    <tr class="fox-table-task bulma-has-text-right">
+        <td class="bulma-has-text-left">
+            <span class="bulma-tag bulma-is-light bulma-icon-text {Item.oTarget.oState.sClass}">
                 <span class="bulma-icon bulma-is-small">
-                    <i class="fa-solid fa-calendar-week"></i>
+                    <i class="fa-solid {Item.oTarget.oState.sTag}"></i>
                 </span>
-                <span>{Item.oTarget.oWeekType.sTag}</span>
+                <span>{Item.oTarget.sShortDate}</span>
             </span>
-        {/if}
-        {Item.oTarget.sTime}<i class="bulma-is-size-7">-> {Item.oTarget.sDuration}</i>
-    </div>
+        </td>
+        <td class="bulma-has-text-left">{Item.oTarget.sTime + ' -> ' + Item.oTarget.sDuration}</td>
+        <!-- <td>{@html Item.oTarget.wrapToStateTag(Item.oTarget.sPrice + '&nbsp;€/h')}</td> -->
+        <td class="bulma-is-size-6">{@html Item.oTarget.wrapToStateTag(Item.oTarget.sTotalPrice + '&nbsp;€')}</td>
+    </tr>
 {/if}
 
 <style>
@@ -88,5 +89,9 @@
         position: absolute;
         top: 8px;
         left: 0;
+    }
+
+    .fox-table-task td {
+        vertical-align: middle;
     }
 </style>

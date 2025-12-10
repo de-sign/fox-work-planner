@@ -9,9 +9,10 @@
     import Navbar from '../Template/Navbar.svelte';
 
     /* -- Content */
-    import Customer from '../../Class/Customer.svelte';
     import Contact from '../../Class/Contact.svelte';
+    import Customer from '../../Class/Customer.svelte';
     import Schedule from '../../Class/Schedule.svelte';
+    import Task from '../../Class/Task.svelte';
     
     import Item from './Item.svelte';
     import ItemSchedule from '../Schedule/Item.svelte';
@@ -31,6 +32,11 @@
             Object.values( Schedule.getAll() )
                 .filter( oSchedule => oSchedule.oCustomer === oCustomerView )
                 .sort( (oA, oB) => oA.nDay - oB.nDay || oA.nTimeStart - oB.nTimeStart )
+            : []
+        ),
+        aCustomerTask: Task[] = $derived( bIsCustomerView ?
+            Object.values( Task.getAll() )
+                .filter( Task => Task.oCustomer === oCustomerView )
             : []
         );
 
@@ -53,6 +59,9 @@
                 if( aCustomerSchedules.length ){
                     aInfos.push('ses <u>planifications</u>');
                 }
+                if( aCustomerTask.length ){
+                    aInfos.push('ses <u>tâches</u>');
+                }
             }
 
             if( aInfos.length > 1 ){
@@ -74,6 +83,10 @@
     }
 
     function remove(): void {
+
+        // Task
+        aCustomerTask.forEach( oTask => oTask.destroy() );
+
         // Schedule
         aCustomerSchedules.forEach( oSchedule => oSchedule.destroy() );
 

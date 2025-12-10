@@ -252,7 +252,7 @@
         display: block;
 
         position: absolute;
-        left: -6px;
+        left: -5px;
         top: -5px;
 
         width: 0; 

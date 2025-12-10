@@ -32,7 +32,7 @@
                             <i class="fa-solid {Item.oBack.sIcon}"></i>
                         </span>
                         {#if Item.oBack.sText}
-                            <span>{Item.oBack.sText}</span>
+                            <span>{@html Item.oBack.sText}</span>
                         {/if}
                     </button>
                 {/if}
@@ -43,21 +43,25 @@
                 <div class="fox-app-page-navbar-item { Item.aButtons.length > 1 ? 'bulma-buttons bulma-has-addons' : '' }">
                     {#each Item.aButtons as oButton}
                         {#if oButton.click}
-                            <button class="bulma-button {oButton.sClass}" onclick="{oButton.click}" title="{oButton.sTitle}">
-                                <span class="bulma-icon">
-                                    <i class="fa-solid {oButton.sIcon}"></i>
-                                </span>
+                            <button class="{ (oButton.bButton === false ? 'bulma-ml-4' :  'bulma-button') + ' ' + oButton.sClass}" onclick="{oButton.click}" title="{oButton.sTitle}">
+                                {#if oButton.sIcon}
+                                    <span class="bulma-icon">
+                                        <i class="fa-solid {oButton.sIcon}"></i>
+                                    </span>
+                                {/if}
                                 {#if oButton.sText}
                                     <span>{oButton.sText}</span>
                                 {/if}
                             </button>
                         {:else}
-                            <div class="bulma-button {oButton.sClass}" title="{oButton.sTitle}">
-                                <span class="bulma-icon">
-                                    <i class="fa-solid {oButton.sIcon}"></i>
-                                </span>
+                            <div class="{ (oButton.bButton === false ? 'bulma-ml-4' :  'bulma-button') + ' ' + oButton.sClass}" title="{oButton.sTitle}">
+                                {#if oButton.sIcon}
+                                    <span class="bulma-icon">
+                                        <i class="fa-solid {oButton.sIcon}"></i>
+                                    </span>
+                                {/if}
                                 {#if oButton.sText}
-                                    <span>{oButton.sText}</span>
+                                    <span>{@html oButton.sText}</span>
                                 {/if}
                             </div>
                         {/if}
