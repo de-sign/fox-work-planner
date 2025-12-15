@@ -3,7 +3,9 @@
     /* -- Core */
     import type { TObject } from '../../Core/Type';
     import { CONFIG } from '../../Core/Config';
+
     import * as Svelte from 'svelte';
+    import * as DATE from '../../Core/Date';
 
     /* ---- Component */
     let {
@@ -82,7 +84,7 @@
     function parseCellToForm(nDay: number, nHour: number): TObject {
         return {
             nDay: nDay,
-            sDate: Item.aDates ? Item.aDates[nDay].toJSON().split('T')[0] : null,
+            sDate: Item.aDates ? DATE.toISO8601(Item.aDates[nDay]) : null,
             sTimeStart: nHour.toString().padStart(2, '0') + ':00',
             sTimeEnd: (nHour + 1).toString().padStart(2, '0') + ':00'
         };

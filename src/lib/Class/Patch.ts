@@ -1,9 +1,9 @@
 // Imports
-import type { TObject, TListeners } from './Type';
-import { EVENT_NAME, PROPERTY_NAME } from './Constants';
+import type { TObject, TListeners } from '../Core/Type';
+import { EVENT_NAME, PROPERTY_NAME } from '../Core/Constants';
 
 import EventEmitter from 'eventemitter3';
-import Store from './Store';
+import Store from '../Class/Store';
 
 // Key Format -> YYYYMMDDHHMM
 const CONFIG = {

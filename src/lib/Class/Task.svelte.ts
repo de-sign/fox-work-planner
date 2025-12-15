@@ -3,9 +3,9 @@ import type { TObject } from '../Core/Type';
 import { PROPERTY_NAME, TASK_STATE } from '../Core/Constants';
 import { CONFIG } from '../Core/Config';
 
-import * as FoxDate from '../Core/Date';
+import * as DATE from '../Core/Date';
 
-import Store from '../Core/Store';
+import Store from './Store';
 import Customer from './Customer.svelte';
 import Schedule from './Schedule.svelte';
 
@@ -125,11 +125,11 @@ class Task {
     }
 
     public get nWeek(): number {
-        return FoxDate.toWeekData(this.dDate)[0];
+        return DATE.getWeekData(this.dDate)[0];
     }
 
     public get sWeekKey(): string {
-        return FoxDate.toWeekData(this.dDate).join('_');
+        return DATE.getWeekData(this.dDate).join('_');
     }
 
     public get sMonthKey(): string {
@@ -137,7 +137,7 @@ class Task {
     }
 
     public get sDate(): string {
-        return this.dDate.toJSON().split('T')[0];
+        return DATE.toISO8601(this.dDate);
     }
 
     public get sShortDate(): string {

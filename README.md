@@ -117,7 +117,9 @@ Menu qui permet de voir les **heures de travail** par **client** avec le revenu 
 ### TODO
 
 ##### Besoins
-- TODO
+- Calendrier mensuel pour Agenda
 
 ##### Idées
+- Afficher les jours féries
 - Utiliser l'API History pour la navigation entre Component et Page
+- Utiliser les swipe pour changer de mois dan Agenda et Renumération

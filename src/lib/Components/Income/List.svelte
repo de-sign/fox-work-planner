@@ -3,7 +3,7 @@
     /* -- Core */
     import type { TObject, TData } from '../../Core/Type';
     import { CONFIG } from '../../Core/Config';
-    import * as FoxDate from '../../Core/Date';
+    import * as DATE from '../../Core/Date';
 
     /* -- Template */
     import Title from '../Template/Title.svelte';
@@ -48,8 +48,8 @@
             dDay = new Date( dFirstDayOfMonth.toJSON() );
         
         do {
-            const sWeekKey = FoxDate.toWeekData(dDay).join('_');
-            oResult[sWeekKey] = FoxDate.getDaysOfWeek(dDay);
+            const sWeekKey = DATE.getWeekData(dDay).join('_');
+            oResult[sWeekKey] = DATE.getDaysOfWeek(dDay);
             dDay.setDate( dDay.getDate() + 7 );
         } while( dDay.getMonth() == dFirstDayOfMonth.getMonth() || dDay.getDay() > dDay.getDate() ) 
 

@@ -7,7 +7,9 @@
 
     import { TASK_FORM_TYPE, TASK_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
+
     import * as FORM from '../../Core/Form';
+    import * as DATE from '../../Core/Date';
 
     /* -- Template */
     import Title from '../Template/Title.svelte';
@@ -35,7 +37,7 @@
             .sort( (oA, oB) => oA.sReverseName.localeCompare(oB.sReverseName, 'fr', { numeric: true }) ),
         oDefaultData = {
             sCustomer: aCustomers[0]?.sUUID,
-            sDate: ( new Date() ).toJSON().split('T')[0],
+            sDate: DATE.toISO8601( new Date() ),
             sTimeStart: '08:00',
             sTimeEnd: '09:00',
             nPrice: 17.00,

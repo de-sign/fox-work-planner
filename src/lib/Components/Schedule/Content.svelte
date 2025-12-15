@@ -6,7 +6,7 @@
     import { PROPERTY_NAME, SCHEDULE_FORM_TYPE, CUSTOMER_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
 
-    import Store from '../../Core/Store';
+    import Store from '../../Class/Store';
 
     /* -- Template */
     import Title from '../Template/Title.svelte';

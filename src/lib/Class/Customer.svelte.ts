@@ -3,7 +3,7 @@ import type { TObject } from '../Core/Type';
 import { PROPERTY_NAME } from '../Core/Constants';
 import { CONFIG } from '../Core/Config';
 
-import Store from '../Core/Store';
+import Store from './Store';
 import Contact from './Contact.svelte';
 
 

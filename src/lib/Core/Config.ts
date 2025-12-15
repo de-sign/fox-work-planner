@@ -151,6 +151,10 @@ export const CONFIG = {
 
     // -- Calendar
     CALENDAR_CELL_HEIGHT: 45,
+    CALENDAR_CELL_HEIGHTS: {
+        week: 45,
+        month: 75
+    },
 
     CALENDAR_HOURS_START: 8,
     CALENDAR_HOURS_MAX_BY_DAY: 10,

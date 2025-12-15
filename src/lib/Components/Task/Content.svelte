@@ -7,8 +7,8 @@
     import { CONFIG } from '../../Core/Config';
 
     import * as Svelte from 'svelte';
-    import * as FoxDate from '../../Core/Date';
-    import Store from '../../Core/Store';
+    import * as DATE from '../../Core/Date';
+    import Store from '../../Class/Store';
 
     /* -- Template */
     import Title from '../Template/Title.svelte';
@@ -35,8 +35,8 @@
 
     // Go to first Monday Day of current Week
     let dMondayOfWeek = $state( new Date(dMonday.toJSON()) ),
-        aWeekData = $derived( FoxDate.toWeekData(dMondayOfWeek) ),
-        aDates = $derived( FoxDate.getDaysOfWeek(dMondayOfWeek) ),
+        aWeekData = $derived( DATE.getWeekData(dMondayOfWeek) ),
+        aDates = $derived( DATE.getDaysOfWeek(dMondayOfWeek) ),
         nNow = $derived.by( () => {
             let nResult = -1;
             aDates.forEach( (dDate, nIndex) => {

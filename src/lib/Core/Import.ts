@@ -4,24 +4,37 @@ import type { TObject } from './Type';
 import Template from '../Components/Template/Page.svelte';
 
 /* -- Menu Components */
-import Data from '../Components/Menu/Data.svelte';
-import Theme from '../Components/Menu/Theme.svelte';
+import ComponentData from '../Components/Menu/Data.svelte';
+import ComponentTheme from '../Components/Menu/Theme.svelte';
 
 /* -- Content Components */
-import Customer from '../Components/Customer/Pages.svelte';
-import Schedule from '../Components/Schedule/Pages.svelte';
-import Task from '../Components/Task/Pages.svelte';
-import Income from '../Components/Income/List.svelte';
+import ComponentCustomer from '../Components/Customer/Pages.svelte';
+import ComponentSchedule from '../Components/Schedule/Pages.svelte';
+import ComponentTask from '../Components/Task/Pages.svelte';
+import ComponentIncome from '../Components/Income/List.svelte';
+
+/* -- Class Components */
+import ClassContact from '../Class/Contact.svelte';
+import ClassCustomer from '../Class/Customer.svelte';
+import ClassSchedule from '../Class/Schedule.svelte';
+import ClassTask from '../Class/Task.svelte';
 
 /* -- Export */
 export const COMPONENTS: TObject = {
     // MENU_LIST_ITEMS
-    Data: Data,
-    Theme: Theme,
+    Data: ComponentData,
+    Theme: ComponentTheme,
 
     // CONTENT_ITEMS
-    Task: Task,
-    Income: Income,
-    Customer: Customer,
-    Schedule: Schedule
+    Task: ComponentTask,
+    Income: ComponentIncome,
+    Customer: ComponentCustomer,
+    Schedule: ComponentSchedule
+};
+
+export const CLASS: TObject = {
+    Contact: ClassContact,
+    Customer: ClassCustomer,
+    Schedule: ClassSchedule,
+    Task: ClassTask
 };

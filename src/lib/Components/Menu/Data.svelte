@@ -1,15 +1,12 @@
 <script lang="ts">
     /* ---- Import */
     /* -- Core */
+    import type { TObject } from '../../Core/Type';
     import { CONFIG } from '../../Core/Config';
+    import { CLASS } from '../../Core/Import';
 
     import * as Svelte from 'svelte';
-    import Store from '../../Core/Store';
-
-    import Contact from '../../Class/Contact.svelte';
-    import Customer from '../../Class/Customer.svelte';
-    import Schedule from '../../Class/Schedule.svelte';
-    import Task from '../../Class/Task.svelte';
+    import Store from '../../Class/Store';
 
     /* ---- Component */
     /* -- Export */
@@ -41,7 +38,7 @@
     /* -- Import */
     let hUpload: HTMLInputElement | null;
     function importData(): void {
-        if( hUpload ){
+        if( hUpload && hUpload.files ){
             // Get DATA
             const oReader = new FileReader();
 
@@ -49,13 +46,10 @@
             oReader.onload = () => {
                 try {
                     // Clear Data
-                    Contact.clear();
-                    Customer.clear();
-                    Schedule.clear();
-                    Task.clear();
+                    Object.values(CLASS).forEach( (fClass: any) => fClass.clear() );
 
                     // Parse File
-                    const oData = JSON.parse(oReader.result);
+                    const oData = JSON.parse(<string>oReader.result);
                     CONFIG.EXPORT_KEYS_STORE.forEach( sStoreKey => {
                         if( oData[sStoreKey] ){
                             Store.set(sStoreKey, oData[sStoreKey]);
@@ -63,10 +57,9 @@
                     } );
 
                     // Restore Data
-                    Contact.restore();
-                    Customer.restore();
-                    Schedule.restore();
-                    Task.restore();
+                    Object.values(CLASS).forEach( (fClass: any) => fClass.restore() );
+
+                    alert('Chargement du fichier de données terminé <3');
 
                 }
                 catch (oError) {

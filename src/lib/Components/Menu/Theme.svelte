@@ -1,7 +1,7 @@
 <script lang="ts">
     /* ---- Import */
     /* -- Core */
-    import Store from '../../Core/Store';
+    import Store from '../../Class/Store';
     import { PROPERTY_NAME } from '../../Core/Constants';
 
     /* -- Svelte */
