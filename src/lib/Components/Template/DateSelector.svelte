@@ -1,10 +1,13 @@
 <script lang="ts">
     /* ---- Import */
     /* -- Core */
+    import type { TObject } from '../../Core/Type';
+
     import { CONFIG } from '../../Core/Config';
     import { DATE_SELECTOR_TYPE } from '../../Core/Constants';
 
     import * as DATE from '../../Core/Date';
+
 
     /* ---- Component */
     let {
@@ -29,8 +32,8 @@
                         dLast = aWeekDates[ aWeekDates.length - 1 ];
 
                     sResult = '<span class="bulma-is-size-7">Du</span> ' + dFirst.getDate() +  ' ' + CONFIG.CALENDAR_MONTHS_ABBR[dFirst.getMonth()] + ' ' +
-                        '<span class="bulma-is-size-7">au</span> ' + dLast.getDate() + ' ' + CONFIG.CALENDAR_MONTHS_ABBR[dLast.getMonth()] + ' <span class="bulma-is-size-7">' + dLast.getFullYear() + '</span>';
-
+                        '<span class="bulma-is-size-7">au</span> ' + dLast.getDate() + ' ' + CONFIG.CALENDAR_MONTHS_ABBR[dLast.getMonth()] + ' ' +
+                        '<span class="bulma-is-size-7">' + dLast.getFullYear() + '</span>';
                     break;
                     
                 case DATE_SELECTOR_TYPE.MONTH:
@@ -70,6 +73,45 @@
         Item.changeDate( new Date( dDate.toJSON() ) );
     }
 
+
+    /* -- Swipper */
+    let oTouch: Touch | null = null,
+        hTouchArea: HTMLElement | null = null;
+
+    function startTouch(oEvent: TouchEvent): void {
+        if( !oTouch ){
+            oTouch = oEvent.changedTouches[0];
+        }
+    }
+
+    function endTouch(oEvent: TouchEvent): void {
+        [...oEvent.changedTouches].forEach( oChangedTouch => {
+            if( oTouch?.identifier == oChangedTouch.identifier ){
+                const nDelta = oChangedTouch.screenX - oTouch.screenX;
+                if( nDelta && Math.abs(nDelta) >= 100 ){
+                    change( nDelta > 0 ? 1 : -1 );
+                }
+                oTouch = null;
+            }
+        } );
+    }
+
+    export function initTouch(hElement: HTMLElement | null): void {
+        if( hElement && !hTouchArea ){
+            hTouchArea = hElement;
+            hTouchArea.addEventListener('touchstart', startTouch);
+            hTouchArea.addEventListener('touchend', endTouch);
+            hTouchArea.addEventListener('touchcancel', startTouch);
+        }
+    }
+
+    export function destroyTouch(): void {
+        if( hTouchArea ){
+            hTouchArea.removeEventListener('touchstart', startTouch);
+            hTouchArea.removeEventListener('touchend', endTouch);
+            hTouchArea.removeEventListener('touchcancel', startTouch);
+        }
+    }
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){

@@ -5,6 +5,7 @@
     import { CONFIG } from '../../Core/Config';
     import { DATE_SELECTOR_TYPE } from '../../Core/Constants';
 
+    import * as Svelte from 'svelte';
     import * as DATE from '../../Core/Date';
 
     /* -- Template */
@@ -26,6 +27,9 @@
     } = $props();
 
     /* -- DateSelector */
+    let hPage: HTMLElement | null = $state(null),
+        oDateSeletorComponent: DateSelector | null = $state(null);
+
     const dDateNow = DATE.toDateOnly( new Date() ),
         oDateSelector = {
             dDate: dDateNow,
@@ -34,6 +38,9 @@
                 App.oPage.scrollTop();
             }
         };
+
+    Svelte.onMount( () => oDateSeletorComponent?.initTouch(hPage) );
+    Svelte.onDestroy( () => oDateSeletorComponent?.destroyTouch() );
     
 
     /* -- Task */
@@ -161,7 +168,7 @@
     }
 </script>
 
-<section class="fox-app-page">
+<section bind:this={hPage} class="fox-app-page">
 
     <!-- Page Title -->
     <Title Item={oTitle} />
@@ -210,7 +217,7 @@
         <!-- Month Nav -->
         <div class="fox-app-page-title-content bulma-is-align-items-center">
             <div class="fox-app-page-title-item">
-                <DateSelector nType={DATE_SELECTOR_TYPE.MONTH} Item={oDateSelector} />
+                <DateSelector bind:this={oDateSeletorComponent} nType={DATE_SELECTOR_TYPE.MONTH} Item={oDateSelector} />
             </div>
         </div>
     </Navbar>

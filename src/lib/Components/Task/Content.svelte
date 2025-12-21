@@ -62,6 +62,9 @@
 
     
     /* -- DateSelector */
+    let hPage: HTMLElement | null = $state(null),
+        oDateSeletorComponent: DateSelector | null = $state(null);
+
     const nDateType = $derived( oDisplays[sDisplay].nDateType ),
         oDateSelector = {
             dDate: dDateNow,
@@ -71,6 +74,9 @@
                 Svelte.tick().then( () => App.oEmitter.emit('fox-app-page--change-date') );
             }
         };
+
+    Svelte.onMount( () => oDateSeletorComponent?.initTouch(hPage) );
+    Svelte.onDestroy( () => oDateSeletorComponent?.destroyTouch() );
     
 
     /* -- Task */
@@ -186,6 +192,7 @@
         ]
     } );
 
+
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
         // $inspect(dTimeNow).with(console.trace);
@@ -195,7 +202,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<section class="fox-app-page" onclick={ () => App.oEmitter.emit('fox-app-page--click') }>
+<section bind:this={hPage} class="fox-app-page" onclick={ () => App.oEmitter.emit('fox-app-page--click') }>
 
     <!-- Page Title -->
     <Title Item={oTitle} />
@@ -249,7 +256,7 @@
         <!-- Date Nav -->
         <div class="fox-app-page-navbar-content bulma-is-align-items-center">
             <div class="fox-app-page-navbar-item">
-                <DateSelector nType={nDateType} Item={oDateSelector} />
+                <DateSelector bind:this={oDateSeletorComponent} nType={nDateType} Item={oDateSelector} />
             </div>
         </div>
     </Navbar>
