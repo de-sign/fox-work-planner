@@ -125,7 +125,7 @@ class Task {
     }
 
     public get nWeek(): number {
-        return DATE.getWeekData(this.dDate)[0];
+        return DATE.getWeekData(this.dDate)[1];
     }
 
     public get sWeekKey(): string {

@@ -16,10 +16,10 @@
     }
 </script>
 
-{#if sType == 'calendar'}
+{#if sType == 'calendar-week'}
     <button
         id="{Item.oTarget.sId}" 
-        class="fox-calendar-task bulma-is-size-7 bulma-button bulma-is-light {Item.oTarget.oState.sClass}"
+        class="fox-calendar-week-task bulma-is-size-7 bulma-button bulma-is-light {Item.oTarget.oState.sClass}"
         style="{Object.keys(Item.oStyle).map(sStyle => `${sStyle}: ${Item.oStyle[sStyle]}`).join(';')}"
         title="Voir une planification"
         onclick={Item.click}
@@ -29,6 +29,22 @@
         </span>
         {Item.oTarget.sDuration}<br/>
         {Item.oTarget.oCustomer.sShortName}
+    </button>
+
+{:else if sType == 'calendar-month'}
+    <button
+        id="{Item.oTarget.sId}"
+        class="fox-calendar-month-task bulma-button bulma-is-small bulma-is-light {Item.oTarget.oState.sClass}"
+        title="Voir une planification"
+        onclick={Item.click}
+    >
+        <div class="fox--has-text-ellipsis">{Item.oTarget.oCustomer.sShortName}</div>
+        <div class="bulma-icon-text bulma-is-align-items-center">
+            <span class="bulma-icon bulma-is-small">
+                <i class="fa-solid {Item.oTarget.oState.sTag}"></i>
+            </span>
+            <span>{Item.oTarget.sTimeStart.replace(':', 'h')}</span>
+        </div>
     </button>
 
 {:else if sType == 'list'}
@@ -68,7 +84,7 @@
 {/if}
 
 <style>
-    .fox-calendar-task {
+    .fox-calendar-week-task {
         position: absolute;
         top: 1px;
         bottom: 1px;
@@ -85,10 +101,31 @@
         text-overflow: ellipsis;
     }
 
-    .fox-calendar-task .bulma-icon {
+    .fox-calendar-week-task .bulma-icon {
         position: absolute;
         top: 8px;
         left: 0;
+    }
+
+    .fox-calendar-month-task {
+        font-size: 0.5rem;
+        white-space: normal;
+
+        display: block;
+        width: 100%;
+        max-width: 45px;
+
+        margin: 1px;
+        padding: calc(var(--bulma-button-padding-vertical) - 1px);
+        border-width: 1px;
+    }
+
+    .fox-calendar-month-task .bulma-icon-text {
+        line-height: initial;
+    }
+
+    .fox-calendar-month-task .bulma-icon {
+        transform: translateX(2.5px);
     }
 
     .fox-table-task td {

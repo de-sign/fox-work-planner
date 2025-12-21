@@ -25,11 +25,11 @@
     
     /* -- Theme Switch */
     const oDisplays: TObject = {
-        'calendar': Calendar,
+        'calendar-week': Calendar,
         'list': List
     };
 
-    let sDisplay: string = $state( Store.get(PROPERTY_NAME.APP_SCHEDULE_DISPLAY) || 'calendar'),
+    let sDisplay: string = $state( Store.get(PROPERTY_NAME.APP_SCHEDULE_DISPLAY) || 'calendar-week'),
         Content: Component = $derived( oDisplays[sDisplay] );
 
     function changeDisplay(sValue: string): void {
@@ -47,10 +47,10 @@
             sSubTitle: 'Définis ta semaine type',
             aButtons: [
                 {
-                    sClass: sDisplay == 'calendar' ? 'bulma-is-link bulma-is-selected' : '',
+                    sClass: sDisplay == 'calendar-week' ? 'bulma-is-link bulma-is-selected' : '',
                     sTitle: 'Affichage calendrier',
-                    sIcon: 'fa-calendar',
-                    click: () => changeDisplay('calendar')
+                    sIcon: 'fa-calendar-week',
+                    click: () => changeDisplay('calendar-week')
                 },
                 {
                     sClass: sDisplay == 'list' ? 'bulma-is-link bulma-is-selected' : '',

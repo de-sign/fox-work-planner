@@ -16,7 +16,7 @@
     }
 </script>
 
-{#if sType == 'calendar'}
+{#if sType == 'calendar-week'}
     <button
         id="{Item.oTarget.sId}" 
         class="fox-calendar-task bulma-button bulma-is-link bulma-is-light bulma-is-size-7"

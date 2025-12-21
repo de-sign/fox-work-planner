@@ -8,7 +8,7 @@
     /* -- Content */
     import Schedule from '../../Class/Schedule.svelte';
 
-    import Calendar from '../Template/Calendar.svelte';
+    import CalendarWeek from '../Template/Calendar/Week.svelte';
     import Item from './Item.svelte';
 
     /* ---- Component */
@@ -45,8 +45,8 @@
                     oResults[sCell].push( {
                         oStyle: Object.assign(
                             {
-                                top: (( nMinute * CONFIG.CALENDAR_CELL_HEIGHT / 60 ) + 1) + 'px',
-                                height: (( oSchedule.nDuration * CONFIG.CALENDAR_CELL_HEIGHT / 60 ) - 3) + 'px',
+                                top: (( nMinute * CONFIG.CALENDAR_CELL_HEIGHTS.WEEK / 60 ) + 1) + 'px',
+                                height: (( oSchedule.nDuration * CONFIG.CALENDAR_CELL_HEIGHTS.WEEK / 60 ) - 3) + 'px',
                                 bottom: 'initial'
                             },
                             oWeekStyle[ oSchedule.sWeekType ]
@@ -67,24 +67,21 @@
         } );
     
     /* -- Calendar component */
-    const oCalendar = $derived.by( () => {
-        return {
-            oComponent: Item,
-            oItems: oSchedulesByCell,
+    const oCalendar = $derived( {
+        oComponent: Item,
+        oCells: oSchedulesByCell,
 
-            clickOnItem: (oSchedule: TObject) => Pages.oView.open(oSchedule.oTarget),
-            clickOnEmpty: (oCellData: TObject) => Pages.oForm.open(SCHEDULE_FORM_TYPE.NEW_SCHEDULE, oCellData)
-        };
+        clickOnItem: (oSchedule: TObject) => Pages.oView.open(oSchedule.oTarget),
+        clickOnCell: (oCellData: TObject) => Pages.oForm.open(SCHEDULE_FORM_TYPE.NEW_SCHEDULE, oCellData)
     } );
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
-        // $inspect(oCells).with(console.trace);
-        // $inspect(sCellSelected).with(console.trace);
+        // $inspect(oSchedulesByCell).with(console.log);
     }
 </script>
 
-<Calendar App={App} Pages={Pages} Item={oCalendar} />
+<CalendarWeek App={App} Pages={Pages} Item={oCalendar} />
 
 <style>
 </style>

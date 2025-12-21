@@ -1,4 +1,8 @@
-import type { TData } from "./Type";
+import type { TObject, TData } from "./Type";
+
+export function toDateOnly(dDate: Date): Date {
+    return new Date( Date.UTC(dDate.getFullYear(), dDate.getMonth(), dDate.getDate()) );
+}
 
 export function toISO8601(dDate: Date): string {
     return dDate.toJSON().split('T')[0];
@@ -6,29 +10,47 @@ export function toISO8601(dDate: Date): string {
 
 /* From -> https://stackoverflow.com/questions/6117814/get-week-of-year-in-javascript-like-in-php */
 export function getWeekData(dDate: Date): number[] {
-    const dCopyDate = new Date( Date.UTC(dDate.getFullYear(), dDate.getMonth(), dDate.getDate()) );
+    const dCopyDate = toDateOnly(dDate);
     dCopyDate.setUTCDate( dCopyDate.getUTCDate() + 4 - (dCopyDate.getUTCDay() || 7) );
     const dFirstDay = new Date( Date.UTC(dCopyDate.getUTCFullYear(), 0, 1) );
     return [
-        Math.ceil( ( ( (dCopyDate.valueOf() - dFirstDay.valueOf()) / 86400000 ) + 1 ) / 7 ),
-        dCopyDate.getUTCFullYear()
+        dCopyDate.getUTCFullYear(),
+        Math.ceil( ( ( (dCopyDate.valueOf() - dFirstDay.valueOf()) / 86400000 ) + 1 ) / 7 )
     ];
 }
 
-export function getDaysOfWeek(dDate: Date): Date[] {
+// Get all Days of this Week
+export function getDatesOfWeek(dDate: Date): Date[] {
     const aDays: Date[] = [],
-        dDay = new Date( dDate.toJSON() );
+        dDay = toDateOnly(dDate);
 
     // Go To Sunday
     dDay.setDate( dDay.getDate() - dDay.getDay() );
 
     // Add All days
     for( let nAdd = 0; nAdd < 7; nAdd++ ){
-        aDays.push( new Date( Date.UTC(dDay.getFullYear(), dDay.getMonth(), dDay.getDate()) ) );
+        aDays.push( toDateOnly(dDay) );
         dDay.setDate( dDay.getDate() + 1 );
     }
 
     return aDays;
+}
+
+// Get all Days of this Month by Week
+export function getDatesOfMonth(dDate: Date): TObject<Date[]> {
+
+    // Go to first Day of current Month
+    const oDays: TObject<Date[]> = {},
+        dDay = new Date( Date.UTC(dDate.getFullYear(), dDate.getMonth(), 1) );
+        
+        do {
+            const oWeekDates = getDatesOfWeek(dDay),
+                sWeekKey = getWeekData(oWeekDates[1]).join('_');
+            oDays[sWeekKey] = oWeekDates;
+            dDay.setDate( dDay.getDate() + 7 );
+        } while( dDay.getMonth() == dDate.getMonth() || dDay.getDay() > dDay.getDate() );
+
+    return oDays;
 }
 
 /* From -> https://calendrier.api.gouv.fr/jours-feries/metropole.json */

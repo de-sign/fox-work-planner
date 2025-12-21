@@ -78,3 +78,10 @@ export enum TASK_STATE {
     VALID,
     CANCEL
 }
+
+/* ----- DATE SELECTOR */
+export enum DATE_SELECTOR_TYPE {
+    WEEK = 0,
+    MONTH,
+    YEAR
+}

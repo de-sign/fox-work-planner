@@ -8,6 +8,7 @@
     /* -- Template */
     import Title from '../Template/Title.svelte';
     import Navbar from '../Template/Navbar.svelte';
+    import DateSelector from '../Template/DateSelector.svelte';
 
     /* -- Content */
     import Customer from '../../Class/Customer.svelte';
@@ -22,44 +23,24 @@
         Pages
     } = $props();
 
-    /* -- Change Month */
-    let dFirstDay = new Date();
-    dFirstDay = new Date( Date.UTC(dFirstDay.getFullYear(), dFirstDay.getMonth(), 1) );
+    /* -- DateSelector */
+    const dDateNow = DATE.toDateOnly( new Date() ),
+        oDateSelector = {
+            dDate: dDateNow,
+            changeDate: (dDateSelected: Date) => {
+                dTasksDate = dDateSelected;
+                App.oPage.scrollTop();
+            }
+        };
+    
 
-    // Go to first Day of current Month
-    let dFirstDayOfMonth = $state( new Date(dFirstDay.toJSON()) ),
-        sMonthKey = $derived( dFirstDayOfMonth.getMonth() + '_' + dFirstDayOfMonth.getFullYear() );
-
-    function changeMonth(nRatio: number): void {
-        if( nRatio ){
-            dFirstDayOfMonth.setMonth( dFirstDayOfMonth.getMonth() + nRatio );
-            dFirstDayOfMonth = new Date( dFirstDayOfMonth.toJSON() );
-        } else {
-            dFirstDayOfMonth = new Date( dFirstDay.toJSON() );
-        }
-        App.oPage.scrollTop();
-    }
-
-    /* -- Get Task and create from Schedule */
-
-    // Get all Days of this Month by Week
-    const oDays: TObject<Date[]> = $derived.by( () => {
-        const oResult: TObject<Date[]> = {},
-            dDay = new Date( dFirstDayOfMonth.toJSON() );
-        
-        do {
-            const sWeekKey = DATE.getWeekData(dDay).join('_');
-            oResult[sWeekKey] = DATE.getDaysOfWeek(dDay);
-            dDay.setDate( dDay.getDate() + 7 );
-        } while( dDay.getMonth() == dFirstDayOfMonth.getMonth() || dDay.getDay() > dDay.getDate() ) 
-
-        return oResult;
-    } );
-
-
-    // Get All enable Task of this Month
+    /* -- Task */
+    let dTasksDate = $state(dDateNow);
     const aTasks: Task[] = $derived.by( () => {
-        const aResults = Object.values( Task.getAll() ).filter( oTask => oTask.sMonthKey == sMonthKey ),
+
+        const sMonthKey = dTasksDate.getMonth() + '_' + dTasksDate.getFullYear(),
+            oMonthDates = DATE.getDatesOfMonth(dTasksDate),
+            aResults = Object.values( Task.getAll() ).filter( oTask => oTask.sMonthKey == sMonthKey ),
             oTaskByWeek: TObject<Task[]> = {};
 
         // Regroup by Week
@@ -72,22 +53,23 @@
         } );
 
         // For all Week
-        for( let sWeekKey in oDays ){
-            const aDates = oDays[sWeekKey],
-                nWeek = parseInt( sWeekKey.split('_')[0] ),
-                aFromSchedule: Schedule[] = [];
+        Object
+            .entries(oMonthDates)
+            .forEach( ([sWeekKey, aDates]) => {
+                const nWeek = parseInt( sWeekKey.split('_')[1] ),
+                    aFromSchedule: Schedule[] = [];
 
-            // Add enable Schedule without Task created by his 
-            oTaskByWeek[sWeekKey]?.forEach( oTask => oTask.oSchedule ? aFromSchedule.push(oTask.oSchedule) : null );
-            Object.values( Schedule.getAll() )
-                .filter( oSchedule => oSchedule.oCustomer.bEnable && aFromSchedule.indexOf(oSchedule) == -1 && oSchedule.oWeekType.fFilter(nWeek) )
-                .forEach( oSchedule => {
-                    const dDate = aDates[oSchedule.nDay];
-                    if( dDate.getMonth() == dFirstDayOfMonth.getMonth() ){
-                        aResults.push( Task.from( oSchedule, dDate ) );
-                    }
-                } );
-        }
+                // Add enable Schedule without Task created by his 
+                oTaskByWeek[sWeekKey]?.forEach( oTask => oTask.oSchedule ? aFromSchedule.push(oTask.oSchedule) : null );
+                Object.values( Schedule.getAll() )
+                    .filter( oSchedule => oSchedule.oCustomer.bEnable && aFromSchedule.indexOf(oSchedule) == -1 && oSchedule.oWeekType.fFilter(nWeek) )
+                    .forEach( oSchedule => {
+                        const dDate = aDates[oSchedule.nDay];
+                        if( dDate.getMonth() == dTasksDate.getMonth() ){
+                            aResults.push( Task.from( oSchedule, dDate ) );
+                        }
+                    } );
+            } );
 
         return aResults;
     } );
@@ -223,24 +205,10 @@
     <!-- Page Navbar -->
     <Navbar Item={oNavbar}>
         
-        <!-- Week Nav -->
+        <!-- Month Nav -->
         <div class="fox-app-page-title-content bulma-is-align-items-center">
-            <div class="fox-app-page-title-item bulma-buttons bulma-has-addons bulma-is-flex-wrap-nowrap">
-                <button class="bulma-button" onclick="{ () => changeMonth(-1) }" title="Aller au mois précédent">
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </span>
-                </button>
-                <button class="bulma-is-flex-grow-1" onclick="{ () => changeMonth(0) }" title="Aller au mois courant">
-                    <span class="bulma-is-size-5">
-                        {CONFIG.CALENDAR_MONTHS[dFirstDayOfMonth.getMonth()]} {dFirstDayOfMonth.getFullYear()}
-                    </span>
-                </button>
-                <button class="bulma-button" onclick="{ () => changeMonth(1) }" title="Aller au mois suivant">
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </span>
-                </button>
+            <div class="fox-app-page-title-item">
+                <DateSelector sType="month" Item={oDateSelector} />
             </div>
         </div>
     </Navbar>

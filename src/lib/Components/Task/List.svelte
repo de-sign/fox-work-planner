@@ -5,10 +5,11 @@
     import type { TObject } from '../../Core/Type';
     import { CONFIG } from '../../Core/Config';
 
-    /* -- Content */
-    import Schedule from '../../Class/Schedule.svelte';
-    import Task from '../../Class/Task.svelte';
+    import * as Svelte from 'svelte';
+    import * as DATE from '../../Core/Date';
 
+    /* -- Content */
+    import Task from '../../Class/Task.svelte';
     import ItemTask from './Item.svelte';
 
     /* ---- Component */
@@ -18,69 +19,70 @@
         Item
     } = $props();
 
-    const aTasks: Task[] = $derived.by( () => {
-        // Get All enable Task of this Week
-        const aResults = Object.values( Task.getAll() ).filter( oTask => oTask.sWeekKey == Item.sWeekKey ),
-            aFromSchedule: Schedule[] = [];
+    const dDateNow = new Date(),
+        aTasksGrouped = $derived.by( () => {
+            const aReturn: TObject[] = [],
+                oTasksByDate: TObject<Task[]> = {},
+                sMonthKey = Item.dDate.getMonth() + '_' + Item.dDate.getFullYear(),
+                sDateNow = DATE.toISO8601(dDateNow);
+            
+            // Add Group for Today
+            if( dDateNow.getMonth() + '_' + dDateNow.getFullYear() == sMonthKey ){
+                oTasksByDate[sDateNow] = [];
+            }
 
-        // Add enable Schedule without Task created by his and 
-        aResults.forEach( oTask => oTask.oSchedule ? aFromSchedule.push(oTask.oSchedule) : null );
-        Object.values( Schedule.getAll() )
-            .filter( oSchedule => oSchedule.oCustomer.bEnable && aFromSchedule.indexOf(oSchedule) == -1 && oSchedule.oWeekType.fFilter(Item.nWeek) )
-            .forEach( oSchedule => aResults.push( Task.from( oSchedule, Item.aDates[oSchedule.nDay] ) ) );
-
-        return aResults;
-    } );
-
-    const aTasksGrouped = $derived.by( () => {
-        const aReturn: TObject[] = [],
-            oDays: TObject<Task[]> = {};
-        
-        // Add Group for Today
-        if( Item.nNow >= 0 ){
-            oDays[Item.nNow] = [];
-        }
-
-        // Group and Sort
-        aTasks
-            .sort( (oA, oB) => oA.nTimeStart - oB.nTimeStart )
-            .forEach( oTask => {
-                let nDay = oTask.nDay;
-                if( !oDays[nDay] ){
-                    oDays[nDay] = [];
-                }
-                oDays[nDay].push(oTask);
-            } );
-
-        Object.keys(oDays)
-            .sort( (sA, sB) => sA.localeCompare(sB, 'fr', { numeric: true }) )
-            .forEach( sDay => {
-                const nDay = parseInt(sDay),
-                    dDate = Item.aDates[nDay];
-
-                aReturn.push( {
-                    sDay: CONFIG.CALENDAR_DAYS[dDate.getDay()] + ' ' + dDate.getDate(),
-                    sMonth: CONFIG.CALENDAR_MONTHS_ABBR[dDate.getMonth()] + ' ' + dDate.getFullYear(),
-                    aTasks: oDays[sDay],
-                    bToday: Item.nNow == nDay
+            // Group and Sort
+            (<Task[]>Item.aTasks)
+                .sort( (oA, oB) => oA.nDate - oB.nDate || oA.nTimeStart - oB.nTimeStart )
+                .forEach( oTask => {
+                    if( oTask.sMonthKey == sMonthKey ){
+                        let sDate = oTask.sDate;
+                        if( !oTasksByDate[sDate] ){
+                            oTasksByDate[sDate] = [];
+                        }
+                        oTasksByDate[sDate].push(oTask);
+                    }
                 } );
-            } );
 
-        return aReturn;
-    } );
+            Object.keys(oTasksByDate)
+                .sort( (sA, sB) => sA.localeCompare(sB, 'fr', { numeric: true }) )
+                .forEach( sDate => {
+                    const dDate = new Date(sDate);
+
+                    aReturn.push( {
+                        sDay: CONFIG.CALENDAR_DAYS[dDate.getDay()] + ' ' + dDate.getDate(),
+                        sMonth: CONFIG.CALENDAR_MONTHS_ABBR[dDate.getMonth()] + ' ' + dDate.getFullYear(),
+                        aTasks: oTasksByDate[sDate],
+                        bToday: sDate == sDateNow
+                    } );
+                } );
+
+            return aReturn;
+        } );
+
+    function scrollIntoViewToday() {
+        
+        const hToday = document.querySelector('.fox-list--is-today'),
+            hBefore = hToday?.previousElementSibling;
+
+        hBefore?.querySelector('.bulma-is-invisible')?.scrollIntoView(true);
+    }
+
+    Svelte.onMount( () => { App.oEmitter.on('fox-app-page--change-date', scrollIntoViewToday); scrollIntoViewToday(); } );
+    Svelte.onDestroy( () => App.oEmitter.removeListener('fox-app-page--change-date', scrollIntoViewToday) );
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
-        // $inspect(Item).with(console.log);
+        // $inspect(Item.aTasks).with(console.log);
     }
 </script>
 
 {#each aTasksGrouped as oGroup}
-    <section class="bulma-block">
+    <section class={ ['bulma-block', { 'fox-list--is-today': oGroup.bToday }] } >
         <div class="fox-separator">
             <span>
                 {#if oGroup.bToday}
-                    <span class="bulma-tag bulma-is-white bulma-mr-2">Aujourd'hui</span>
+                    <span class="bulma-tag bulma-is-link bulma-is-light bulma-mr-2">Aujourd'hui</span>
                 {/if}
                 {oGroup.sDay}
                 <span class="bulma-is-size-7">{oGroup.sMonth}</span>
@@ -100,6 +102,7 @@
                 </div>
             {/each}
         </section>
+        <div class="bulma-is-invisible"></div>
     </section>
 {:else}
     <div class="bulma-notification bulma-has-text-centered">

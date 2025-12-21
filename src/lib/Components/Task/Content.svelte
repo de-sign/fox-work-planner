@@ -3,7 +3,7 @@
     /* -- Core */
     import type { TObject } from '../../Core/Type';
     import type { Component } from 'svelte';
-    import { PROPERTY_NAME, CUSTOMER_PAGE, SCHEDULE_PAGE, TASK_FORM_TYPE } from '../../Core/Constants';
+    import { PROPERTY_NAME, CUSTOMER_PAGE, SCHEDULE_PAGE, TASK_FORM_TYPE, DATE_SELECTOR_TYPE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
 
     import * as Svelte from 'svelte';
@@ -13,77 +13,44 @@
     /* -- Template */
     import Title from '../Template/Title.svelte';
     import Navbar from '../Template/Navbar.svelte';
+    import DateSelector from '../Template/DateSelector.svelte';
 
     /* -- Content */
     import Customer from '../../Class/Customer.svelte';
+    import Schedule from '../../Class/Schedule.svelte';
+    import Task from '../../Class/Task.svelte';
+
     import List from './List.svelte';
     import Calendar from './Calendar.svelte';
+
 
     /* ---- Component */
     let {
         App,
         Pages
     } = $props();
-
-    // -- Change Week
-    let dDateNow = new Date(),
-        dMonday = new Date();
-        
-    dDateNow = new Date( Date.UTC(dDateNow.getFullYear(), dDateNow.getMonth(), dDateNow.getDate()) );
-    dMonday.setDate( (dDateNow.getDate() - dDateNow.getDay() + 1) );
-    dMonday = new Date( Date.UTC(dMonday.getFullYear(), dMonday.getMonth(), dMonday.getDate()) );
-
-    // Go to first Monday Day of current Week
-    let dMondayOfWeek = $state( new Date(dMonday.toJSON()) ),
-        aWeekData = $derived( DATE.getWeekData(dMondayOfWeek) ),
-        aDates = $derived( DATE.getDaysOfWeek(dMondayOfWeek) ),
-        nNow = $derived.by( () => {
-            let nResult = -1;
-            aDates.forEach( (dDate, nIndex) => {
-                if( dDate.toJSON() == dDateNow.toJSON() ){
-                    nResult = nIndex;
-                }
-            } );
-            return nResult;
-        } ),
-        sHTMLSelector = $derived.by( () => {
-            const dFirst = aDates[0],
-                dLast = aDates[ aDates.length - 1 ];
-
-            return 'Du <span class="bulma-is-size-5">' + dFirst.getDate() +  ' ' + CONFIG.CALENDAR_MONTHS_ABBR[dFirst.getMonth()] + '</span> ' +
-                'au <span class="bulma-is-size-5">' + dLast.getDate() + ' ' + CONFIG.CALENDAR_MONTHS_ABBR[dLast.getMonth()] + '</span> ' + dLast.getFullYear();
-        } );
-
-    function changeWeek(nRatio: number): void {
-        if( nRatio ){
-            dMondayOfWeek.setDate( dMondayOfWeek.getDate() + (7 * nRatio) );
-            dMondayOfWeek = new Date( dMondayOfWeek.toJSON() );
-        } else {
-            dMondayOfWeek = new Date( dMonday.toJSON() );
-        }
-        App.oPage.scrollTop();
-    }
-
-    // -- Change Time
-    let dTimeNow = $state( new Date() ),
-        nTimeout = 0;
-
-    function updateTime(): void {
-        dTimeNow = new Date();
-        nTimeout = setTimeout(updateTime, (61 - dTimeNow.getSeconds()) * 1000 );
-    }
-
-    Svelte.onMount(updateTime);
-    Svelte.onDestroy( () => clearTimeout(nTimeout) );
     
-    /* -- Theme Switch */
-    const oDisplays: TObject = {
-        'calendar': Calendar,
-        'list': List
-    };
 
-    let sDisplay: string = $state( Store.get(PROPERTY_NAME.APP_TASK_DISPLAY) || 'calendar'),
-        Content: Component = $derived( oDisplays[sDisplay] );
+    const dDateNow = DATE.toDateOnly( new Date() ),
+        oDisplays: TObject<TObject> = {
+            'calendar-week': {
+                oComponent: Calendar,
+                nDateType: DATE_SELECTOR_TYPE.WEEK
+            },
+            'calendar-month': {
+                oComponent: Calendar,
+                nDateType: DATE_SELECTOR_TYPE.MONTH
+            },
+            'list': {
+                oComponent: List,
+                nDateType: DATE_SELECTOR_TYPE.MONTH
+            }
+        };
+
+
+    /* -- Theme Switch */
+    let sDisplay: string = $state( Store.get(PROPERTY_NAME.APP_TASK_DISPLAY) || 'calendar-week'),
+        Content: Component = $derived( oDisplays[sDisplay].oComponent );
 
     function changeDisplay(sValue: string): void {
         if( sDisplay != sValue ){
@@ -91,6 +58,69 @@
             Store.set(PROPERTY_NAME.APP_TASK_DISPLAY, sDisplay);
         }
     }
+
+    
+    /* -- DateSelector */
+    const nDateType = $derived( oDisplays[sDisplay].nDateType ),
+        oDateSelector = {
+            dDate: dDateNow,
+            changeDate: (dDateSelected: Date) => {
+                dTasksDate = dDateSelected;
+                App.oPage.scrollTop();
+                Svelte.tick().then( () => App.oEmitter.emit('fox-app-page--change-date') );
+            }
+        };
+    
+
+    /* -- Task */
+    let dTasksDate = $state(dDateNow);
+    const aTasks: Task[] = $derived.by( () => {
+
+        const sWeekKeyOfTask = DATE.getWeekData(dTasksDate).join('_');
+        let oMonthDates: TObject<Date[]> = {},
+            aWeekKeys: string[] = [];
+        
+        switch( nDateType ){
+            case DATE_SELECTOR_TYPE.WEEK:
+                oMonthDates[sWeekKeyOfTask] = DATE.getDatesOfWeek(dTasksDate);
+                aWeekKeys.push(sWeekKeyOfTask);
+                break;
+
+            case DATE_SELECTOR_TYPE.MONTH:
+                oMonthDates = DATE.getDatesOfMonth(dTasksDate);
+                aWeekKeys = Object.keys(oMonthDates);
+                break;
+        }
+            
+        const aResults = Object.values( Task.getAll() ).filter( oTask => aWeekKeys.indexOf(oTask.sWeekKey) != -1 ),
+            oTaskByWeek: TObject<Task[]> = {};
+
+        // Regroup by Week
+        aResults.forEach( oTask => {
+            const sWeekKey = oTask.sWeekKey;
+            if( !oTaskByWeek[sWeekKey] ){
+                oTaskByWeek[sWeekKey] = [];
+            }
+            oTaskByWeek[sWeekKey].push(oTask);
+        } );
+
+        // For all Week
+        Object
+            .entries(oMonthDates)
+            .forEach( ([sWeekKey, aDates]) => {
+                const nWeek = parseInt( sWeekKey.split('_')[1] ),
+                    aFromSchedule: Schedule[] = [];
+
+                // Add enable Schedule without Task created by his 
+                oTaskByWeek[sWeekKey]?.forEach( oTask => oTask.oSchedule ? aFromSchedule.push(oTask.oSchedule) : null );
+                Object.values( Schedule.getAll() )
+                    .filter( oSchedule => oSchedule.oCustomer.bEnable && aFromSchedule.indexOf(oSchedule) == -1 && oSchedule.oWeekType.fFilter(nWeek) )
+                    .forEach( oSchedule => aResults.push( Task.from( oSchedule, aDates[oSchedule.nDay] ) ) );
+            } );
+
+        return aResults;
+    } );
+
 
     /* ---- Template */
     /* -- Title */
@@ -100,10 +130,16 @@
             sSubTitle: 'Organise tes tâches',
             aButtons: [
                 {
-                    sClass: sDisplay == 'calendar' ? 'bulma-is-link bulma-is-selected' : '',
-                    sTitle: 'Affichage calendrier',
-                    sIcon: 'fa-calendar',
-                    click: () => changeDisplay('calendar')
+                    sClass: sDisplay == 'calendar-week' ? 'bulma-is-link bulma-is-selected' : '',
+                    sTitle: 'Affichage calendrier hebdomadaire',
+                    sIcon: 'fa-calendar-week',
+                    click: () => changeDisplay('calendar-week')
+                },
+                {
+                    sClass: sDisplay == 'calendar-month' ? 'bulma-is-link bulma-is-selected' : '',
+                    sTitle: 'Affichage calendrier mensuel',
+                    sIcon: 'fa-calendar-days',
+                    click: () => changeDisplay('calendar-month')
                 },
                 {
                     sClass: sDisplay == 'list' ? 'bulma-is-link bulma-is-selected' : '',
@@ -116,43 +152,37 @@
     } );
 
     /* -- Content */
-    const oContent = $derived.by( () => {
-        return {
-            nWeek: aWeekData[0],
-            sWeekKey: aWeekData.join('_'),
-            nNow: nNow,
-            aDates: aDates,
-            dTimeNow: dTimeNow
-        };
+    const oContent = $derived( {
+        nDateType: nDateType,
+        dDate: dTasksDate,
+        aTasks: aTasks
     } );
 
     /* -- Navbar */
-    const oNavbar = $derived.by( () => {
-        return {
-            oBack: {
-                sTitle: 'Ouvrir le menu',
-                sIcon: 'fa-bars',
-                sText: 'Menu',
-                click: App.oMenu.open
-            },
-            aButtons: [
-                Customer.hasCustomers() ? 
-                    {
-                        sClass: 'bulma-is-link',
-                        sTitle: 'Ajouter une tâche',
-                        sIcon: 'fa-calendar-plus',
-                        sText: 'Ajouter',
-                        click: () => Pages.oForm.open(TASK_FORM_TYPE.NEW_TASK)
-                    } : 
-                    {
-                        sClass: 'bulma-is-link',
-                        sTitle: 'Ajouter un client',
-                        sIcon: 'fa-user-plus',
-                        sText: 'Ajouter',
-                        click: () => App.oContent.change('Customer', CUSTOMER_PAGE.FORM)
-                    }
-            ]
-        }
+    const oNavbar = $derived( {
+        oBack: {
+            sTitle: 'Ouvrir le menu',
+            sIcon: 'fa-bars',
+            sText: 'Menu',
+            click: App.oMenu.open
+        },
+        aButtons: [
+            Customer.hasCustomers() ? 
+                {
+                    sClass: 'bulma-is-link',
+                    sTitle: 'Ajouter une tâche',
+                    sIcon: 'fa-calendar-plus',
+                    sText: 'Ajouter',
+                    click: () => Pages.oForm.open(TASK_FORM_TYPE.NEW_TASK)
+                } : 
+                {
+                    sClass: 'bulma-is-link',
+                    sTitle: 'Ajouter un client',
+                    sIcon: 'fa-user-plus',
+                    sText: 'Ajouter',
+                    click: () => App.oContent.change('Customer', CUSTOMER_PAGE.FORM)
+                }
+        ]
     } );
 
     /* ---- Debug */
@@ -215,23 +245,10 @@
     
     <!-- Page Navbar -->
     <Navbar Item={oNavbar}>
-
-        <!-- Week Nav -->
-        <div class="fox-app-page-title-content bulma-is-align-items-center">
-            <div class="fox-app-page-title-item bulma-buttons bulma-has-addons bulma-is-flex-wrap-nowrap">
-                <button class="bulma-button" onclick="{ () => changeWeek(-1) }" title="Aller à la semaine précédente">
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </span>
-                </button>
-                <button class="bulma-is-flex-grow-1" onclick="{ () => changeWeek(0) }" title="Aller à la semaine courante">
-                    <span class="bulma-is-size-7">{@html sHTMLSelector}</span>
-                </button>
-                <button class="bulma-button" onclick="{ () => changeWeek(1) }" title="Aller à la semaine suivante">
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </span>
-                </button>
+        <!-- Date Nav -->
+        <div class="fox-app-page-navbar-content bulma-is-align-items-center">
+            <div class="fox-app-page-navbar-item">
+                <DateSelector sType={nDateType} Item={oDateSelector} />
             </div>
         </div>
     </Navbar>

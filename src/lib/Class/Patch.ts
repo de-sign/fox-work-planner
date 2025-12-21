@@ -60,7 +60,7 @@ const CONFIG = {
         // Add Customer Enable property
         202512041430: () => {
             const aCustomersData = Store.get(PROPERTY_NAME.APP_DATA_CUSTOMER);
-            if( aCustomersData  ){
+            if( aCustomersData ){
                 aCustomersData.forEach( (oCustomerData: TObject) => {
                     if( oCustomerData.bEnable == null ){
                         oCustomerData.bEnable = true;
@@ -69,6 +69,19 @@ const CONFIG = {
 
                 // console.log('202512041430 -> Customer', aCustomersData);
                 Store.set(PROPERTY_NAME.APP_DATA_CUSTOMER, aCustomersData);
+            }
+        },
+
+        // Change display calendar to calendar-week
+        202512181050: () => {
+            const sScheduleDisplay = Store.get(PROPERTY_NAME.APP_SCHEDULE_DISPLAY);
+            if( sScheduleDisplay == 'calendar' ){
+                Store.set(PROPERTY_NAME.APP_SCHEDULE_DISPLAY, 'calendar-week');
+            }
+
+            const sTaskDisplay = Store.get(PROPERTY_NAME.APP_TASK_DISPLAY);
+            if( sTaskDisplay == 'calendar' ){
+                Store.set(PROPERTY_NAME.APP_TASK_DISPLAY, 'calendar-week');
             }
         }
     }
