@@ -8,7 +8,7 @@
 
     /* ---- Component */
     let {
-        sType,
+        nType,
 
         Item
     } = $props();
@@ -22,7 +22,7 @@
         dDate = $derived( new Date( dStartDate.toJSON() ) ),
         sHTMLSelector = $derived.by( () => {
             let sResult = '';
-            switch(sType) {
+            switch(nType) {
                 case DATE_SELECTOR_TYPE.WEEK:
                     const aWeekDates = DATE.getDatesOfWeek(dDate),
                         dFirst = aWeekDates[0],
@@ -44,7 +44,7 @@
     function change(nRatio: number): void {
         const dNewDate = new Date( dDate.toJSON() );
 
-        switch(sType) {
+        switch(nType) {
             case DATE_SELECTOR_TYPE.WEEK:
                 // Go to first Monday Day of current Week
                 dNewDate.setDate( dNewDate.getDate() - dNewDate.getDay() + 1 );

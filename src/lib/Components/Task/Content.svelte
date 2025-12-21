@@ -56,6 +56,7 @@
         if( sDisplay != sValue ){
             sDisplay = sValue;
             Store.set(PROPERTY_NAME.APP_TASK_DISPLAY, sDisplay);
+            App.oPage.scrollTop();
         }
     }
 
@@ -248,7 +249,7 @@
         <!-- Date Nav -->
         <div class="fox-app-page-navbar-content bulma-is-align-items-center">
             <div class="fox-app-page-navbar-item">
-                <DateSelector sType={nDateType} Item={oDateSelector} />
+                <DateSelector nType={nDateType} Item={oDateSelector} />
             </div>
         </div>
     </Navbar>

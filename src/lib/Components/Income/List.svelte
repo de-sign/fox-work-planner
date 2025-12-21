@@ -3,6 +3,8 @@
     /* -- Core */
     import type { TObject, TData } from '../../Core/Type';
     import { CONFIG } from '../../Core/Config';
+    import { DATE_SELECTOR_TYPE } from '../../Core/Constants';
+
     import * as DATE from '../../Core/Date';
 
     /* -- Template */
@@ -208,7 +210,7 @@
         <!-- Month Nav -->
         <div class="fox-app-page-title-content bulma-is-align-items-center">
             <div class="fox-app-page-title-item">
-                <DateSelector sType="month" Item={oDateSelector} />
+                <DateSelector nType={DATE_SELECTOR_TYPE.MONTH} Item={oDateSelector} />
             </div>
         </div>
     </Navbar>
