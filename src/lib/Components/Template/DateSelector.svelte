@@ -89,7 +89,7 @@
             if( oTouch?.identifier == oChangedTouch.identifier ){
                 const nDelta = oChangedTouch.screenX - oTouch.screenX;
                 if( nDelta && Math.abs(nDelta) >= 100 ){
-                    change( nDelta > 0 ? 1 : -1 );
+                    change( nDelta > 0 ? -1 : 1 );
                 }
                 oTouch = null;
             }
