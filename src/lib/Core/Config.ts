@@ -156,12 +156,12 @@ export const CONFIG = {
     },
 
     CALENDAR_HOURS_START: 8,
-    CALENDAR_HOURS_MAX_BY_DAY: 10,
-    CALENDAR_HOURS_BREAK: [8, 12, 13, 17],
+    CALENDAR_HOURS_MAX_BY_DAY: 11,
+    CALENDAR_HOURS_BREAK: [8, 12, 13, 17, 18],
 
     CALENDAR_DAYS: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
     CALENDAR_DAYS_ABBR: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
-    CALENDAR_DAYS_BREAK: [0, 6],
+    CALENDAR_DAYS_BREAK: [0/*, 6*/],
 
     CALENDAR_MONTHS: [ 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
     CALENDAR_MONTHS_ABBR: [ 'Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juill.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
