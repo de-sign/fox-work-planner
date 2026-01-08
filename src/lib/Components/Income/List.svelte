@@ -30,7 +30,7 @@
     let hPage: HTMLElement | null = $state(null),
         oDateSeletorComponent: DateSelector | null = $state(null);
 
-    const dDateNow = DATE.toDateOnly( new Date() ),
+    const dDateNow = DATE.getToday(),
         oDateSelector = {
             dDate: dDateNow,
             changeDate: (dDateSelected: Date) => {
@@ -49,7 +49,7 @@
 
         const sMonthKey = dTasksDate.getMonth() + '_' + dTasksDate.getFullYear(),
             oMonthDates = DATE.getDatesOfMonth(dTasksDate),
-            aResults = Object.values( Task.getAll() ).filter( oTask => oTask.sMonthKey == sMonthKey ),
+            aResults = Object.values( Task.getAll() ).filter( oTask => oTask.bService && oTask.sMonthKey == sMonthKey ),
             oTaskByWeek: TObject<Task[]> = {};
 
         // Regroup by Week

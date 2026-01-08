@@ -18,6 +18,7 @@ export interface ITaskOptions {
     sCustomer: string;
     sSchedule?: string;
 
+    bService: boolean;
     sDate: string;
     sTimeStart: string;
     sTimeEnd: string;
@@ -77,6 +78,7 @@ class Task {
         Object.assign( oData, {
             sSchedule: oData._sUUID,
             sDate: dDate.toJSON(),
+            bService: true,
             sState: 'WAIT'
         } );
 
@@ -101,6 +103,7 @@ class Task {
     private _sUUID: string = '';
     public oCustomer: Customer = $state(Customer.oPlaceholder);
     public oSchedule: Schedule | undefined = $state();
+    public bService: boolean = $state(true);
     public dDate: Date = $state( new Date('1970-01-01T00:00:00Z') );
     public sTimeStart: string = $state('');
     public sTimeEnd: string = $state('');
@@ -211,6 +214,7 @@ class Task {
             _sUUID: this._sUUID,
             sCustomer: this.oCustomer.sUUID,
             sSchedule: this.oSchedule?.sUUID,
+            bService: this.bService,
             sDate: this.sDate,
             sTimeStart: this.sTimeStart,
             sTimeEnd: this.sTimeEnd,
@@ -223,6 +227,7 @@ class Task {
     public update(oData: ITaskOptions, bStore: boolean = true): void {
         this.oCustomer = Customer.get(oData.sCustomer);
         this.oSchedule = oData.sSchedule ? Schedule.get(oData.sSchedule) : undefined;
+        this.bService = oData.bService;
         this.dDate = new Date(oData.sDate);
         this.sTimeStart = oData.sTimeStart;
         this.sTimeEnd = oData.sTimeEnd;

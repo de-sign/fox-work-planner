@@ -47,15 +47,22 @@
     const oTitle = $derived.by( () => {
         return {
             sTitle: oContactView.sName,
-            sSubTitle: '' + 
-                `<span class="bulma-icon-text">
-                    <span class="bulma-icon">
-                        <i class="fa-solid fa-calendar-day"></i>
-                    </span>
-                    <span>
-                        ${oTarget.sFullDate}<span class="bulma-is-size-6">, pour ${oTarget.sDuration}</span>
-                    </span>
-                </span>`
+            sSubTitle: 
+                oTarget.bService ?
+                    `<span class="bulma-icon-text">
+                        <span class="bulma-icon">
+                            <i class="fa-solid fa-calendar-day"></i>
+                        </span>
+                        <span>
+                            ${oTarget.sFullDate}<span class="bulma-is-size-6">, pour ${oTarget.sDuration}</span>
+                        </span>
+                    </span>` :
+                    `<span class="bulma-icon-text">
+                        <span class="bulma-icon">
+                            <i class="fa-solid fa-bell"></i>
+                        </span>
+                        <span>${oTarget.sFullDate}</span>
+                    </span>`
         };
     } );
     
@@ -102,13 +109,19 @@
                 </span>
             </div>
 
-            <div class="bulma-block">
-                <p>De {oTarget.sTimeStart.replace(':', 'h')} à {oTarget.sTimeEnd.replace(':', 'h')}</p>
-                <p>À {oTarget.sPrice} € de l'heure</p>
-                <p class="bulma-is-italic bulma-is-size-7 bulma-m-2">
-                    ⤷ Pour une durée de <u>{oTarget.sDuration}</u>, soit un total de <u>{oTarget.sTotalPrice} €</u>
-                </p>
-            </div>
+            {#if oTarget.bService}
+                <div class="bulma-block">
+                    <p>De {oTarget.sTimeStart.replace(':', 'h')} à {oTarget.sTimeEnd.replace(':', 'h')}</p>
+                    <p>À {oTarget.sPrice} € de l'heure</p>
+                    <p class="bulma-is-italic bulma-is-size-7 bulma-m-2">
+                        ⤷ Pour une durée de <u>{oTarget.sDuration}</u>, soit un total de <u>{oTarget.sTotalPrice} €</u>
+                    </p>
+                </div>
+            {:else}
+                <div class="bulma-block">
+                    <p>Rendez-vous à {oTarget.sTimeStart.replace(':', 'h')}</p>
+                </div>
+            {/if}
             
             <div class="bulma-block">
                 {#if oTarget.sInformations}

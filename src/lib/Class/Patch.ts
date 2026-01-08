@@ -83,6 +83,22 @@ const CONFIG = {
             if( sTaskDisplay == 'calendar' ){
                 Store.set(PROPERTY_NAME.APP_TASK_DISPLAY, 'calendar-week');
             }
+        },
+
+        // Add Task Service property
+        202601082235: () => {
+            // Task
+            const aTaskData = Store.get(PROPERTY_NAME.APP_DATA_TASK);
+            if( aTaskData ){
+                aTaskData.forEach( (oTaskData: TObject) => {
+                    if( oTaskData.bService == null ){
+                        oTaskData.bService = true;
+                    }
+                } );
+
+                // console.log('202511292230 -> Task', aTaskData);
+                Store.set(PROPERTY_NAME.APP_DATA_TASK, aTaskData);
+            }
         }
     }
 };

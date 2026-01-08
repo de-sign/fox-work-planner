@@ -8,6 +8,12 @@ export function toISO8601(dDate: Date): string {
     return dDate.toJSON().split('T')[0];
 }
 
+
+// Only for custom Now Date
+export function getToday(): Date {
+    return toDateOnly( new Date() );
+}
+
 /* From -> https://stackoverflow.com/questions/6117814/get-week-of-year-in-javascript-like-in-php */
 export function getWeekData(dDate: Date): number[] {
     const dCopyDate = toDateOnly(dDate);

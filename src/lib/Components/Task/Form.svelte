@@ -37,6 +37,7 @@
             .sort( (oA, oB) => oA.sReverseName.localeCompare(oB.sReverseName, 'fr', { numeric: true }) ),
         oDefaultData = {
             sCustomer: aCustomers[0]?.sUUID,
+            bService: true,
             sDate: DATE.toISO8601( new Date() ),
             sTimeStart: '08:00',
             sTimeEnd: '09:00',
@@ -81,6 +82,10 @@
             fCheck: null,
             fTransform: null
         },
+        bService: {
+            fCheck: FORM.isDefined,
+            fTransform: null
+        },
         sDate: {
             fCheck: FORM.isDefined,
             fTransform: (sValue: string) => {
@@ -93,14 +98,25 @@
         },
         sTimeEnd: {
             fCheck: (sValue: string) => {
-                return FORM.isText(oData.sTimeStart) &&
-                    FORM.isText(sValue) &&
-                    parseInt(oData.sTimeStart.replace(':', '')) < parseInt(sValue.replace(':', ''));
+                return !oData.bService ||
+                    (
+                        FORM.isText(oData.sTimeStart) &&
+                        FORM.isText(sValue) &&
+                        parseInt(oData.sTimeStart.replace(':', '')) < parseInt(sValue.replace(':', ''))
+                    );
             },
-            fTransform: null
+            fTransform: (sValue: string) => {
+                if( !oData.bService && FORM.isText(oData.sTimeStart) ){
+                    const [sHour, sMin] = oData.sTimeStart.split(':');
+                    sValue = ( parseInt(sHour) + 1 ) + ':' + sMin;
+                }
+                return sValue;
+            }
         },
         nPrice: {
-            fCheck: FORM.isNumber,
+            fCheck: (nValue: number) => {
+                return !oData.bService || FORM.isNumber(nValue);
+            },
             fTransform: null
         },
         sState: {
@@ -212,6 +228,22 @@
                     {/if}
                 </div>
 
+                <!-- bService -->
+                <div class="bulma-field">
+                    <label class="bulma-label" for="Task__bService">Type</label>
+                    <div class="bulma-control">
+                        <div class="bulma-select bulma-is-fullwidth { oError.bService ? 'bulma-is-danger' : '' }">
+                            <select id="Task__bService" bind:value="{oData.bService}" >
+                                <option value={true}>Prestation de service</option>
+                                <option value={false}>Rendez-vous</option>
+                            </select>
+                        </div>
+                    </div>
+                    {#if oError.bService}
+                        <i class="bulma-help bulma-has-text-danger">Ce champ est obligatoire</i>
+                    {/if}
+                </div>
+
                 <!-- sDate -->
                 <div class="bulma-field">
                     <label class="bulma-label" for="Task__sDate">Date</label>
@@ -240,38 +272,41 @@
                     {/if}
                 </div>
 
-                <!-- sTimeEnd -->
-                <div class="bulma-field">
-                    <label class="bulma-label" for="Task__sTimeEnd">Heure de fin</label>
-                    <div class="bulma-control bulma-has-icons-right">
-                        <input id="Task__sTimeEnd" bind:value="{oData.sTimeEnd}" class="bulma-input { oError.sTimeEnd ? 'bulma-is-danger' : '' }" type="time" placeholder="{oPlaceholder.sTimeEnd}">
-                        <span class="bulma-icon bulma-is-right bulma-has-text-danger">
-                            <i class="fas fa-asterisk fa-2xs"></i>
-                        </span>
-                    </div>
-                    {#if oError.sTimeEnd}
-                        <i class="bulma-help bulma-has-text-danger">Ce champ est obligatoire et doit être supérieur à l'heure de début</i>
-                    {/if}
-                </div>
+                {#if oData.bService}
 
-                <!-- nPrice -->
-                <div class="bulma-field">
-                    <label class="bulma-label" for="Task__nPrice">Tarif horaire</label>
-                    <div class="bulma-field bulma-has-addons">
-                        <div class="bulma-control bulma-is-flex-grow-1  bulma-has-icons-right">
-                            <input id="Task__nPrice" class="bulma-input { oError.nPrice ? 'bulma-is-danger' : '' }" bind:value="{oData.nPrice}" type="number" placeholder="{oPlaceholder.nPrice.toFixed(2)}">
+                    <!-- sTimeEnd -->
+                    <div class="bulma-field">
+                        <label class="bulma-label" for="Task__sTimeEnd">Heure de fin</label>
+                        <div class="bulma-control bulma-has-icons-right">
+                            <input id="Task__sTimeEnd" bind:value="{oData.sTimeEnd}" class="bulma-input { oError.sTimeEnd ? 'bulma-is-danger' : '' }" type="time" placeholder="{oPlaceholder.sTimeEnd}">
                             <span class="bulma-icon bulma-is-right bulma-has-text-danger">
                                 <i class="fas fa-asterisk fa-2xs"></i>
                             </span>
                         </div>
-                        <div class="bulma-control">
-                            <span class="bulma-button { oError.nPrice ? 'bulma-is-danger bulma-is-outlined' : 'bulma-is-static' }">€</span>
-                        </div>
+                        {#if oError.sTimeEnd}
+                            <i class="bulma-help bulma-has-text-danger">Ce champ est obligatoire et doit être supérieur à l'heure de début</i>
+                        {/if}
                     </div>
-                    {#if oError.nPrice}
-                        <i class="bulma-help bulma-has-text-danger">Ce champ est obligatoire</i>
-                    {/if}
-                </div>
+
+                    <!-- nPrice -->
+                    <div class="bulma-field">
+                        <label class="bulma-label" for="Task__nPrice">Tarif horaire</label>
+                        <div class="bulma-field bulma-has-addons">
+                            <div class="bulma-control bulma-is-flex-grow-1  bulma-has-icons-right">
+                                <input id="Task__nPrice" class="bulma-input { oError.nPrice ? 'bulma-is-danger' : '' }" bind:value="{oData.nPrice}" type="number" placeholder="{oPlaceholder.nPrice.toFixed(2)}">
+                                <span class="bulma-icon bulma-is-right bulma-has-text-danger">
+                                    <i class="fas fa-asterisk fa-2xs"></i>
+                                </span>
+                            </div>
+                            <div class="bulma-control">
+                                <span class="bulma-button { oError.nPrice ? 'bulma-is-danger bulma-is-outlined' : 'bulma-is-static' }">€</span>
+                            </div>
+                        </div>
+                        {#if oError.nPrice}
+                            <i class="bulma-help bulma-has-text-danger">Ce champ est obligatoire</i>
+                        {/if}
+                    </div>
+                {/if}
 
                 <!-- sInformations -->
                  <div class="bulma-field">

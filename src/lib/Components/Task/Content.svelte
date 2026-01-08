@@ -31,7 +31,7 @@
     } = $props();
     
 
-    const dDateNow = DATE.toDateOnly( new Date() ),
+    const dDateNow = DATE.getToday(),
         oDisplays: TObject<TObject> = {
             'calendar-week': {
                 oComponent: Calendar,
@@ -180,7 +180,9 @@
                     sTitle: 'Ajouter une tâche',
                     sIcon: 'fa-calendar-plus',
                     sText: 'Ajouter',
-                    click: () => Pages.oForm.open(TASK_FORM_TYPE.NEW_TASK)
+                    click: () => Pages.oForm.open(TASK_FORM_TYPE.NEW_TASK, {
+                        sDate: DATE.toISO8601( dTasksDate ),
+                    } )
                 } : 
                 {
                     sClass: 'bulma-is-link',
@@ -195,7 +197,7 @@
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
-        // $inspect(dTimeNow).with(console.trace);
+        // $inspect(dTasksDate).with(console.trace);
         // $inspect(oContent).with(console.trace);
     }
 </script>

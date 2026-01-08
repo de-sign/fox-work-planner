@@ -36,7 +36,7 @@
     --bulma-content-blockquote-background-color: var(--bulma-border-weak);
 
     & blockquote {
-        white-space: pre;
+        white-space: pre-wrap;
     }
 }
 
@@ -260,6 +260,25 @@ $page-transition-timing-function: ease;
             margin: -15px calc(-1 * var(--fox-block-spacing)) 0;
             top: initial;
             bottom: calc(-1 * var(--fox-block-spacing));
+        }
+
+        .fox-app--swipe-left &,
+        .fox-app--no-swipe &,
+        .fox-app--swipe-right & {
+            transition: transform $page-transition-duration $page-transition-timing-function,
+                box-shadow $page-transition-duration $page-transition-timing-function;
+        }
+
+        .fox-app--swipe-left & {
+            transform: translateX(-25px);
+            box-shadow: 26px 0 0 -25px var(--bulma-border),
+                25px 0 0 0 var(--bulma-border-weak);
+        }
+
+        .fox-app--swipe-right & {
+            transform: translateX(25px);
+            box-shadow: -26px 0 0 -25px var(--bulma-border),
+                -25px 0 0 0 var(--bulma-border-weak);
         }
     }
 

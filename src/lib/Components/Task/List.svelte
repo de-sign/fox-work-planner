@@ -19,7 +19,7 @@
         Item
     } = $props();
 
-    const dDateNow = new Date(),
+    const dDateNow = DATE.getToday(),
         aTasksGrouped = $derived.by( () => {
             const aReturn: TObject[] = [],
                 oTasksByDate: TObject<Task[]> = {},

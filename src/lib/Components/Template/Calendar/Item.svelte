@@ -60,7 +60,7 @@
 
 
     /* -- Today cell */
-    const dDateNow = DATE.toDateOnly( new Date() ),
+    const dDateNow = DATE.getToday(),
         sCellNow = $derived.by( () => {
             let sReturn = '-1:-1';
             if( Item.oDates ){

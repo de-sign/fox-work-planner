@@ -53,6 +53,7 @@ export const CONFIG = {
         bEnable: false
     },
 
+    // - Schedule
     SCHEDULE_PLACEHOLDER: {
         _sUUID: '',
         sCustomer: '',
@@ -64,10 +65,18 @@ export const CONFIG = {
         sInformations: 'Horae laboris Poupi, amoris mei, fungens ut substitutus.',
     },
 
+    SCHEDULE_WEEK_TYPE: [
+        { sValue: 'EVERY_WEEK', sText: 'Hebdomadaire', sDescription: 'Toutes les semaines', sTag: '', fFilter: (nWeek: number) => true },
+        { sValue: 'EVEN_WEEK', sText: 'Bimensuel paire', sDescription: 'En semaine paire', sTag: 'Paire', fFilter: (nWeek: number) => nWeek % 2 == 0 },
+        { sValue: 'ODD_WEEK', sText: 'Bimensuel impaire', sDescription: 'En semaine impaire', sTag: 'Imp.', fFilter: (nWeek: number) => nWeek % 2 == 1 }
+    ],
+
+    // - Task
     TASK_PLACEHOLDER: {
         _sUUID: '',
         sCustomer: '',
         sSchedule: '',
+        bService: true,
         sDate: '1970-01-01T00:00:00Z',
         sTimeStart: '09:00',
         sTimeEnd: '12:00',
@@ -75,6 +84,12 @@ export const CONFIG = {
         sState: 'WAIT',
         sInformations: 'Horae laboris Poupi, amoris mei, fungens ut substitutus.',
     },
+
+    TASK_STATE: [
+        { sValue: 'WAIT', sText: 'En attente', sDescription: 'Attente de validation', sClass: 'bulma-is-link', sTag: 'fa-hourglass-half', sHTMLTag: 'i' },
+        { sValue: 'VALID', sText: 'Validée', sDescription: 'Effectué et validée', sClass: 'bulma-is-success', sTag: 'fa-check', sHTMLTag: 'b' },
+        { sValue: 'CANCEL', sText: 'Annulée', sDescription: 'Annulée par un tier', sClass: 'bulma-is-danger', sTag: 'fa-xmark', sHTMLTag: 's' }
+    ],
 
     // ---- Application
     // -- Menu Item
@@ -166,17 +181,7 @@ export const CONFIG = {
     CALENDAR_MONTHS: [ 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
     CALENDAR_MONTHS_ABBR: [ 'Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai', 'Juin', 'Juill.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
 
-    // -- Schedule
-    SCHEDULE_WEEK_TYPE: [
-        { sValue: 'EVERY_WEEK', sText: 'Hebdomadaire', sDescription: 'Toutes les semaines', sTag: '', fFilter: (nWeek: number) => true },
-        { sValue: 'EVEN_WEEK', sText: 'Bimensuel paire', sDescription: 'En semaine paire', sTag: 'Paire', fFilter: (nWeek: number) => nWeek % 2 == 0 },
-        { sValue: 'ODD_WEEK', sText: 'Bimensuel impaire', sDescription: 'En semaine impaire', sTag: 'Imp.', fFilter: (nWeek: number) => nWeek % 2 == 1 }
-    ],
-
-    // -- Task
-    TASK_STATE: [
-        { sValue: 'WAIT', sText: 'En attente', sDescription: 'Attente de validation', sClass: 'bulma-is-link', sTag: 'fa-hourglass-half', sHTMLTag: 'i' },
-        { sValue: 'VALID', sText: 'Validée', sDescription: 'Travaillée et validée', sClass: 'bulma-is-success', sTag: 'fa-check', sHTMLTag: 'b' },
-        { sValue: 'CANCEL', sText: 'Annulée', sDescription: 'Annulée par le client', sClass: 'bulma-is-danger', sTag: 'fa-xmark', sHTMLTag: 's' }
-    ]
+    // Date Selector
+    DATE_SELECTOR_SWIP_DISTANCE: 100,
+    DATE_SELECTOR_SWIP_CLASS: ['fox-app--swipe-left', 'fox-app--no-swipe', 'fox-app--swipe-right']
 }
