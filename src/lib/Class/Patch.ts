@@ -1,5 +1,5 @@
 // Imports
-import type { TObject, TListeners } from '../Core/Type';
+import type { TObject, TData, TListeners } from '../Core/Type';
 import { EVENT_NAME, PROPERTY_NAME } from '../Core/Constants';
 
 import EventEmitter from 'eventemitter3';
@@ -87,7 +87,6 @@ const CONFIG = {
 
         // Add Task Service property
         202601082235: () => {
-            // Task
             const aTaskData = Store.get(PROPERTY_NAME.APP_DATA_TASK);
             if( aTaskData ){
                 aTaskData.forEach( (oTaskData: TObject) => {
@@ -98,6 +97,49 @@ const CONFIG = {
 
                 // console.log('202511292230 -> Task', aTaskData);
                 Store.set(PROPERTY_NAME.APP_DATA_TASK, aTaskData);
+            }
+        },
+
+        // Add Customer Date Start property
+        202601122035: () => {
+            const aCustomersData = Store.get(PROPERTY_NAME.APP_DATA_CUSTOMER),
+                aTaskData = Store.get(PROPERTY_NAME.APP_DATA_TASK),
+                oCustomersDate: TData = {};
+
+            // Task by Customer
+            if( aTaskData ){
+                aTaskData.forEach( (oTaskData: TObject) => {
+                    if( oTaskData.sState != 'CANCEL' ){
+                        if( oCustomersDate[oTaskData.sCustomer] ){
+                            const nDate = parseInt(oTaskData.sDate.replace('-', '')),
+                                nLastDate = parseInt(oCustomersDate[oTaskData.sCustomer].replace('-', ''));
+                            if( nDate < nLastDate ) {
+                                oCustomersDate[oTaskData.sCustomer] = oTaskData.sDate;
+                            }
+                        } else {
+                            oCustomersDate[oTaskData.sCustomer] = oTaskData.sDate;
+                        }
+                    }
+                } );
+                
+
+                // Clear Useless Task
+                const oNewTaskData = aTaskData.filter( (oTaskData: TObject) => oTaskData.sCustomer && oCustomersDate[oTaskData.sCustomer] );
+                // console.log('202601122035 -> Task', oNewTaskData );
+                Store.set(PROPERTY_NAME.APP_DATA_TASK, oNewTaskData);
+
+            }
+
+            // Add first Task Date
+            if( aCustomersData ){
+                aCustomersData.forEach( (oCustomerData: TObject) => {
+                    if( oCustomerData.sDateStart == null ){
+                        oCustomerData.sDateStart = oCustomersDate[oCustomerData._sUUID] || (new Date()).toJSON().split('T')[0];
+                    }
+                } );
+
+                // console.log('202601122035 -> Customer', aCustomersData);
+                Store.set(PROPERTY_NAME.APP_DATA_CUSTOMER, aCustomersData);
             }
         }
     }
@@ -139,8 +181,8 @@ class Patch extends EventEmitter {
     }
 
     /** Apply all patch who not patched */
-    public apply(): void {
-        const nLastVersion = Store.get(PROPERTY_NAME.APP_LAST_PATCH) || 0,
+    public apply(nApplyVersion?: number): void {
+        const nLastVersion = nApplyVersion || Store.get(PROPERTY_NAME.APP_LAST_PATCH) || 0,
             aPatchApply: number[] = [];
 
         for( let sVersion in this._oData ){
@@ -153,7 +195,7 @@ class Patch extends EventEmitter {
             }
         }
 
-        if( aPatchApply.length ){
+        if( !nApplyVersion && aPatchApply.length ){
             Store.set(PROPERTY_NAME.APP_LAST_PATCH, aPatchApply[aPatchApply.length - 1] );
             this.emit(EVENT_NAME.PATCH_APPLY, aPatchApply); // Trigger
         }

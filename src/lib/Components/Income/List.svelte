@@ -74,7 +74,7 @@
                     .filter( oSchedule => oSchedule.oCustomer.bEnable && aFromSchedule.indexOf(oSchedule) == -1 && oSchedule.oWeekType.fFilter(nWeek) )
                     .forEach( oSchedule => {
                         const dDate = aDates[oSchedule.nDay];
-                        if( dDate.getMonth() == dTasksDate.getMonth() ){
+                        if( dDate.getMonth() == dTasksDate.getMonth() && oSchedule.oCustomer.dDateStart <= dDate ){
                             aResults.push( Task.from( oSchedule, dDate ) );
                         }
                     } );

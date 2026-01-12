@@ -122,7 +122,12 @@
                 oTaskByWeek[sWeekKey]?.forEach( oTask => oTask.oSchedule ? aFromSchedule.push(oTask.oSchedule) : null );
                 Object.values( Schedule.getAll() )
                     .filter( oSchedule => oSchedule.oCustomer.bEnable && aFromSchedule.indexOf(oSchedule) == -1 && oSchedule.oWeekType.fFilter(nWeek) )
-                    .forEach( oSchedule => aResults.push( Task.from( oSchedule, aDates[oSchedule.nDay] ) ) );
+                    .forEach( oSchedule => {
+                        const dDate = aDates[oSchedule.nDay];
+                        if( oSchedule.oCustomer.dDateStart <= dDate ){
+                            aResults.push( Task.from( oSchedule, dDate ) );
+                        }
+                    } );
             } );
 
         return aResults;

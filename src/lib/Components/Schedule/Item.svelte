@@ -56,6 +56,24 @@
         </button>
     </article>
     
+{:else if sType == 'tablerow'}
+    <tr id="{Item.oTarget.sId}" >
+        <td class="bulma-px-0">
+            <b>{Item.oTarget.sDay} :</b>
+        </td>
+        <td>{Item.oTarget.sTime}<i class="bulma-is-size-7">-> {Item.oTarget.sDuration}</i></td>
+        <td class="bulma-px-0 bulma-has-text-right">
+            {#if Item.oTarget.sWeekType != 'EVERY_WEEK'}
+                <span class="bulma-tag bulma-is-link bulma-is-light bulma-icon-text bulma-is-small">
+                    <span class="bulma-icon bulma-is-small">
+                        <i class="fa-solid fa-calendar-week"></i>
+                    </span>
+                    <span>{Item.oTarget.oWeekType.sTag}</span>
+                </span>
+            {/if}
+        </td>
+    </tr>
+    
 {:else if sType == 'simple'}
     <div id="{Item.oTarget.sId}" >
         <b>{Item.oTarget.sDay} : </b>
@@ -87,5 +105,9 @@
         writing-mode: vertical-lr;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
     }
 </style>

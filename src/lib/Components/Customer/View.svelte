@@ -245,9 +245,12 @@
                         <div class="fox-separator">
                             <span>Planifications</span>
                         </div>
-                        {#each aCustomerSchedules as oSchedule}
-                            <ItemSchedule sType="simple" Item={{ oTarget: oSchedule }}/>
-                        {/each}
+                        <p class="bulma-my-1 bulma-is-italic">À partir du {oCustomerView.sFullDateStart}</p>
+                        <table class="bulma-table bulma-is-narrow bulma-is-fullwidth">
+                            {#each aCustomerSchedules as oSchedule}
+                                <ItemSchedule sType="tablerow" Item={{ oTarget: oSchedule }}/>
+                            {/each}
+                        </table>
                     </div>
                 {/if}
 

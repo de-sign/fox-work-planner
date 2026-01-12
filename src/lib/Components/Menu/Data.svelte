@@ -2,11 +2,13 @@
     /* ---- Import */
     /* -- Core */
     import type { TObject } from '../../Core/Type';
+    import { PROPERTY_NAME } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
     import { CLASS } from '../../Core/Import';
-
+    
     import * as Svelte from 'svelte';
     import Store from '../../Class/Store';
+    import Patch from '../../Class/Patch';
 
     /* ---- Component */
     /* -- Export */
@@ -14,7 +16,9 @@
     function exportData(): void {
         if( hDownload ){
             // Get DATA
-            const oData: TObject = {};
+            const oData: TObject = {
+                nPatchVersion: Store.get(PROPERTY_NAME.APP_LAST_PATCH)
+            };
             CONFIG.EXPORT_KEYS_STORE.forEach( sStoreKey => {
                 oData[sStoreKey] = Store.get(sStoreKey);
             } );
@@ -55,6 +59,9 @@
                             Store.set(sStoreKey, oData[sStoreKey]);
                         }
                     } );
+
+                    // Apply Patch
+                    Patch.apply( oData.nPatchVersion || -1 );
 
                     // Restore Data
                     Object.values(CLASS).forEach( (fClass: any) => fClass.restore() );

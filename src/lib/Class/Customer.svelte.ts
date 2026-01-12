@@ -3,6 +3,8 @@ import type { TObject } from '../Core/Type';
 import { PROPERTY_NAME } from '../Core/Constants';
 import { CONFIG } from '../Core/Config';
 
+import * as DATE from '../Core/Date';
+
 import Store from './Store';
 import Contact from './Contact.svelte';
 
@@ -14,6 +16,7 @@ export interface ICustomerOptions {
     _sUUID?: string;
     sMainContact: string;
     aExtraContacts?: string[];
+    sDateStart: string;
     bEnable?: boolean;
 }
 
@@ -77,6 +80,7 @@ class Customer {
     private _sUUID: string = '';
     public oMainContact: Contact;
     public aExtraContacts: Contact[] = $state([]);
+    public dDateStart: Date = $state( new Date('1970-01-01T00:00:00Z') );
     public bEnable: boolean = $state(true);
 
     public get sId(): string {
@@ -102,6 +106,18 @@ class Customer {
     public get bHasKey(): boolean {
         return this.oMainContact.bHasKey;
     }
+    
+    public get sDateStart(): string {
+        return DATE.toISO8601(this.dDateStart);
+    }
+
+    public get sShortDateStart(): string {
+        return CONFIG.CALENDAR_DAYS_ABBR[this.dDateStart.getDay()] + ' ' + this.dDateStart.getDate();
+    }
+
+    public get sFullDateStart(): string {
+        return CONFIG.CALENDAR_DAYS[this.dDateStart.getDay()] + ' ' + this.dDateStart.getDate() + ' ' + CONFIG.CALENDAR_MONTHS_ABBR[this.dDateStart.getMonth()] + ' ' + this.dDateStart.getFullYear();
+    }
 
     /** Constructor */
     public constructor(oData: ICustomerOptions) {
@@ -120,11 +136,8 @@ class Customer {
             oExtraContact.oIsExtraOf = this;
         } );
 
-        if( oData.bEnable != null ){
-            this.bEnable = oData.bEnable;
-        }
-
-        Customer.store();
+        this.bEnable = oData.bEnable || true;
+        this.update(oData);
     }
 
     /** Destructor */
@@ -144,8 +157,14 @@ class Customer {
             _sUUID: this._sUUID,
             sMainContact: this.oMainContact.sUUID,
             aExtraContacts: this.aExtraContacts.map( oContact => oContact.sUUID ),
+            sDateStart: this.sDateStart,
             bEnable: this.bEnable
         };
+    }
+
+    public update(oData: ICustomerOptions): void {
+        this.dDateStart = new Date(oData.sDateStart);
+        Customer.store();
     }
 
     public changeEnable(bValue: boolean): void {

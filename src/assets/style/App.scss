@@ -265,8 +265,8 @@ $page-transition-timing-function: ease;
         .fox-app--swipe-left &,
         .fox-app--no-swipe &,
         .fox-app--swipe-right & {
-            transition: transform $page-transition-duration $page-transition-timing-function,
-                box-shadow $page-transition-duration $page-transition-timing-function;
+            transition: transform calc($page-transition-duration / 2) $page-transition-timing-function,
+                box-shadow calc($page-transition-duration / 2) $page-transition-timing-function;
         }
 
         .fox-app--swipe-left & {

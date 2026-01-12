@@ -6,7 +6,9 @@
 
     import { CUSTOMER_FORM_TYPE, CUSTOMER_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
+
     import * as FORM from '../../Core/Form';
+    import * as DATE from '../../Core/Date';
 
     /* -- Template */
     import Title from '../Template/Title.svelte';
@@ -28,7 +30,11 @@
         sType: string = $state(CUSTOMER_FORM_TYPE.NEW_CUSTOMER),
         sSubTitle: string = $state('Ajoute un nouveau client'),
         oData: TObject = $state({ aPhoneNumbers: [null] }),
-        oError: TObject = $state({ aPhoneNumbers: [] });
+        oError: TObject = $state({ aPhoneNumbers: [] }),
+        bCustomer: boolean = $derived(
+            sType == CUSTOMER_FORM_TYPE.NEW_CUSTOMER // If new Customer
+            || oTarget?.oCustomer?.oMainContact == oTarget?.oContact // If Contact modified is main contact of customer
+        );
 
     export function open(sFormType: string, oFormTarget ?: TObject): void {
 
@@ -51,6 +57,11 @@
         // Data & Error
         oData = oTarget && oTarget.oContact ? oTarget.oContact.clone() : { aPhoneNumbers: [null] };
         oError = { aPhoneNumbers: [] };
+
+        // Add custom Date Start
+        if( bCustomer ){
+            oData.sDateStart = oTarget?.oCustomer?.sDateStart || DATE.toISO8601( new Date() );
+        }
 
         App.oPage.open(CUSTOMER_PAGE.FORM, true);
     }
@@ -94,6 +105,12 @@
             fCheck: FORM.isPhoneNumber,
             fTransform: FORM.toPhoneNumber
         },
+        sDateStart: {
+            fCheck: (sValue: string) => {
+                return bCustomer ? FORM.isDefined(sValue) : true;
+            },
+            fTransform: null
+        },
         sInformations: {
             fCheck: null,
             fTransform: FORM.toCapitalize
@@ -106,7 +123,8 @@
 
     function validate(): void {
         if( FORM.checkData(oData, oFields, oError) ){
-            const oValideData = <IContactOptions>FORM.transformData(oData, oFields);
+            const oValideData = <IContactOptions>FORM.transformData(oData, oFields),
+                sDateStart = oData.sDateStart + 'T00:00:00Z'; // Custom Data
             
             let oWillView: Customer | Contact | null = null,
                 oNewContact: Contact;
@@ -114,7 +132,10 @@
             switch( sType ){
                 case CUSTOMER_FORM_TYPE.NEW_CUSTOMER:
                     oNewContact = new Contact(oValideData);
-                    oWillView = new Customer( { sMainContact: oNewContact.sUUID } );
+                    oWillView = new Customer( {
+                        sMainContact: oNewContact.sUUID,
+                        sDateStart: sDateStart
+                    } );
                     break;
 
                 case CUSTOMER_FORM_TYPE.NEW_CONTACT:
@@ -125,10 +146,13 @@
 
                 case CUSTOMER_FORM_TYPE.MODIFY_CONTACT:
                     oTarget?.oContact.update(oValideData);
-                    // If Contact modified is main contact of customer
-                    if( oTarget?.oCustomer.oMainContact == oTarget?.oContact ){
+                    // If Customer
+                    if( bCustomer ){
                         // Then open Customer
-                        oWillView = oTarget?.oCustomer;
+                        if( oTarget ){
+                            oTarget.oCustomer.update({ sDateStart: sDateStart });
+                            oWillView = oTarget.oCustomer;
+                        }
                     } else {
                         // Else open extra Contact
                         oWillView = oTarget?.oContact;
@@ -170,7 +194,7 @@
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
-        // $inspect(oError).with(console.trace);
+        // $inspect(bCustomer).with(console.trace);
         // $inspect(oData).with(console.trace);
     }
 </script>
@@ -300,6 +324,22 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- public sDateStart: string; -->
+                {#if bCustomer}
+                    <div class="bulma-field">
+                        <label class="bulma-label" for="Customer__sDateStart">Début de prestation</label>
+                        <div class="bulma-control bulma-has-icons-right">
+                            <input id="Customer__sDateStart" bind:value="{oData.sDateStart}" class="bulma-input { oError.sDateStart ? 'bulma-is-danger' : '' }" type="date" placeholder="{Customer.oPlaceholder.sDateStart}">
+                            <span class="bulma-icon bulma-is-right bulma-has-text-danger">
+                                <i class="fas fa-asterisk fa-2xs"></i>
+                            </span>
+                        </div>
+                        {#if oError.sDateStart}
+                            <i class="bulma-help bulma-has-text-danger">Ce champ est obligatoire</i>
+                        {/if}
+                    </div>
+                {/if}
 
                 <!-- public sInformations: string | undefined; -->
                 <div class="bulma-field">

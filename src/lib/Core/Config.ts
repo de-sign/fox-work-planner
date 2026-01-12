@@ -50,6 +50,7 @@ export const CONFIG = {
     CUSTOMER_PLACHOLDER: {
         _sUUID: '',
         sMainContact: '',
+        sDateStart: '1970-01-01T00:00:00Z',
         bEnable: false
     },
 
