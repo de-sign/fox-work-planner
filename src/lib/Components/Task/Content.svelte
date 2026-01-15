@@ -207,6 +207,7 @@
     const sEventName = EVENT_NAME.URL_REDIRECTION + '_Task_' + TASK_PAGE.CONTENT;
     function redirection(oState: TObject) {
         oDateSeletorComponent?.setDate( new Date( oState.sDateSelected + 'T00:00:00Z' ) );
+        App.oPage.open(TASK_PAGE.CONTENT);
     }
 
     Svelte.onMount( () => App.oEmitter.on(sEventName, redirection) );
