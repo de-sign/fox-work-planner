@@ -1,8 +1,11 @@
 <script lang="ts">
     /* ---- Import */
     /* -- Core */
-    import { TASK_FORM_TYPE, TASK_PAGE } from '../../Core/Constants';
+    import type { TObject } from '../../Core/Type';
+    import { EVENT_NAME, TASK_FORM_TYPE, TASK_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
+
+    import * as Svelte from 'svelte';
 
     /* -- Template */
     import Title from '../Template/Title.svelte';
@@ -23,7 +26,7 @@
 
     export function open(oNewTarget: Task) {
         oTarget = oNewTarget;
-        App.oPage.open(TASK_PAGE.VIEW, true);
+        App.oPage.open(TASK_PAGE.VIEW, { sUUID: oTarget.sUUID });
     }
 
     /* ---- Modal */
@@ -83,6 +86,18 @@
             }
         ]
     };
+
+
+    /* -- History */
+    const sEventName = EVENT_NAME.URL_REDIRECTION + '_Task_' + TASK_PAGE.VIEW;
+
+    function redirection(oState: TObject): void {
+        open( Task.get( oState.sUUID ) );
+    }
+
+    Svelte.onMount( () => App.oEmitter.on(sEventName, redirection) );
+    Svelte.onDestroy( () => App.oEmitter.removeListener(sEventName, redirection) );
+
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){

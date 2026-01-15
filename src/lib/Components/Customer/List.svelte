@@ -2,8 +2,10 @@
     /* ---- Import */
     /* -- Core */
     import type { TObject } from '../../Core/Type';
-    import { CUSTOMER_FORM_TYPE } from '../../Core/Constants';
+    import { EVENT_NAME, CUSTOMER_FORM_TYPE, CUSTOMER_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
+
+    import * as Svelte from 'svelte';
 
     /* -- Template */
     import Title from '../Template/Title.svelte';
@@ -74,6 +76,17 @@
         ]
     };
 
+    
+    /* -- History */
+    const sEventName = EVENT_NAME.URL_REDIRECTION + '_Customer_' + CUSTOMER_PAGE.LIST;
+    function redirection() {
+        App.oPage.open( CUSTOMER_PAGE.LIST);
+    }
+
+    Svelte.onMount( () => App.oEmitter.on(sEventName, redirection) );
+    Svelte.onDestroy( () => App.oEmitter.removeListener(sEventName, redirection) );
+
+    
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
         // $inspect(oCustomers).with(console.trace);

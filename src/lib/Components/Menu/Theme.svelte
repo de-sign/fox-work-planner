@@ -27,7 +27,7 @@
 
 <li class="fox-app-menu-theme">
     <!-- svelte-ignore a11y_invalid_attribute -->
-    <a href="#" class="bulma-is-flex bulma-is-align-items-center">
+    <a href="#" class="bulma-is-flex bulma-is-align-items-center" onclick={ oEvent => { oEvent.preventDefault(); } }>
         <span class="bulma-is-flex-grow-1">Thème</span>
         <div class="fox-app-menu-theme-buttons bulma-is-flex-grow-0 bulma-buttons bulma-has-addons">
             <!-- svelte-ignore a11y_click_events_have_key_events -->

@@ -3,9 +3,10 @@
     /* -- Core */
     import type { TObject } from '../../Core/Type';
     import type { Component } from 'svelte';
-    import { PROPERTY_NAME, SCHEDULE_FORM_TYPE, CUSTOMER_PAGE } from '../../Core/Constants';
+    import { EVENT_NAME, PROPERTY_NAME, SCHEDULE_FORM_TYPE, SCHEDULE_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
 
+    import * as Svelte from 'svelte';
     import Store from '../../Class/Store';
 
     /* -- Template */
@@ -40,25 +41,29 @@
     }
 
     /* ---- Template */
+    const bHasCustomer = Customer.hasCustomers();
+
     /* -- Title */
     const oTitle = $derived.by( () => {
         return {
             sTitle: 'Planification',
             sSubTitle: 'Définis ta semaine type',
-            aButtons: [
-                {
-                    sClass: sDisplay == 'calendar-week' ? 'bulma-is-link bulma-is-selected' : '',
-                    sTitle: 'Affichage calendrier',
-                    sIcon: 'fa-calendar-week',
-                    click: () => changeDisplay('calendar-week')
-                },
-                {
-                    sClass: sDisplay == 'list' ? 'bulma-is-link bulma-is-selected' : '',
-                    sTitle: 'Affichage liste',
-                    sIcon: 'fa-list',
-                    click: () => changeDisplay('list')
-                }
-            ]
+            aButtons: bHasCustomer ? 
+                [
+                    {
+                        sClass: sDisplay == 'calendar-week' ? 'bulma-is-link bulma-is-selected' : '',
+                        sTitle: 'Affichage calendrier',
+                        sIcon: 'fa-calendar-week',
+                        click: () => changeDisplay('calendar-week')
+                    },
+                    {
+                        sClass: sDisplay == 'list' ? 'bulma-is-link bulma-is-selected' : '',
+                        sTitle: 'Affichage liste',
+                        sIcon: 'fa-list',
+                        click: () => changeDisplay('list')
+                    }
+                ]
+                : null
         }
     } );
 
@@ -71,25 +76,30 @@
                 sText: 'Menu',
                 click: App.oMenu.open
             },
-            aButtons: [
-                Customer.hasCustomers() ? 
+            aButtons: bHasCustomer ?
+                [
                     {
                         sClass: 'bulma-is-link',
                         sTitle: 'Ajouter une planification',
                         sIcon: 'fa-calendar-plus',
                         sText: 'Ajouter',
                         click: () => Pages.oForm.open(SCHEDULE_FORM_TYPE.NEW_SCHEDULE)
-                    } : 
-                    {
-                        sClass: 'bulma-is-link',
-                        sTitle: 'Ajouter un client',
-                        sIcon: 'fa-user-plus',
-                        sText: 'Ajouter',
-                        click: () => App.oContent.change('Customer', CUSTOMER_PAGE.FORM)
                     }
-            ]
+                ]
+                : null
         }
     } );
+
+    
+    /* -- History */
+    const sEventName = EVENT_NAME.URL_REDIRECTION + '_Schedule_' + SCHEDULE_PAGE.CONTENT;
+    function redirection() {
+        App.oPage.open( SCHEDULE_PAGE.CONTENT);
+    }
+
+    Svelte.onMount( () => App.oEmitter.on(sEventName, redirection) );
+    Svelte.onDestroy( () => App.oEmitter.removeListener(sEventName, redirection) );
+
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
@@ -108,7 +118,7 @@
     <div class="fox-app-page-content bulma-section">
         <div class="bulma-container bulma-is-max-tablet">
 
-            {#if Customer.hasCustomers()}
+            {#if bHasCustomer}
                <Content App={App} Pages={Pages} />
             {:else}
                 <div class="bulma-notification bulma-has-text-centered">
@@ -121,14 +131,7 @@
                 </div>
                 
                 <p class="fox-empty-notification bulma-block">
-                    Tu dois d'abord créer un
-                    <button class="bulma-block bulma-button bulma-is-small" onclick="{ () => App.oContent.change('Customer', CUSTOMER_PAGE.FORM) }">
-                        <span class="bulma-icon">
-                            <i class="fa-solid fa-user-plus"></i>
-                        </span>
-                        <span>client</span>
-                    </button>
-                    avant de pouvoir lui ajouter une planification !
+                    Tu dois d'abord créer un <b>client</b> avant de pouvoir lui ajouter une planification !
                 </p>
             {/if}
 
@@ -141,7 +144,4 @@
 </section>
 
 <style>
-    .fox-empty-notification .bulma-button {
-        vertical-align: middle;
-    }
 </style>

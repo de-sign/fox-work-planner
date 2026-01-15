@@ -50,6 +50,11 @@
             return sResult;
         } );
 
+    export function setDate(dNewDate: Date): void {
+        dDate = DATE.toDateOnly(dNewDate);
+        Item.changeDate( new Date( dDate.toJSON() ) );
+    }
+
     function change(nRatio: number): void {
         const dNewDate = new Date( dDate.toJSON() );
 
@@ -69,8 +74,7 @@
                 break;
         }
 
-        dDate = DATE.toDateOnly(dNewDate);
-        Item.changeDate( new Date( dDate.toJSON() ) );
+        setDate(dNewDate);
     }
 
     function reset(): void {

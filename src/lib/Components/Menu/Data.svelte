@@ -87,7 +87,7 @@
     <!-- svelte-ignore a11y_invalid_attribute -->
     <a href="#" bind:this={hDownload} class="bulma-is-hidden" title="Exporter les données"></a>
     <!-- svelte-ignore a11y_invalid_attribute -->
-    <a href="#" class="bulma-is-flex bulma-is-align-items-center" onclick={exportData}>
+    <a href="#" class="bulma-is-flex bulma-is-align-items-center" onclick={ oEvent => { oEvent.preventDefault(); exportData(); } }>
         <span class="bulma-is-flex-grow-1">Exporter les données</span>
         <span class="bulma-icon">
             <i class="fa-solid fa-cloud-arrow-down fa-lg"></i>
@@ -97,7 +97,7 @@
 <li class="fox-app-menu-data">
     <input bind:this={hUpload} class="bulma-is-hidden" type="file" accept=".json" />
     <!-- svelte-ignore a11y_invalid_attribute -->
-    <a href="#" class="bulma-is-flex bulma-is-align-items-center" onclick={ () => hUpload?.click() }>
+    <a href="#" class="bulma-is-flex bulma-is-align-items-center" onclick={ oEvent => { oEvent.preventDefault(); hUpload?.click(); } }>
         <span class="bulma-is-flex-grow-1">Importer les données</span>
         <span class="bulma-icon">
             <i class="fa-solid fa-cloud-arrow-up fa-lg"></i>

@@ -4,9 +4,10 @@
     import type { TObject } from '../../Core/Type';
     import type { IContactOptions } from '../../Class/Contact.svelte';
 
-    import { CUSTOMER_FORM_TYPE, CUSTOMER_PAGE } from '../../Core/Constants';
+    import { EVENT_NAME, CUSTOMER_FORM_TYPE, CUSTOMER_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
 
+    import * as Svelte from 'svelte';
     import * as FORM from '../../Core/Form';
     import * as DATE from '../../Core/Date';
 
@@ -63,7 +64,7 @@
             oData.sDateStart = oTarget?.oCustomer?.sDateStart || DATE.toISO8601( new Date() );
         }
 
-        App.oPage.open(CUSTOMER_PAGE.FORM, true);
+        App.oPage.open(CUSTOMER_PAGE.FORM, { sUUID: oTarget?.oContact?.sUUID, sFormType: sType });
     }
 
     function addPhoneNumber(): void {
@@ -160,8 +161,8 @@
                     break;
             }
 
-            App.oPage.back();
-            Pages.oView?.open(oWillView);
+            App.oPage.back()
+                .then( () => Pages.oView?.open(oWillView) );
         }
     }
         
@@ -191,6 +192,25 @@
             }
         ]
     };
+
+    
+    /* -- History */
+    const sEventName = EVENT_NAME.URL_REDIRECTION + '_Customer_' + CUSTOMER_PAGE.FORM;
+    function redirection(oState: TObject): void {
+        let oTarget = undefined;
+        if( oState.sUUID ){
+            const oContact = Contact.get(oState.sUUID);
+            oTarget = {
+                oContact: oContact,
+                oCustomer: oContact.oIsExtraOf
+            };
+        }
+        open(oState.sFormType, oTarget);
+    }
+
+    Svelte.onMount( () => App.oEmitter.on(sEventName, redirection) );
+    Svelte.onDestroy( () => App.oEmitter.removeListener(sEventName, redirection) );
+
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){

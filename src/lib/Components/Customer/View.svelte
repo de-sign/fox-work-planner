@@ -1,8 +1,11 @@
 <script lang="ts">
     /* ---- Import */
     /* -- Core */
-    import { CUSTOMER_FORM_TYPE, CUSTOMER_PAGE, SCHEDULE_WEEK_TYPE } from '../../Core/Constants';
+    import type { TObject } from '../../Core/Type';
+    import { EVENT_NAME, CUSTOMER_FORM_TYPE, CUSTOMER_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
+
+    import * as Svelte from 'svelte';
 
     /* -- Template */
     import Title from '../Template/Title.svelte';
@@ -40,9 +43,9 @@
             : []
         );
 
-    export function open(oNewTarget: Customer | Contact) {
+    export function open(oNewTarget: Customer | Contact, bForce: boolean = false) {
         oTarget = oNewTarget;
-        App.oPage.open(CUSTOMER_PAGE.VIEW, true);
+        App.oPage.open(CUSTOMER_PAGE.VIEW, { sUUID: oTarget.sUUID, sConstructor: oTarget.constructor.name }, bForce);
     }
 
     /* ---- Modal */
@@ -138,6 +141,22 @@
         ]
     };
 
+
+    /* -- History */
+    const sEventName = EVENT_NAME.URL_REDIRECTION + '_Customer_' + CUSTOMER_PAGE.VIEW,
+        oClass: TObject = {
+            Customer: Customer,
+            Contact: Contact
+        };
+
+    function redirection(oState: TObject): void {
+        open( oClass[oState.sConstructor].get( oState.sUUID ) );
+    }
+
+    Svelte.onMount( () => App.oEmitter.on(sEventName, redirection) );
+    Svelte.onDestroy( () => App.oEmitter.removeListener(sEventName, redirection) );
+
+    
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
         // $inspect(oTarget).with(console.trace);
@@ -259,7 +278,7 @@
                         <span>Contacts supplémentaires</span>
                     </div>
                     {#each oCustomerView.aExtraContacts as oContact}
-                        <Item Item={{ bEnable: oCustomerView.bEnable, oTarget: oContact, click: () => open(oContact) }}/>
+                        <Item Item={{ bEnable: oCustomerView.bEnable, oTarget: oContact, click: () => open(oContact, true) }}/>
                     {:else}
                         <div class="bulma-notification bulma-has-text-centered bulma-is-size-7">
                             <span class="bulma-icon-text bulma-is-small">
@@ -285,7 +304,7 @@
                     <div class="fox-separator">
                         <span>Client principal</span>
                     </div>
-                    <Item Item={{ bEnable: oCustomerView.bEnable, oTarget: oCustomerView, click: () => open(oCustomerView) }}/>
+                    <Item Item={{ bEnable: oCustomerView.bEnable, oTarget: oCustomerView, click: () => open(oCustomerView, true) }}/>
                 </div>
             {/if}
         </div>

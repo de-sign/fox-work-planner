@@ -11,6 +11,10 @@ export enum EVENT_NAME {
     PATCH_APPLY = 'PatchApply',
 
     // --- Components
+    // -- History URL
+    URL_REDIRECTION = 'UrlRedirection',
+    URL_REDIRECTION_SUCCESS = 'UrlRedirectionSuccess',
+    
     // -- Menu
     MENU_OPEN = 'MenuOpen',
     MENU_CLOSE = 'MenuClose'

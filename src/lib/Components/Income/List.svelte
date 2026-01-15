@@ -2,8 +2,8 @@
     /* ---- Import */
     /* -- Core */
     import type { TObject, TData } from '../../Core/Type';
+    import { EVENT_NAME, DATE_SELECTOR_TYPE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
-    import { DATE_SELECTOR_TYPE } from '../../Core/Constants';
 
     import * as Svelte from 'svelte';
     import * as DATE from '../../Core/Date';
@@ -36,10 +36,14 @@
             changeDate: (dDateSelected: Date) => {
                 dTasksDate = dDateSelected;
                 App.oPage.scrollTop();
+                App.oHistory.add({ sDateSelected: DATE.toISO8601(dTasksDate) });
             }
         };
-
-    Svelte.onMount( () => oDateSeletorComponent?.initTouch(hPage) );
+        
+    Svelte.onMount( () => {
+        oDateSeletorComponent?.initTouch(hPage);
+        Svelte.tick().then( () => App.oHistory.add({ sDateSelected: DATE.toISO8601(dTasksDate) }, true) );
+    } );
     Svelte.onDestroy( () => oDateSeletorComponent?.destroyTouch() );
     
 
@@ -161,6 +165,17 @@
             ]
         };
     } );
+
+    
+    /* -- History */
+    const sEventName = EVENT_NAME.URL_REDIRECTION + '_Income_1';
+    function redirection(oState: TObject) {
+        oDateSeletorComponent?.setDate( new Date( oState.sDateSelected + 'T00:00:00Z' ) );
+    }
+
+    Svelte.onMount( () => App.oEmitter.on(sEventName, redirection) );
+    Svelte.onDestroy( () => App.oEmitter.removeListener(sEventName, redirection) );
+
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){

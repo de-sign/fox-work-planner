@@ -2,7 +2,7 @@
 // ### ERROR - Loop independancies issue
 // import { PROPERTY_NAME } from './Constants';
 import type { TObject } from '../Core/Type';
-import { PROPERTY_NAME } from './Constants';
+import { PROPERTY_NAME, CUSTOMER_PAGE, SCHEDULE_PAGE, TASK_PAGE } from './Constants';
 
 // ---- Application
 // -- > Move to 'Import.ts
@@ -141,22 +141,41 @@ export const CONFIG = {
     ],
 
     // -- Component Content
+        // new URL(CONFIG.URL.Task[TASK_PAGE.CONTENT], window.location.origin)
     CONTENT_DEFAULT: 'Task',
     CONTENT_ITEMS: <TObject<TObject>> {
         Task: {
             sComponent: 'Task',
+            URL: {
+                [TASK_PAGE.CONTENT]: 'Tasks/${sDateSelected}',
+                [TASK_PAGE.VIEW]: 'Task/${sUUID}',
+                [TASK_PAGE.FORM]: 'Task/${sUUID}/${sFormType}'
+            },
             nPagesCount: 3
         },
         Income: {
             sComponent: 'Income',
+            URL: {
+                1: 'Income/${sDateSelected}'
+            },
             nPagesCount: 1
         },
         Customer: {
             sComponent: 'Customer',
+            URL: {
+                [CUSTOMER_PAGE.LIST]: 'Customers',
+                [CUSTOMER_PAGE.VIEW]: 'Customer/${sUUID}',
+                [CUSTOMER_PAGE.FORM]: 'Customer/${sUUID}/${sFormType}'
+            },
             nPagesCount: 3
         },
         Schedule: {
             sComponent: 'Schedule',
+            URL: {
+                [SCHEDULE_PAGE.CONTENT]: 'Schedules',
+                [SCHEDULE_PAGE.VIEW]: 'Schedule/${sUUID}',
+                [SCHEDULE_PAGE.FORM]: 'Schedule/${sUUID}/${sFormType}'
+            },
             nPagesCount: 3
         }
     },

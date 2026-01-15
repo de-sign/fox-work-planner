@@ -3,7 +3,7 @@
     /* -- Core */
     import type { TObject } from '../../Core/Type';
     import type { Component } from 'svelte';
-    import { PROPERTY_NAME, CUSTOMER_PAGE, SCHEDULE_PAGE, TASK_FORM_TYPE, DATE_SELECTOR_TYPE } from '../../Core/Constants';
+    import { EVENT_NAME, PROPERTY_NAME, TASK_FORM_TYPE, TASK_PAGE, DATE_SELECTOR_TYPE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
 
     import * as Svelte from 'svelte';
@@ -71,11 +71,16 @@
             changeDate: (dDateSelected: Date) => {
                 dTasksDate = dDateSelected;
                 App.oPage.scrollTop();
+                App.oHistory.add({ sDateSelected: DATE.toISO8601(dTasksDate) });
                 Svelte.tick().then( () => App.oEmitter.emit('fox-app-page--change-date') );
             }
         };
 
-    Svelte.onMount( () => oDateSeletorComponent?.initTouch(hPage) );
+
+    Svelte.onMount( () => {
+        oDateSeletorComponent?.initTouch(hPage);
+        Svelte.tick().then( () => App.oHistory.add({ sDateSelected: DATE.toISO8601(dTasksDate) }, true) );
+    } );
     Svelte.onDestroy( () => oDateSeletorComponent?.destroyTouch() );
     
 
@@ -135,31 +140,35 @@
 
 
     /* ---- Template */
+    const bHasCustomer = Customer.hasCustomers();
+
     /* -- Title */
     const oTitle = $derived.by( () => {
         return {
             sTitle: 'Agenda',
             sSubTitle: 'Organise tes tâches',
-            aButtons: [
-                {
-                    sClass: sDisplay == 'calendar-week' ? 'bulma-is-link bulma-is-selected' : '',
-                    sTitle: 'Affichage calendrier hebdomadaire',
-                    sIcon: 'fa-calendar-week',
-                    click: () => changeDisplay('calendar-week')
-                },
-                {
-                    sClass: sDisplay == 'calendar-month' ? 'bulma-is-link bulma-is-selected' : '',
-                    sTitle: 'Affichage calendrier mensuel',
-                    sIcon: 'fa-calendar-days',
-                    click: () => changeDisplay('calendar-month')
-                },
-                {
-                    sClass: sDisplay == 'list' ? 'bulma-is-link bulma-is-selected' : '',
-                    sTitle: 'Affichage liste',
-                    sIcon: 'fa-list',
-                    click: () => changeDisplay('list')
-                }
-            ]
+            aButtons: bHasCustomer ?
+                [
+                    {
+                        sClass: sDisplay == 'calendar-week' ? 'bulma-is-link bulma-is-selected' : '',
+                        sTitle: 'Affichage calendrier hebdomadaire',
+                        sIcon: 'fa-calendar-week',
+                        click: () => changeDisplay('calendar-week')
+                    },
+                    {
+                        sClass: sDisplay == 'calendar-month' ? 'bulma-is-link bulma-is-selected' : '',
+                        sTitle: 'Affichage calendrier mensuel',
+                        sIcon: 'fa-calendar-days',
+                        click: () => changeDisplay('calendar-month')
+                    },
+                    {
+                        sClass: sDisplay == 'list' ? 'bulma-is-link bulma-is-selected' : '',
+                        sTitle: 'Affichage liste',
+                        sIcon: 'fa-list',
+                        click: () => changeDisplay('list')
+                    }
+                ]
+                : null
         }
     } );
 
@@ -178,8 +187,8 @@
             sText: 'Menu',
             click: App.oMenu.open
         },
-        aButtons: [
-            Customer.hasCustomers() ? 
+        aButtons: bHasCustomer ?
+            [
                 {
                     sClass: 'bulma-is-link',
                     sTitle: 'Ajouter une tâche',
@@ -188,16 +197,20 @@
                     click: () => Pages.oForm.open(TASK_FORM_TYPE.NEW_TASK, {
                         sDate: DATE.toISO8601( dTasksDate ),
                     } )
-                } : 
-                {
-                    sClass: 'bulma-is-link',
-                    sTitle: 'Ajouter un client',
-                    sIcon: 'fa-user-plus',
-                    sText: 'Ajouter',
-                    click: () => App.oContent.change('Customer', CUSTOMER_PAGE.FORM)
                 }
-        ]
+            ]
+            : null
     } );
+
+    
+    /* -- History */
+    const sEventName = EVENT_NAME.URL_REDIRECTION + '_Task_' + TASK_PAGE.CONTENT;
+    function redirection(oState: TObject) {
+        oDateSeletorComponent?.setDate( new Date( oState.sDateSelected + 'T00:00:00Z' ) );
+    }
+
+    Svelte.onMount( () => App.oEmitter.on(sEventName, redirection) );
+    Svelte.onDestroy( () => App.oEmitter.removeListener(sEventName, redirection) );
 
 
     /* ---- Debug */
@@ -219,7 +232,7 @@
         <div class="bulma-container bulma-is-max-tablet">
 
             <!-- Content -->
-            {#if Customer.hasCustomers()}
+            {#if bHasCustomer}
                 <Content App={App} Pages={Pages} Item={oContent} />
             {:else}
 
@@ -234,24 +247,10 @@
                 </div>
                 
                 <p class="fox-empty-notification bulma-block">
-                    Tu dois d'abord créer un
-                    <button class="bulma-block bulma-button bulma-is-small" onclick="{ () => App.oContent.change('Customer', CUSTOMER_PAGE.FORM) }">
-                        <span class="bulma-icon">
-                            <i class="fa-solid fa-user-plus"></i>
-                        </span>
-                        <span>client</span>
-                    </button>
-                    avant de pouvoir lui ajouter une tâche !
+                    Tu dois d'abord créer un <b>client</b> avant de pouvoir lui ajouter une tâche !
                 </p>
                 <p class="fox-empty-notification bulma-block">
-                    Et n'oublie pas de créer des
-                    <button class="bulma-block bulma-button bulma-is-small" onclick="{ () => App.oContent.change('Schedule', SCHEDULE_PAGE.FORM) }">
-                        <span class="bulma-icon">
-                            <i class="fa-solid fa-calendar-plus"></i>
-                        </span>
-                        <span>planifications</span>
-                    </button>
-                    afin de pouvoir remplir automatiquement ton agenda !
+                    Et n'oublie pas de créer des <b>planifications</b> afin de pouvoir remplir automatiquement ton agenda !
                 </p>
             {/if}
 
@@ -260,18 +259,17 @@
     
     <!-- Page Navbar -->
     <Navbar Item={oNavbar}>
-        <!-- Date Nav -->
-        <div class="fox-app-page-navbar-content bulma-is-align-items-center">
-            <div class="fox-app-page-navbar-item">
-                <DateSelector bind:this={oDateSeletorComponent} nType={nDateType} Item={oDateSelector} />
+        {#if bHasCustomer}
+            <!-- Date Nav -->
+            <div class="fox-app-page-navbar-content bulma-is-align-items-center">
+                <div class="fox-app-page-navbar-item">
+                    <DateSelector bind:this={oDateSeletorComponent} nType={nDateType} Item={oDateSelector} />
+                </div>
             </div>
-        </div>
+        {/if}
     </Navbar>
     
 </section>
 
 <style>
-    .fox-empty-notification .bulma-button {
-        vertical-align: middle;
-    }
 </style>

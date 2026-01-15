@@ -56,7 +56,7 @@
                             {:else}
                                 <li>
                                     <!-- svelte-ignore a11y_invalid_attribute -->
-                                    <a href="#" class={ oMenuItem.sContent == sContentSelected ? 'bulma-is-active' : ''} onclick="{ () => App.oContent.change(oMenuItem.sContent) }" >
+                                    <a href="#" class={ oMenuItem.sContent == sContentSelected ? 'bulma-is-active' : ''} onclick="{ oEvent => { oEvent.preventDefault(); App.oPage.change(oMenuItem.sContent); } }" >
                                         {oMenuItem.sLabel}
                                     </a>
                                 </li>

@@ -1,9 +1,11 @@
 <script lang="ts">
     /* ---- Import */
     /* -- Core */
-    /* Add '../' to path ! */
-    import { SCHEDULE_WEEK_TYPE, SCHEDULE_FORM_TYPE, SCHEDULE_PAGE } from '../../Core/Constants';
+    import type { TObject } from '../../Core/Type';
+    import { EVENT_NAME, SCHEDULE_FORM_TYPE, SCHEDULE_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
+
+    import * as Svelte from 'svelte';
 
     /* -- Template */
     import Title from '../Template/Title.svelte';
@@ -24,7 +26,7 @@
 
     export function open(oNewTarget: Schedule) {
         oTarget = oNewTarget;
-        App.oPage.open(SCHEDULE_PAGE.VIEW, true);
+        App.oPage.open(SCHEDULE_PAGE.VIEW, { sUUID: oTarget.sUUID });
     }
 
     /* ---- Modal */
@@ -77,6 +79,18 @@
             }
         ]
     };
+
+
+    /* -- History */
+    const sEventName = EVENT_NAME.URL_REDIRECTION + '_Schedule_' + SCHEDULE_PAGE.VIEW;
+
+    function redirection(oState: TObject): void {
+        open( Schedule.get( oState.sUUID ) );
+    }
+
+    Svelte.onMount( () => App.oEmitter.on(sEventName, redirection) );
+    Svelte.onDestroy( () => App.oEmitter.removeListener(sEventName, redirection) );
+
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){

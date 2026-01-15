@@ -1,12 +1,13 @@
 <script lang="ts">
     /* ---- Import */
     /* -- Core */
-    /* Add '../' to path ! */
     import type { TObject } from '../../Core/Type';
     import type { IScheduleOptions } from '../../Class/Schedule.svelte';
 
-    import { SCHEDULE_FORM_TYPE, SCHEDULE_PAGE } from '../../Core/Constants';
+    import { EVENT_NAME, SCHEDULE_FORM_TYPE, SCHEDULE_PAGE } from '../../Core/Constants';
     import { CONFIG } from '../../Core/Config';
+
+    import * as Svelte from 'svelte';
     import * as FORM from '../../Core/Form';
 
     /* -- Template */
@@ -68,7 +69,7 @@
         }
         oError = {};
 
-        App.oPage.open(SCHEDULE_PAGE.FORM, true);
+        App.oPage.open(SCHEDULE_PAGE.FORM, { sUUID: oTarget?.sUUID, sFormType: sType, oData: oTarget ? null : oFormTarget });
     }
 
     /* -- Form */
@@ -125,9 +126,9 @@
                     oWillView = oTarget;
                     break;
             }
-
-            App.oPage.back();
-            Pages.oView?.open(oWillView);
+            
+            App.oPage.back()
+                .then( () => Pages.oView?.open(oWillView) );
         }
     }
         
@@ -157,6 +158,17 @@
             }
         ]
     };
+
+    
+    /* -- History */
+    const sEventName = EVENT_NAME.URL_REDIRECTION + '_Schedule_' + SCHEDULE_PAGE.FORM;
+    function redirection(oState: TObject): void {
+        open(oState.sFormType, oState.sUUID ? Schedule.get(oState.sUUID) : oState.oData);
+    }
+
+    Svelte.onMount( () => App.oEmitter.on(sEventName, redirection) );
+    Svelte.onDestroy( () => App.oEmitter.removeListener(sEventName, redirection) );
+
 
     /* ---- Debug */
     if( CONFIG.DEBUG_PRINT_LOG ){
