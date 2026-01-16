@@ -107,7 +107,7 @@
 
 
     /* -- Time */
-    let dTimeNow = $state( new Date() ),
+    let dTimeNow = $state( DATE.getNow() ),
         nTimeout = 0;
 
     const oTime: TObject | undefined = $derived.by( () => {
@@ -150,7 +150,7 @@
     } );
 
     function updateTime(): void {
-        dTimeNow = new Date();
+        dTimeNow = DATE.getNow();
         nTimeout = setTimeout(updateTime, (61 - dTimeNow.getSeconds()) * 1000 );
     }
 

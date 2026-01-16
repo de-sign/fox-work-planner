@@ -117,6 +117,7 @@
         hContent?.querySelectorAll( CONFIG.CONTENT_PAGE_SCROLLTOP_SELECTOR )[nPageSelected - 1]?.scrollTo(0, 0);
     }
 
+    
     /* ---- App Encapsulation */
     const oApp = {
         oMenu: {

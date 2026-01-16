@@ -170,7 +170,7 @@
     /* -- History */
     const sEventName = EVENT_NAME.URL_REDIRECTION + '_Income_1';
     function redirection(oState: TObject) {
-        oDateSeletorComponent?.setDate( new Date( oState.sDateSelected + 'T00:00:00Z' ) );
+        oDateSeletorComponent?.set( new Date( oState.sDateSelected + 'T00:00:00Z' ) );
     }
 
     Svelte.onMount( () => App.oEmitter.on(sEventName, redirection) );

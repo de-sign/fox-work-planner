@@ -25,6 +25,7 @@ export const CONFIG = {
 
     // ---- Core
     // -- Debug
+    DEBUG_NOW_DATE: null, // '2026-02-01T00:00:00Z',
     DEBUG_PRINT_LOG: true,
     DEBUG_WINDOW_PROPERTY: true,
     DEBUG_WINDOW_PROPERTY_NAME: 'oFoxDebug',

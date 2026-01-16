@@ -32,10 +32,6 @@ if( CONFIG.DEBUG_WINDOW_PROPERTY ) {
             CONFIG,
             Store,
             ...CLASS
-        },
-        Svelte: {
-            Svelte,
-            oApp
         }
     } } );
 }

@@ -14,21 +14,7 @@
         Item
     } = $props();
 
-    let dStartDate = $derived.by( () => {
-            const dDate = DATE.toDateOnly( Item.dDate );
-            switch(nType) {
-                case DATE_SELECTOR_TYPE.WEEK:
-                    // Go to first Monday Day of current Week
-                    dDate.setDate( dDate.getDate() - dDate.getDay() + 1 );
-                    break;
-                case DATE_SELECTOR_TYPE.MONTH:
-                    // Go to first Day of current Month
-                    dDate.setDate(1);
-                    break;
-            }
-            return dDate;
-        } ),
-        dDate = $derived( new Date( dStartDate.toJSON() ) ),
+    let dDate = $derived( DATE.toDateOnly(Item.dDate) ),
         sHTMLSelector = $derived.by( () => {
             let sResult = '';
             switch(nType) {
@@ -50,36 +36,38 @@
             return sResult;
         } );
 
-    export function setDate(dNewDate: Date): void {
-        dDate = DATE.toDateOnly(dNewDate);
-        Item.changeDate( new Date( dDate.toJSON() ) );
+    
+    export function set(dNewDate: Date): void {
+        dNewDate = DATE.toDateOnly(dNewDate);
+        if( dDate.valueOf() != dNewDate.valueOf() ){
+            dDate = dNewDate;
+            Item.changeDate( new Date( dDate.toJSON() ) );
+        }
     }
 
     function change(nRatio: number): void {
-        const dNewDate = new Date( dDate.toJSON() );
+        let dNewDate = DATE.toDateOnly(dDate),
+            bInScope = false;
 
         switch(nType) {
             case DATE_SELECTOR_TYPE.WEEK:
-                // Go to first Monday Day of current Week
-                dNewDate.setDate( dNewDate.getDate() - dNewDate.getDay() + 1 );
-                // Add one Week
-                dNewDate.setDate( dNewDate.getDate() + (7 * nRatio) );
+                dNewDate.setDate( dNewDate.getDate() - dNewDate.getDay() + 1 ); // Go to first Monday Day of current Week
+                dNewDate.setDate( dNewDate.getDate() + (7 * nRatio) ); // Add one Week
+                bInScope = DATE.getWeekData(dNewDate).join('_') == DATE.getWeekData(Item.dDate).join('_');
                 break;
-
+            
             case DATE_SELECTOR_TYPE.MONTH:
-                // Go to first Day of current Month
-                dNewDate.setDate(1);
-                // Add one Month
-                dNewDate.setMonth( dNewDate.getMonth() + nRatio );
+                dNewDate.setDate(1); // Go to first Day of current Month
+                dNewDate.setMonth( dNewDate.getMonth() + nRatio ); // Add one Month
+                bInScope = dNewDate.getMonth() == Item.dDate.getMonth();
                 break;
         }
 
-        setDate(dNewDate);
+        set( bInScope ? Item.dDate : dNewDate );
     }
 
     function reset(): void {
-        dDate = new Date( dStartDate.toJSON() );
-        Item.changeDate( new Date( dDate.toJSON() ) );
+        set(Item.dDate);
     }
 
 

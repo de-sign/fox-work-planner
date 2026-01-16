@@ -1,4 +1,24 @@
-import type { TObject, TData } from "./Type";
+import type { TObject, TData } from './Type';
+import { CONFIG } from './Config';
+
+
+// Only for DEBUG Now Date
+export function getToday(): Date {
+    const dNow = CONFIG.DEBUG_NOW_DATE ? new Date(CONFIG.DEBUG_NOW_DATE) : new Date();
+    return toDateOnly(dNow);
+}
+
+export function getNow(): Date {
+    const dNow = new Date();
+    if( CONFIG.DEBUG_NOW_DATE ){
+        const dDebugDate = new Date(CONFIG.DEBUG_NOW_DATE);
+        dNow.setDate( dDebugDate.getDate() );
+        dNow.setMonth( dDebugDate.getMonth() );
+        dNow.setFullYear( dDebugDate.getFullYear() );
+    }
+    return dNow;
+}
+
 
 export function toDateOnly(dDate: Date): Date {
     return new Date( Date.UTC(dDate.getFullYear(), dDate.getMonth(), dDate.getDate()) );
@@ -9,15 +29,10 @@ export function toISO8601(dDate: Date): string {
 }
 
 
-// Only for custom Now Date
-export function getToday(): Date {
-    return toDateOnly( new Date() );
-}
-
 /* From -> https://stackoverflow.com/questions/6117814/get-week-of-year-in-javascript-like-in-php */
 export function getWeekData(dDate: Date): number[] {
     const dCopyDate = toDateOnly(dDate);
-    dCopyDate.setUTCDate( dCopyDate.getUTCDate() + 4 - (dCopyDate.getUTCDay() || 7) );
+    dCopyDate.setUTCDate( dCopyDate.getUTCDate() + 4 - (dCopyDate.getUTCDay()/* || 7*/) );
     const dFirstDay = new Date( Date.UTC(dCopyDate.getUTCFullYear(), 0, 1) );
     return [
         dCopyDate.getUTCFullYear(),
