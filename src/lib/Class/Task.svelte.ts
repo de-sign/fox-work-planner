@@ -1,6 +1,6 @@
 // Imports
 import type { TObject } from '../Core/Type';
-import { PROPERTY_NAME, TASK_STATE } from '../Core/Constants';
+import { PROPERTY_NAME, TASK_STATE, DATE_SELECTOR_TYPE } from '../Core/Constants';
 import { CONFIG } from '../Core/Config';
 
 import * as DATE from '../Core/Date';
@@ -25,6 +25,25 @@ export interface ITaskOptions {
     nPrice: number;
     sState: string;
     sInformations?: string;
+};
+
+/**
+ * Task options supplied to getOnPeriod.
+ */
+export interface ITaskPeriodOptions {
+    dDate: Date;
+    nPeriodType?: number;
+    bInMonthOnly?: boolean;
+    bServiceOnly?: boolean;
+    bFromSchedule?: boolean;
+}
+
+const oTaskPeriodOptionsDefault: ITaskPeriodOptions = {
+    dDate: DATE.getToday(),
+    nPeriodType: DATE_SELECTOR_TYPE.MONTH,
+    bInMonthOnly: false,
+    bServiceOnly: false,
+    bFromSchedule: true
 };
 
 
@@ -59,7 +78,7 @@ class Task {
                 new Task(oTaskData);
             } );
 
-            Task.oPlaceholder = new Task( CONFIG.TASK_PLACEHOLDER );
+            Task.oPlaceholder = new Task( CONFIG.TASK_PLACEHOLDER, false );
             Task._bRestored = true;
         }
     }
@@ -97,6 +116,84 @@ class Task {
 
     public static get(sUUID: string): Task {
         return _oInstances[sUUID] || Task.oPlaceholder;
+    }
+
+    public static getOnPeriod(oOptions: ITaskPeriodOptions): Task[] {
+
+        // Define Options from Default and Variables
+        oOptions = Object.assign( {}, oTaskPeriodOptionsDefault, oOptions );
+        const sWeekKeyTarget = DATE.getWeekData(oOptions.dDate).join('_'),
+            sMonthKeyTarget = oOptions.dDate.getMonth() + '_' + oOptions.dDate.getFullYear();
+        
+
+        // Find Dates of Period, split by Weeks
+        let oPeriodDates: TObject<Date[]> = {},
+            aWeekKeys: string[] = [];
+        
+        switch( oOptions.nPeriodType ){
+            case DATE_SELECTOR_TYPE.WEEK:
+                oPeriodDates[sWeekKeyTarget] = DATE.getDatesOfWeek(oOptions.dDate);
+                aWeekKeys.push(sWeekKeyTarget);
+                break;
+
+            case DATE_SELECTOR_TYPE.MONTH:
+                oPeriodDates = DATE.getDatesOfMonth(oOptions.dDate);
+                aWeekKeys = Object.keys(oPeriodDates);
+                break;
+        }
+
+
+        // Filter Task with Options
+        const aResults = Object.values( Task.getAll() )
+            .filter( oTask => {
+                return aWeekKeys.indexOf(oTask.sWeekKey) != -1 // Only Task in Weeks of period
+                    && ( !oOptions.bInMonthOnly || oTask.sMonthKey == sMonthKeyTarget ) // Filter on Month Only if Needed
+                    && ( !oOptions.bServiceOnly || oTask.bService ); // Filter Service Only if Needed
+            } );
+        
+
+        // Add Tasks From Schedule
+        if( oOptions.bFromSchedule ){
+
+            // Regroup by Week
+            const oTaskByWeek: TObject<Task[]> = {};
+            aResults.forEach( oTask => {
+                const sWeekKey = oTask.sWeekKey;
+                if( !oTaskByWeek[sWeekKey] ){
+                    oTaskByWeek[sWeekKey] = [];
+                }
+                oTaskByWeek[sWeekKey].push(oTask);
+            } );
+
+            // For all Week
+            Object
+                .entries(oPeriodDates)
+                .forEach( ([sWeekKey, aDates]) => {
+                    const nWeek = parseInt( sWeekKey.split('_')[1] ),
+                        aFromSchedule: Schedule[] = [];
+
+                    // Add enable Schedule without Task created by his 
+                    oTaskByWeek[sWeekKey]?.forEach( oTask => oTask.oSchedule ? aFromSchedule.push(oTask.oSchedule) : null );
+                    Object.values( Schedule.getAll() )
+                        .filter( oSchedule => {
+                            return oSchedule.isEnable(sWeekKey) // Customer Enable and Not delete for this week
+                                && aFromSchedule.indexOf(oSchedule) == -1 // No task created
+                                && oSchedule.oWeekType.fFilter(nWeek); // Good Week number for pair/impair
+                        } )
+                        .forEach( oSchedule => {
+                            const dDate = aDates[oSchedule.nDay];
+                            if(
+                                oSchedule.oCustomer.dDateStart <= dDate // Only Schedule after Start Date of Customer
+                                && ( !oOptions.bInMonthOnly || dDate.getMonth() == oOptions.dDate.getMonth() ) // Filter on Month Only if Needed
+                            ){
+                                aResults.push( Task.from( oSchedule, dDate ) );
+                            }
+                        } );
+                } );
+        }
+
+        // Sort by Date and Return
+        return aResults.sort( (oA, oB) => oA.nDate - oB.nDate || oA.nTimeStart - oB.nTimeStart );
     }
     
     /** Instance Properties */
@@ -199,6 +296,12 @@ class Task {
 
     /** Destructor */
     public destroy(): void {
+        // Update Schedule
+        if( this.oSchedule ){
+            this.oSchedule.addIgnoredWeek( this.sWeekKey );
+        }
+
+        // Delete Task
         delete _oInstances[this._sUUID];
         Task.store();
     }

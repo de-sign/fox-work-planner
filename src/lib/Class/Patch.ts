@@ -141,6 +141,22 @@ const CONFIG = {
                 // console.log('202601122035 -> Customer', aCustomersData);
                 Store.set(PROPERTY_NAME.APP_DATA_CUSTOMER, aCustomersData);
             }
+        },
+
+        // Add Schedule Week ignore property
+        202602012100: () => {
+            // Schedule
+            const aScheduleData = Store.get(PROPERTY_NAME.APP_DATA_SCHEDULE);
+            if( aScheduleData ){
+                aScheduleData.forEach( (oScheduleData: TObject) => {
+                    if( oScheduleData.aWeeksIgnore == null ){
+                        oScheduleData.aWeeksIgnore = [];
+                    }
+                } );
+
+                // console.log('202602012100 -> Schedule', aScheduleData);
+                Store.set(PROPERTY_NAME.APP_DATA_SCHEDULE, aScheduleData);
+            }
         }
     }
 };

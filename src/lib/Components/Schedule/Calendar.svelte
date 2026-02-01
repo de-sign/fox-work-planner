@@ -18,7 +18,7 @@
     } = $props();
 
     /* -- Calendar */
-    const aSchedules = $derived( Object.values( Schedule.getAll() ).filter( oSchedule => oSchedule.oCustomer.bEnable ) );
+    const aSchedules = $derived( Object.values( Schedule.getAll() ).filter( oSchedule => oSchedule.isEnable() ) );
 
     /* -- Organize Cell and Schedule */
     const oWeekStyle: TObject<TObject> = {

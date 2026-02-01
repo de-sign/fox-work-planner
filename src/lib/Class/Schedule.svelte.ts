@@ -15,6 +15,7 @@ export interface IScheduleOptions {
     sCustomer: string;
     nDay: number;
     sWeekType: string;
+    aWeeksIgnore: string[];
     sTimeStart: string;
     sTimeEnd: string;
     nPrice: number;
@@ -78,6 +79,7 @@ class Schedule {
     public oCustomer: Customer = $state(Customer.oPlaceholder);
     public nDay: number = $state(0);
     public sWeekType: string = $state('');
+    public aWeeksIgnore: string[] = $state([]);
     public sTimeStart: string = $state('');
     public sTimeEnd: string = $state('');
     public nPrice: number = $state(0.0);
@@ -154,6 +156,7 @@ class Schedule {
             sCustomer: this.oCustomer.sUUID,
             nDay: this.nDay,
             sWeekType: this.sWeekType,
+            aWeeksIgnore: this.aWeeksIgnore,
             sTimeStart: this.sTimeStart,
             sTimeEnd: this.sTimeEnd,
             nPrice: this.nPrice,
@@ -165,11 +168,21 @@ class Schedule {
         this.oCustomer = Customer.get(oData.sCustomer);
         this.nDay = oData.nDay;
         this.sWeekType = oData.sWeekType;
+        this.aWeeksIgnore = oData.aWeeksIgnore;
         this.sTimeStart = oData.sTimeStart;
         this.sTimeEnd = oData.sTimeEnd;
         this.nPrice = oData.nPrice;
         this.sInformations = oData.sInformations;
 
+        Schedule.store();
+    }
+
+    public isEnable(sWeekKey?: string): boolean {
+        return this.oCustomer.bEnable && !( sWeekKey && this.aWeeksIgnore.indexOf(sWeekKey) != -1 );
+    }
+
+    public addIgnoredWeek(sWeekkey: string): void {
+        this.aWeeksIgnore.push(sWeekkey);
         Schedule.store();
     }
 };

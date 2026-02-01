@@ -44,7 +44,6 @@
         switch(Item.nDateType) {
             case DATE_SELECTOR_TYPE.WEEK:
                 Item.aTasks
-                    .sort( (oA, oB) => oA.nTimeStart - oB.nTimeStart )
                     .forEach( oTask => {
 
                         const [nHour, nMinute] = oTask.sTimeStart.split(':').map( (sValue: string) => parseInt(sValue) ),
@@ -76,7 +75,6 @@
             
             case DATE_SELECTOR_TYPE.MONTH:
                 Item.aTasks
-                    .sort( (oA, oB) => oA.nTimeStart - oB.nTimeStart )
                     .forEach( oTask => {
                         const sCell = oTask.nDay + ':' + oTask.nWeek;
                         if( !oResults[sCell] ){

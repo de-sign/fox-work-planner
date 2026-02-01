@@ -33,7 +33,6 @@
 
             // Group and Sort
             (<Task[]>Item.aTasks)
-                .sort( (oA, oB) => oA.nDate - oB.nDate || oA.nTimeStart - oB.nTimeStart )
                 .forEach( oTask => {
                     if( oTask.sMonthKey == sMonthKey ){
                         let sDate = oTask.sDate;

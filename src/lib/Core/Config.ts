@@ -61,6 +61,7 @@ export const CONFIG = {
         sCustomer: '',
         nDay: 1,
         sWeekType: 'EVERY_WEEK',
+        aWeeksIgnore: [],
         sTimeStart: '09:00',
         sTimeEnd: '12:00',
         nPrice: 17.00,

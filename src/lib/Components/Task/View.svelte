@@ -147,7 +147,7 @@
             </div>
 
             <div class="bulma-field bulma-is-grouped bulma-is-grouped-right">
-                {#if oTarget.sState == 'CANCEL' && oTarget.oSchedule == null}
+                {#if oTarget.sState == 'CANCEL'}
                     <button class="bulma-button bulma-is-danger bulma-is-outlined" onclick={openModal}>
                         <span class="bulma-icon">
                             <i class="fa-solid fa-calendar-xmark"></i>

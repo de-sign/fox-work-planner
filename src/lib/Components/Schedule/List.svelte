@@ -16,7 +16,7 @@
         Pages
     } = $props();
 
-    const aSchedules = $derived( Object.values( Schedule.getAll() ).filter( oSchedule => oSchedule.oCustomer.bEnable ) ),
+    const aSchedules = $derived( Object.values( Schedule.getAll() ).filter( oSchedule => oSchedule.isEnable() ) ),
         aSchedulesGrouped = $derived.by( () => {
             const aReturn: TObject[] = [],
                 oDays: TObject<Schedule[]> = {};

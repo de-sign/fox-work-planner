@@ -86,57 +86,10 @@
 
     /* -- Task */
     let dTasksDate = $state(dDateNow);
-    const aTasks: Task[] = $derived.by( () => {
-
-        const sWeekKeyOfTask = DATE.getWeekData(dTasksDate).join('_');
-        let oMonthDates: TObject<Date[]> = {},
-            aWeekKeys: string[] = [];
-        
-        switch( nDateType ){
-            case DATE_SELECTOR_TYPE.WEEK:
-                oMonthDates[sWeekKeyOfTask] = DATE.getDatesOfWeek(dTasksDate);
-                aWeekKeys.push(sWeekKeyOfTask);
-                break;
-
-            case DATE_SELECTOR_TYPE.MONTH:
-                oMonthDates = DATE.getDatesOfMonth(dTasksDate);
-                aWeekKeys = Object.keys(oMonthDates);
-                break;
-        }
-            
-        const aResults = Object.values( Task.getAll() ).filter( oTask => aWeekKeys.indexOf(oTask.sWeekKey) != -1 ),
-            oTaskByWeek: TObject<Task[]> = {};
-
-        // Regroup by Week
-        aResults.forEach( oTask => {
-            const sWeekKey = oTask.sWeekKey;
-            if( !oTaskByWeek[sWeekKey] ){
-                oTaskByWeek[sWeekKey] = [];
-            }
-            oTaskByWeek[sWeekKey].push(oTask);
-        } );
-
-        // For all Week
-        Object
-            .entries(oMonthDates)
-            .forEach( ([sWeekKey, aDates]) => {
-                const nWeek = parseInt( sWeekKey.split('_')[1] ),
-                    aFromSchedule: Schedule[] = [];
-
-                // Add enable Schedule without Task created by his 
-                oTaskByWeek[sWeekKey]?.forEach( oTask => oTask.oSchedule ? aFromSchedule.push(oTask.oSchedule) : null );
-                Object.values( Schedule.getAll() )
-                    .filter( oSchedule => oSchedule.oCustomer.bEnable && aFromSchedule.indexOf(oSchedule) == -1 && oSchedule.oWeekType.fFilter(nWeek) )
-                    .forEach( oSchedule => {
-                        const dDate = aDates[oSchedule.nDay];
-                        if( oSchedule.oCustomer.dDateStart <= dDate ){
-                            aResults.push( Task.from( oSchedule, dDate ) );
-                        }
-                    } );
-            } );
-
-        return aResults;
-    } );
+    const aTasks: Task[] = $derived( Task.getOnPeriod( {
+        dDate: dTasksDate,
+        nPeriodType: nDateType
+    } ) );
 
 
     /* ---- Template */
