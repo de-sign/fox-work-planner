@@ -41,6 +41,7 @@
             nPrice: 17.00,
             nDay: 1,
             sWeekType: aWeekTypes[0].sValue,
+            aWeeksIgnore: [],
             sTimeStart: '08:00',
             sTimeEnd: '09:00'
         };
@@ -83,6 +84,10 @@
             fTransform: null
         },
         sWeekType: {
+            fCheck: FORM.isDefined,
+            fTransform: null
+        },
+        aWeeksIgnore: {
             fCheck: FORM.isDefined,
             fTransform: null
         },

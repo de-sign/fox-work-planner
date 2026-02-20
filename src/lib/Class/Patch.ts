@@ -144,7 +144,8 @@ const CONFIG = {
         },
 
         // Add Schedule Week ignore property
-        202602012100: () => {
+        // 202602012100: () => {
+        202602201320: () => {
             // Schedule
             const aScheduleData = Store.get(PROPERTY_NAME.APP_DATA_SCHEDULE);
             if( aScheduleData ){
